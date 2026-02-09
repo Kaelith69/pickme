@@ -50,9 +50,10 @@ const confettiColors = ['#ff4d6d', '#ff8fa3', '#c9184a', '#ffc6d3', '#ffb3c6', '
 let lastIndex = -1;
 let isTyping = false;
 let loveCount = 0;
+const MAX_PARTICLES = 100; // Limit total particles to prevent lag
 
 // ============================================
-// CUSTOM CURSOR
+// CUSTOM CURSOR & TILT OPTIMIZATION
 // ============================================
 const cursor = document.createElement('div');
 cursor.className = 'custom-cursor';
@@ -60,43 +61,57 @@ document.body.appendChild(cursor);
 
 let mouseX = 0, mouseY = 0;
 let cursorX = 0, cursorY = 0;
+let isCursorMoving = false;
 
+// Track mouse position without triggering layout
 document.addEventListener('mousemove', (e) => {
     mouseX = e.clientX;
     mouseY = e.clientY;
-});
+    isCursorMoving = true;
+}, { passive: true });
 
-function updateCursor() {
-    cursorX += (mouseX - cursorX) * 0.1;
-    cursorY += (mouseY - cursorY) * 0.1;
-    cursor.style.left = cursorX + 'px';
-    cursor.style.top = cursorY + 'px';
-    requestAnimationFrame(updateCursor);
+// Combined animation loop for cursor and tilt
+function animateLoop() {
+    if (isCursorMoving) {
+        // Smooth cursor movement
+        cursorX += (mouseX - cursorX) * 0.15;
+        cursorY += (mouseY - cursorY) * 0.15;
+
+        // Use transform instead of top/left for 60fps performance
+        cursor.style.transform = `translate3d(${cursorX}px, ${cursorY}px, 0) translate(-50%, -50%)`;
+
+        // 3D Tilt Effect - Only if enabled and visible
+        if (window.innerWidth > 768) {
+            updateTilt(cursorX, cursorY);
+        }
+
+        // Stop updating if mouse stops moving (optimization)
+        if (Math.abs(mouseX - cursorX) < 0.1 && Math.abs(mouseY - cursorY) < 0.1) {
+            isCursorMoving = false;
+        }
+    }
+
+    requestAnimationFrame(animateLoop);
 }
-updateCursor();
 
-// ============================================
-// 3D CARD TILT EFFECT
-// ============================================
 const mainContainer = document.getElementById('main-container');
-let tiltEnabled = true;
+const mainContainerRect = mainContainer.getBoundingClientRect();
+const centerX = mainContainerRect.left + mainContainerRect.width / 2;
+const centerY = mainContainerRect.top + mainContainerRect.height / 2;
 
-mainContainer.addEventListener('mousemove', (e) => {
-    if (!tiltEnabled || window.innerWidth <= 768) return;
-
-    const rect = mainContainer.getBoundingClientRect();
-    const x = e.clientX - rect.left;
-    const y = e.clientY - rect.top;
-
-    const centerX = rect.width / 2;
-    const centerY = rect.height / 2;
-
-    const rotateX = ((y - centerY) / centerY) * -10;
-    const rotateY = ((x - centerX) / centerX) * 10;
+function updateTilt(x, y) {
+    // Calculate relative to center of screen for simplicity/performance
+    // or relative to container center
+    const rotateX = ((y - window.innerHeight / 2) / (window.innerHeight / 2)) * -5; // Reduced max tilt
+    const rotateY = ((x - window.innerWidth / 2) / (window.innerWidth / 2)) * 5;
 
     mainContainer.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg)`;
-});
+}
 
+// Start the loop
+animateLoop();
+
+// Reset tilt on leave
 mainContainer.addEventListener('mouseleave', () => {
     mainContainer.style.transform = 'perspective(1000px) rotateX(0deg) rotateY(0deg)';
 });
@@ -139,18 +154,24 @@ async function typeText(text) {
     pickupLineDisplay.innerHTML = '';
     pickupLineDisplay.classList.add('show');
 
+    const fragment = document.createDocumentFragment();
+    const textNode = document.createTextNode('');
     const typingCursor = document.createElement('span');
     typingCursor.className = 'typing-cursor';
 
+    fragment.appendChild(textNode);
+    fragment.appendChild(typingCursor);
+    pickupLineDisplay.appendChild(fragment);
+
+    // Faster typing speed standard
+    const speed = 25;
+
     for (let i = 0; i < text.length; i++) {
-        await new Promise(resolve => setTimeout(resolve, 30));
-        pickupLineDisplay.textContent = text.substring(0, i + 1);
-        if (i === text.length - 1) {
-            pickupLineDisplay.appendChild(typingCursor);
-            setTimeout(() => typingCursor.remove(), 500);
-        }
+        textNode.textContent = text.substring(0, i + 1);
+        await new Promise(resolve => setTimeout(resolve, speed));
     }
 
+    setTimeout(() => typingCursor.remove(), 500);
     isTyping = false;
 }
 
@@ -168,7 +189,7 @@ function generateRandomPickupLine() {
 
     setTimeout(() => {
         typeText(pickupLines[randomIndex]);
-    }, 300);
+    }, 200);
 
     createBurst(window.innerWidth / 2, window.innerHeight / 2);
     createSparkles(window.innerWidth / 2, window.innerHeight / 2);
@@ -176,17 +197,28 @@ function generateRandomPickupLine() {
 }
 
 // ============================================
-// FLOATING HEARTS
+// PARTICLE SYSTEM (Optimized)
 // ============================================
+
+// Helper to check particle count
+function canAddParticle() {
+    return backgroundContainer.childElementCount < MAX_PARTICLES;
+}
+
 function createHeart(x, y, isBackground = false) {
+    if (!canAddParticle() && isBackground) return; // Skip background hearts if busy
+
     const heart = document.createElement('div');
     heart.classList.add('floating-heart');
     heart.textContent = heartEmojis[Math.floor(Math.random() * heartEmojis.length)];
+    // Hardware accelerated properties set in CSS (will-change)
 
     const size = Math.random() * (isBackground ? 25 : 35) + 15;
     const duration = Math.random() * 3 + 4;
     const startX = x || Math.random() * window.innerWidth;
 
+    // Use transform for positioning if possible, but left/top is okay for initial placement 
+    // if movement is done via transform/animation
     heart.style.left = `${startX}px`;
     heart.style.top = `${y || window.innerHeight}px`;
     heart.style.fontSize = `${size}px`;
@@ -194,13 +226,15 @@ function createHeart(x, y, isBackground = false) {
 
     backgroundContainer.appendChild(heart);
 
-    setTimeout(() => heart.remove(), duration * 1000);
+    // Guaranteed cleanup
+    setTimeout(() => {
+        if (heart.isConnected) heart.remove();
+    }, duration * 1000);
 }
 
-// ============================================
-// ROSE PETALS
-// ============================================
 function createRosePetal() {
+    if (!canAddParticle()) return;
+
     const petal = document.createElement('div');
     petal.classList.add('rose-petal');
     petal.textContent = roseEmojis[Math.floor(Math.random() * roseEmojis.length)];
@@ -210,26 +244,30 @@ function createRosePetal() {
     const size = Math.random() * 15 + 20;
 
     petal.style.left = `${startX}px`;
-    petal.style.top = '-50px';
+    petal.style.top = '-50px'; // Start above screen
     petal.style.fontSize = `${size}px`;
     petal.style.animationDuration = `${duration}s`;
 
     backgroundContainer.appendChild(petal);
 
-    setTimeout(() => petal.remove(), duration * 1000);
+    setTimeout(() => {
+        if (petal.isConnected) petal.remove();
+    }, duration * 1000);
 }
 
-// ============================================
-// HEART BURST
-// ============================================
 function createBurst(x, y) {
-    for (let i = 0; i < 20; i++) {
+    // Reduce burst size if already many particles
+    const count = canAddParticle() ? 15 : 5;
+
+    for (let i = 0; i < count; i++) {
         setTimeout(() => {
-            createHeart(
-                x + (Math.random() * 150 - 75),
-                y + (Math.random() * 150 - 75)
-            );
-        }, i * 40);
+            if (canAddParticle()) {
+                createHeart(
+                    x + (Math.random() * 100 - 50),
+                    y + (Math.random() * 100 - 50)
+                );
+            }
+        }, i * 50);
     }
 }
 
@@ -237,21 +275,30 @@ function createBurst(x, y) {
 // SPARKLES
 // ============================================
 function createSparkles(x, y) {
-    for (let i = 0; i < 12; i++) {
+    if (!canAddParticle()) return;
+
+    const fragment = document.createDocumentFragment();
+
+    for (let i = 0; i < 8; i++) { // Reduced count from 12
         const sparkle = document.createElement('div');
         sparkle.className = 'sparkle';
 
-        const angle = (Math.PI * 2 * i) / 12;
-        const distance = 50 + Math.random() * 50;
+        const angle = (Math.PI * 2 * i) / 8;
+        const distance = 40 + Math.random() * 40;
         const sparkleX = x + Math.cos(angle) * distance;
         const sparkleY = y + Math.sin(angle) * distance;
 
         sparkle.style.left = sparkleX + 'px';
         sparkle.style.top = sparkleY + 'px';
 
-        backgroundContainer.appendChild(sparkle);
-        setTimeout(() => sparkle.remove(), 1500);
+        fragment.appendChild(sparkle);
+
+        // Self-cleanup closure
+        setTimeout(() => {
+            if (sparkle.isConnected) sparkle.remove();
+        }, 1500);
     }
+    backgroundContainer.appendChild(fragment);
 }
 
 // ============================================
@@ -263,36 +310,56 @@ function createConfetti(x, y) {
 
     const color = confettiColors[Math.floor(Math.random() * confettiColors.length)];
     confetti.style.backgroundColor = color;
-    confetti.style.left = x + (Math.random() * 100 - 50) + 'px';
+    // Random spread
+    const spreadX = (Math.random() - 0.5) * 50;
+
+    confetti.style.left = (x + spreadX) + 'px';
     confetti.style.top = y + 'px';
-    confetti.style.width = Math.random() * 10 + 5 + 'px';
-    confetti.style.height = Math.random() * 10 + 5 + 'px';
+    confetti.style.width = Math.random() * 8 + 5 + 'px';
+    confetti.style.height = Math.random() * 8 + 5 + 'px';
 
     backgroundContainer.appendChild(confetti);
-    setTimeout(() => confetti.remove(), 3000);
+
+    setTimeout(() => {
+        if (confetti.isConnected) confetti.remove();
+    }, 3000);
 }
 
 function createConfettiBurst(x, y) {
-    for (let i = 0; i < 50; i++) {
-        setTimeout(() => createConfetti(x, y), i * 20);
-    }
+    let count = 0;
+    const maxConfetti = 30; // Reduced from 50
+
+    const interval = setInterval(() => {
+        if (count >= maxConfetti || !canAddParticle()) {
+            clearInterval(interval);
+            return;
+        }
+        createConfetti(x, y);
+        count++;
+    }, 30);
 }
 
 // ============================================
 // MOUSE TRAIL
 // ============================================
 let lastTrailTime = 0;
-document.addEventListener('mousemove', (e) => {
+document.body.addEventListener('mousemove', (e) => {
+    // Only trail if enabled and not too busy
+    if (window.innerWidth <= 768) return;
+
     const now = Date.now();
-    if (now - lastTrailTime > 100) {
+    if (now - lastTrailTime > 150) { // Throttled more (100 -> 150)
         lastTrailTime = now;
+
+        if (document.querySelectorAll('.trail-particle').length > 10) return; // Limit active trails
 
         const particle = document.createElement('div');
         particle.className = 'trail-particle';
         particle.textContent = heartEmojis[Math.floor(Math.random() * heartEmojis.length)];
 
-        const tx = (Math.random() - 0.5) * 50;
-        const ty = (Math.random() - 0.5) * 50;
+        // Random drift
+        const tx = (Math.random() - 0.5) * 30;
+        const ty = (Math.random() - 0.5) * 30;
 
         particle.style.left = e.clientX + 'px';
         particle.style.top = e.clientY + 'px';
@@ -302,7 +369,7 @@ document.addEventListener('mousemove', (e) => {
         document.body.appendChild(particle);
         setTimeout(() => particle.remove(), 1000);
     }
-});
+}, { passive: true });
 
 // ============================================
 // RIPPLE EFFECT
@@ -325,7 +392,7 @@ generateBtn.addEventListener('click', (e) => {
     setTimeout(() => ripple.remove(), 600);
 
     generateRandomPickupLine();
-    createBurst(e.clientX, e.clientY);
+    // Burst effect handled in generate function
 });
 
 // ============================================
@@ -346,23 +413,19 @@ closeHelp.addEventListener('click', () => {
 });
 
 document.addEventListener('keydown', (e) => {
-    // Close help dialog with Escape
     if (e.key === 'Escape' && keyboardHelp.classList.contains('show')) {
         keyboardHelp.classList.remove('show');
         keyboardHelp.setAttribute('aria-hidden', 'true');
         return;
     }
 
-    // Don't trigger shortcuts when help is open
     if (keyboardHelp.classList.contains('show')) return;
 
-    // Generate pickup line with Space or Enter
     if (e.key === ' ' || e.key === 'Enter') {
         e.preventDefault();
         generateBtn.click();
     }
 
-    // Confetti burst with 'C'
     if (e.key === 'c' || e.key === 'C') {
         createConfettiBurst(window.innerWidth / 2, window.innerHeight / 2);
     }
@@ -371,8 +434,8 @@ document.addEventListener('keydown', (e) => {
 // ============================================
 // BACKGROUND ANIMATION INTERVALS
 // ============================================
-setInterval(() => createHeart(null, null, true), 400);
-setInterval(() => createRosePetal(), 800);
+setInterval(() => createHeart(null, null, true), 800); // Slower interval (400 -> 800)
+setInterval(() => createRosePetal(), 2000); // Slower interval (800 -> 2000)
 
 // ============================================
 // INITIALIZE
