@@ -50,7 +50,8 @@ const confettiColors = ['#ff4d6d', '#ff8fa3', '#c9184a', '#ffc6d3', '#ffb3c6', '
 let lastIndex = -1;
 let isTyping = false;
 let loveCount = 0;
-const MAX_PARTICLES = 100; // Limit total particles to prevent lag
+// Limit total particles to prevent lag - lower on mobile
+const MAX_PARTICLES = window.innerWidth < 768 ? 40 : 100;
 
 // ============================================
 // CUSTOM CURSOR & TILT OPTIMIZATION

@@ -89,9 +89,10 @@ body {
     background: rgba(255, 255, 255, 0.9);
     backdrop-filter: blur(15px);
     border-radius: 25px;
+    border-radius: 25px;
     box-shadow:
-        0 15px 40px var(--shadow-color),
-        0 0 80px rgba(255, 77, 109, 0.2);
+        0 10px 25px var(--shadow-color),
+        0 0 50px rgba(255, 77, 109, 0.15);
     border: 2px solid rgba(255, 255, 255, 0.6);
     z-index: 10;
     max-width: 650px;
@@ -614,6 +615,8 @@ button:focus-visible,
     .container {
         padding: 2rem 2.5rem;
         max-width: 550px;
+        backdrop-filter: none;
+        background: rgba(255, 255, 255, 0.95);
     }
 
     h1.title {
