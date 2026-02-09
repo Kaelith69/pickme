@@ -1,242 +1,381 @@
-  const pickupLines = [
-        "Are you made of copper and tellurium? Because you're Cu-Te.",
-        "Are you a carbon sample? Because I want to date you.",
-        "Are you made of helium? Because you make me feel like I'm floating.",
-        "Are you a star? Because you're illuminating.",
-        "Is your name Saturn? Because I feel a great attraction to you.",
-        "Are you a black hole? Because I can't escape your pull.",
-        "Are you a shooting star? Because you just caught my eye.",
-        "Are you a moon? Because I find you mesmerizing.",
-        "Are you a comet? Because you're out of this world.",
-        "Are you made of dark matter? Because I can't see you, but I know you're there.",
-        "Are you an astronaut? Because you've got the right stuff.",
-        "Are you the Sun? Because everything revolves around you.",
-        "Are you a supernova? Because you're exploding with beauty.",
-        "Are you a nebula? Because you're breathtaking.",
-        "Are you a rocket? Because you send me to new heights.",
-        "Are you a meteorite? Because you've left a big impression on me.",
-        "Are you a constellation? Because you light up my life.",
-        "Are you a telescope? Because I can't stop looking at you.",
-        "Are you a spaceship? Because you're flying through my dreams.",
-        "Are you a pulsar? Because you're radiating with energy.",
-        "Are you a quasar? Because you're the brightest object in my universe.",
-        "Are you a Martian? Because you're out of this world.",
-        "Are you a wormhole? Because you've transported me to another dimension.",
-        "Are you an exoplanet? Because I'd travel light-years just to be with you.",
-        "Are you a lunar eclipse? Because you've blocked out everything else.",
-        "Are you a solar eclipse? Because you've completely captivated me.",
-        "Are you a supernova remnant? Because you're a beautiful aftermath.",
-        "Are you a white dwarf? Because you're small but incredibly dense.",
-        "Are you a red giant? Because you're expanding my universe.",
-        "Are you a blue giant? Because you're massive and dazzling.",
-        "Are you a brown dwarf? Because you're cool and enigmatic.",
-        "Are you a black dwarf? Because you're ancient and mysterious.",
-        "Are you a white hole? Because you're the opposite of everything else.",
-        "Are you a cosmic ray? Because you're penetrating my atmosphere.",
-        "Are you a cosmic string? Because you're connecting everything in my universe.",
-        "Are you a pulsating variable star? Because you're constantly changing in brightness.",
-        "Are you a white hole? Because you're a theoretical possibility.",
-        "Are you a star cluster? Because you're a tight-knit community of stars.",
-        "Are you a galaxy? Because you're a vast collection of stars.",
-        "Are you a star system? Because you're a family of celestial bodies.",
-        "Are you a satellite? Because you're orbiting around me.",
-        "Are you a rover? Because you're exploring the depths of my heart.",
-        "Are you a space probe? Because you're investigating the mysteries of my soul.",
-        "Are you a space station? Because you're in orbit around my heart.",
-        "Are you a rocket scientist? Because you've mastered the science of love.",
-        "Are you a lunar module? Because you're landing softly in my heart.",
-        "Are you an extraterrestrial? Because you're unfamiliar but intriguing.",
-        "Are you a celestial event? Because you're causing a sensation.",
-        "Are you a solar flare? Because you're releasing energy in my heart.",
-        "Are you a galactic collision? Because you're creating fireworks in my soul.",
-        "Are you a dark nebula? Because you're hiding secrets within.",
-        "Are you a cosmic microwave background? Because you're the echo of the Big Bang.",
-        "Are you a space-time continuum? Because you're bending reality around me.",
-        "Are you a spacetime singularity? Because you're a point of infinite density.",
-        "Are you a multiverse? Because you're existing in parallel dimensions.",
-        "Are you a quark-gluon plasma? Because you're a state of matter beyond comprehension.",
-        "Are you a cosmic ray burst? Because you're emitting bursts of love energy.",
-        "Are you a space-time warp? Because you're distorting the fabric of my reality.",
-        "Are you a gravity wave? Because you're causing ripples in my heart.",
-        "Are you a dark energy? Because you're accelerating the expansion of my affection.",
-        "Are you a white noise? Because you're filling my heart with static.",
-        "Are you a pulsar wind? Because you're blowing me away.",
-        "Are you a star nursery? Because you're giving birth to new feelings in me.",
-        "Are you a gamma-ray burst? Because you're emitting intense bursts of love.",
-        "Are you a cosmic inflation? Because you're expanding my love universe.",
-        "Are you a planetary nebula? Because you're surrounded by a beautiful shell.",
-        "Are you a magnetic field? Because you're attracting me with your charm.",
-        "Are you a stellar evolution? Because you're evolving into something beautiful.",
-        "Are you a galaxy merger? Because you're merging with my heart.",
-        "Are you a cosmic dust? Because you're settling in my soul.",
-        "Are you a solar wind? Because you're blowing kisses from the Sun.",
-        "Are you a space-time anomaly? Because you're bending the rules of attraction.",
-        "Are you a dark matter halo? Because you're surrounding me with mystery.",
-        "Are you a space debris? Because you're leaving traces of love in my orbit.",
-        "Are you a cosmic void? Because you're filling my emptiness with love.",
-        "Are you a space-time vortex? Because you're sucking me into your love.",
-        "Are you a cosmic dance? Because you're moving in harmony with my heart.",
-        "Are you a gravitational lens? Because you're magnifying my love for you.",
-        "Are you a space colony? Because you're colonizing my heart.",
-        "Are you a space elevator? Because you're lifting me up to new heights of love.",
-        "Are you a space suit? Because you're protecting me from the vacuum of loneliness.",
-        "Are you a space tourism? Because you're taking me on a journey to your heart.",
-        "Are you a space junk? Because you're cluttering my mind with thoughts of you.",
-        "Are you a space debris? Because you're crashing into my heart.",
-        "Are you a Wi-Fi signal? Because I'm really feeling a connection.",
-        "Are you a campfire? Because you're hot and I want s'more.",
-        "Are you a candle? Because you light up my life.",
-        "Are you an elevator? Because you're definitely lifting me up.",
-        "Are you a magician? Because whenever I look at you, everyone else disappears.",
-        "Are you a drum set? Because I want to bang you all night long.",
-        "Are you a crossword puzzle? Because I can't figure you out but I want to spend all day trying.",
-        "Are you a parking ticket? Because you've got 'FINE' written all over you.",
-        "Are you a dictionary? Because you're adding meaning to my life.",
-        "Are you a keyboard? Because you're just my type.",
-        "Are you a microwave? Because you melt my heart.",
-        "Are you a fruit? Because honeydew you know how fine you look right now?",
-        "Are you a camera? Because every time I look at you, I smile.",
-        "Are you a bank loan? Because you have my interest.",
-        "Are you an alarm clock? Because you're always waking me up to reality.",
-        "Are you a firework? Because you light up my world.",
-        "Are you a diamond? Because you're priceless.",
-        "Are you a museum? Because you truly are a work of art.",
-        "Are you a staircase? Because you're taking my breath away.",
-        "Are you a cake? Because you're so sweet.",
-        "Are you a roller coaster? Because with you, every day is an adventure.",
-        "Are you a charger? Because without you, I'd quickly run out of energy.",
-        "Are you a bank? Because you've stolen my heart.",
-        "Are you a magnet? Because you're attracting me from across the room.",
-        "Are you a puzzle piece? Because you complete me.",
-        "Are you a garden? Because I'm digging you.",
-        "Are you a starfish? Because I want to wrap my arms around you and never let go.",
-        "Are you a pilot? Because you've flown straight into my heart.",
-        "Are you a chair? Because you're supporting me through everything.",
-        "Are you a rainbow? Because you add color to my life.",
-        "Are you a sweater? Because you're keeping me warm.",
-        "Are you a blanket? Because you're comforting.",
-        "Are you a cloud? Because you make my day brighter.",
-        "Are you a mountain? Because you're breathtaking.",
-        "Are you a coin? Because you're a treasure.",
-        "Are you a mailbox? Because you're full of surprises.",
-        "Are you a map? Because I keep getting lost in your eyes.",
-        "Are you a street? Because you're where all my dreams lead.",
-        "Are you a puzzle? Because I'm trying to piece you together.",
-        "Are you a teddy bear? Because I want to cuddle with you forever.",
-        "Are you a pot of gold? Because you're the treasure at the end of my rainbow.",
-        "Are you a compass? Because you always point me in the right direction.",
-        "Are you a watch? Because every second with you is precious.",
-        "Are you a glue stick? Because you hold everything together.",
-        "Are you a train? Because you're always on the right track.",
-        "Are you a calendar? Because you make my days better.",
-        "Are you a tree? Because you're rooted in my heart.",
-        "Are you a sunrise? Because you bring light to my darkest days.",
-        "Are you a sunset? Because you make every evening beautiful.",
-        "Are you a smile? Because whenever I see you, I can't help but smile too.",
-        "Are you a snowflake? Because you're one of a kind.",
-        "Are you a unicorn? Because you're magical.",
-        "Are you a present? Because you're a gift to me.",
-        "Are you a cloud? Because you're floating through my mind all day.",
-        "Are you a melody? Because you're always stuck in my head.",
-        "Are you a flame? Because you're igniting my passion.",
-        "Are you a treasure map? Because I'm getting lost in your eyes.",
-        "Are you a cookie? Because you're irresistibly sweet.",
-        "Are you a feather? Because you're lightening up my day.",
-        "Are you a movie? Because you're always playing in my thoughts.",
-        "Are you a poet? Because you're speaking to my soul.",
-        "Are you a pond? Because you're so deep.",
-        "Are you a bubble? Because you make me feel light and happy.",
-        "Are you a rocket? Because you're blasting through my heart.",
-        "Are you a gem? Because you're precious to me.",
-        "Are you a bandage? Because you're healing my wounds.",
-        "Are you a drum? Because my heart beats for you.",
-        "Are you a clock? Because you're always ticking in my mind.",
-        "Are you a book? Because I can't put you down.",
-        "Are you a candle? Because you're setting my heart on fire.",
-        "Are you a dream? Because you're too good to be true.",
-        "Are you a fortress? Because you're protecting my heart.",
-        "Are you a comet? Because you're streaking through my universe.",
-        "Are you a potion? Because you're intoxicating.",
-        "Are you a typewriter? Because you're typing out love letters in my mind.",
-        "Are you a pearl? Because you're rare and beautiful.",
-        "Are you a ship? Because you're sailing into my heart.",
-        "Are you a forest? Because you're full of mysteries.",
-        "Are you a plane? Because you're flying high in my thoughts.",
-        "Are you a cupcake? Because you're sweet and irresistible.",
-        "Are you a dreamcatcher? Because you're catching all my dreams.",
-        "Are you a cloud? Because you're raining love on me.",
-        "Are you a diamond? Because you're shining bright in my life.",
-        "Are you a garden? Because you're blooming beautifully.",
-        "Are you a hug? Because I want to wrap my arms around you forever.",
-        "Are you a balloon? Because you're lifting my spirits.",
-        "Are you a telescope? Because you're showing me a whole new world.",
-        "Are you a mirror? Because you're reflecting all the beauty in the world.",
-        "Are you a coin? Because you're priceless to me.",
-        "Are you a rainbow? Because you're bringing color into my life.",
-        "Are you a breeze? Because you're refreshing my soul.",
-        "Are you a magnet? Because you're attracting me to you.",
-        "Are you a key? Because you're unlocking my heart.",
-        "Are you a photograph? Because you're capturing my heart in every shot.",
-        "Are you a wave? Because you're washing over me.",
-        "Are you a pen? Because you're writing love letters on my heart.",
-        "Are you a grape? Because you're crushing on me.",
-        "Are you a clock? Because you're keeping perfect time in my heart.",
-        "Are you a beacon? Because you're guiding me home.",
-        "Are you a melody? Because you're music to my ears.",
-        "Are you a puzzle? Because you're making me think of you.",
-        "Are you a whisper? Because you're filling my thoughts.",
-        "Are you a masterpiece? Because you're a work of art.",
-        "Are you a wave? Because you're crashing into me.",
-        "Are you a treasure chest? Because you're full of surprises.",
-        "Are you a match? Because you're lighting up my life.",
-        "Are you a forest? Because you're wild and untamed.",
-        "Are you a compass? Because you're guiding me in the right direction.",
-        "Are you a dream? Because you're making all my dreams come true.",
-        "Are you a comet? Because you're blazing a trail in my heart.",
-        "Are you a seed? Because you're planting love in my heart.",
-        "Are you a bridge? Because you're connecting me to new heights of love.",
-        "Are you a wave? Because you're making waves in my heart.",
-        "Are you a rainbow? Because you're brightening up my day.",
-        "Are you a mirror? Because you're reflecting all the beauty in the world.",
-        "Are you a magnet? Because you're attracting me to you.",
-        "Are you a key? Because you're unlocking my heart.",
-        "Are you a photograph? Because you're capturing my heart in every shot.",
-        "Are you a wave? Because you're washing over me.",
-        "Are you a pen? Because you're writing love letters on my heart.",
-        "Are you a grape? Because you're crushing on me.",
-        "Are you a clock? Because you're keeping perfect time in my heart.",
-        "Are you a beacon? Because you're guiding me home.",
-        "Are you a melody? Because you're music to my ears.",
-        "Are you a puzzle? Because you're making me think of you.",
-        "Are you a whisper? Because you're filling my thoughts.",
-        "Are you a masterpiece? Because you're a work of art.",
-        "Are you a wave? Because you're crashing into me.",
-        "Are you a treasure chest? Because you're full of surprises.",
-        "Are you a match? Because you're lighting up my life.",
-        "Are you a forest? Because you're wild and untamed.",
-        "Are you a compass? Because you're guiding me in the right direction.",
-        "Are you a dream? Because you're making all my dreams come true.",
-        "Are you a comet? Because you're blazing a trail in my heart.",
-        "Are you a seed? Because you're planting love in my heart.",
-        "Are you a bridge? Because you're connecting me to new heights of love.",
-        "Are you a wave? Because you're making waves in my heart.",
-        "Are you a rainbow? Because you're brightening up my day."
-    ];
+const pickupLines = [
+    "Are you made of copper and tellurium? Because you're Cu-Te.",
+    "Are you a carbon sample? Because I want to date you.",
+    "Are you made of helium? Because you make me feel like I'm floating.",
+    "Are you a star? Because you're illuminating.",
+    "Is your name Saturn? Because I feel a great attraction to you.",
+    "Are you a black hole? Because I can't escape your pull.",
+    "Are you a shooting star? Because you just caught my eye.",
+    "Are you a moon? Because I find you mesmerizing.",
+    "Are you a comet? Because you're out of this world.",
+    "Are you made of dark matter? Because I can't see you, but I know you're there.",
+    "Are you an astronaut? Because you've got the right stuff.",
+    "Are you the Sun? Because everything revolves around you.",
+    "Are you a supernova? Because you're exploding with beauty.",
+    "Are you a nebula? Because you're breathtaking.",
+    "Are you a rocket? Because you send me to new heights.",
+    "Are you a meteorite? Because you've left a big impression on me.",
+    "Are you a constellation? Because you light up my life.",
+    "Are you a telescope? Because I can't stop looking at you.",
+    "Are you a Wi-Fi signal? Because I'm really feeling a connection.",
+    "Are you a magician? Because whenever I look at you, everyone else disappears.",
+    "Are you a parking ticket? Because you've got 'FINE' written all over you.",
+    "Are you a dictionary? Because you're adding meaning to my life.",
+    "Are you a keyboard? Because you're just my type.",
+    "Are you a camera? Because every time I look at you, I smile.",
+    "Are you a bank loan? Because you have my interest.",
+    "Are you a firework? Because you light up my world.",
+    "Are you a diamond? Because you're priceless.",
+    "Are you a museum? Because you truly are a work of art.",
+    "Are you a rainbow? Because you add color to my life.",
+    "Are you a sunrise? Because you bring light to my darkest days.",
+    "Are you a sunset? Because you make every evening beautiful.",
+    "Are you a snowflake? Because you're one of a kind.",
+    "Are you a dream? Because you're too good to be true.",
+    "Are you a compass? Because you always point me in the right direction.",
+    "Are you a watch? Because every second with you is precious.",
+    "Are you a book? Because I can't put you down.",
+    "Are you a treasure map? Because I'm getting lost in your eyes.",
+    "Are you a melody? Because you're always stuck in my head.",
+    "Are you a cookie? Because you're irresistibly sweet."
+];
 
 const pickupLineDisplay = document.getElementById('pickup-line');
 const generateBtn = document.getElementById('generate-btn');
+const backgroundContainer = document.getElementById('background-animation');
+const heartEmojis = ['❤️', '💖', '💘', '💝', '💓', '💗', '💞', '✨', '💕'];
+const roseEmojis = ['🌹', '🌺', '🌸', '🌼', '🌻'];
+const confettiColors = ['#ff4d6d', '#ff8fa3', '#c9184a', '#ffc6d3', '#ffb3c6', '#ffdde1'];
 
-function generateRandomPickupLine() {
-    const randomIndex = Math.floor(Math.random() * pickupLines.length);
-    pickupLineDisplay.textContent = pickupLines[randomIndex];
-    pickupLineDisplay.classList.add('show');
-}
+let lastIndex = -1;
+let isTyping = false;
+let loveCount = 0;
 
-generateBtn.addEventListener('click', generateRandomPickupLine);
+// ============================================
+// CUSTOM CURSOR
+// ============================================
+const cursor = document.createElement('div');
+cursor.className = 'custom-cursor';
+document.body.appendChild(cursor);
 
-pickupLineDisplay.addEventListener('transitionend', () => {
-    pickupLineDisplay.classList.remove('show');
+let mouseX = 0, mouseY = 0;
+let cursorX = 0, cursorY = 0;
+
+document.addEventListener('mousemove', (e) => {
+    mouseX = e.clientX;
+    mouseY = e.clientY;
 });
 
-// Generate a random pickup line on page load
-generateRandomPickupLine();
+function updateCursor() {
+    cursorX += (mouseX - cursorX) * 0.1;
+    cursorY += (mouseY - cursorY) * 0.1;
+    cursor.style.left = cursorX + 'px';
+    cursor.style.top = cursorY + 'px';
+    requestAnimationFrame(updateCursor);
+}
+updateCursor();
+
+// ============================================
+// 3D CARD TILT EFFECT
+// ============================================
+const mainContainer = document.getElementById('main-container');
+let tiltEnabled = true;
+
+mainContainer.addEventListener('mousemove', (e) => {
+    if (!tiltEnabled || window.innerWidth <= 768) return;
+
+    const rect = mainContainer.getBoundingClientRect();
+    const x = e.clientX - rect.left;
+    const y = e.clientY - rect.top;
+
+    const centerX = rect.width / 2;
+    const centerY = rect.height / 2;
+
+    const rotateX = ((y - centerY) / centerY) * -10;
+    const rotateY = ((x - centerX) / centerX) * 10;
+
+    mainContainer.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg)`;
+});
+
+mainContainer.addEventListener('mouseleave', () => {
+    mainContainer.style.transform = 'perspective(1000px) rotateX(0deg) rotateY(0deg)';
+});
+
+// ============================================
+// LOVE COUNTER
+// ============================================
+const counterValue = document.getElementById('counter-value');
+
+function loadLoveCount() {
+    const saved = localStorage.getItem('valentineLoveCount');
+    if (saved) {
+        loveCount = parseInt(saved, 10);
+        counterValue.textContent = loveCount;
+    }
+}
+
+function incrementLoveCount() {
+    loveCount++;
+    counterValue.textContent = loveCount;
+    counterValue.classList.add('counter-increment');
+    setTimeout(() => counterValue.classList.remove('counter-increment'), 500);
+    localStorage.setItem('valentineLoveCount', loveCount);
+
+    // Trigger confetti on milestones
+    if (loveCount % 10 === 0) {
+        createConfettiBurst(window.innerWidth / 2, window.innerHeight / 2);
+    }
+}
+
+loadLoveCount();
+
+// ============================================
+// TYPING ANIMATION
+// ============================================
+async function typeText(text) {
+    if (isTyping) return;
+    isTyping = true;
+
+    pickupLineDisplay.innerHTML = '';
+    pickupLineDisplay.classList.add('show');
+
+    const typingCursor = document.createElement('span');
+    typingCursor.className = 'typing-cursor';
+
+    for (let i = 0; i < text.length; i++) {
+        await new Promise(resolve => setTimeout(resolve, 30));
+        pickupLineDisplay.textContent = text.substring(0, i + 1);
+        if (i === text.length - 1) {
+            pickupLineDisplay.appendChild(typingCursor);
+            setTimeout(() => typingCursor.remove(), 500);
+        }
+    }
+
+    isTyping = false;
+}
+
+function generateRandomPickupLine() {
+    if (isTyping) return;
+
+    let randomIndex;
+    do {
+        randomIndex = Math.floor(Math.random() * pickupLines.length);
+    } while (randomIndex === lastIndex && pickupLines.length > 1);
+
+    lastIndex = randomIndex;
+
+    pickupLineDisplay.classList.remove('show');
+
+    setTimeout(() => {
+        typeText(pickupLines[randomIndex]);
+    }, 300);
+
+    createBurst(window.innerWidth / 2, window.innerHeight / 2);
+    createSparkles(window.innerWidth / 2, window.innerHeight / 2);
+    incrementLoveCount();
+}
+
+// ============================================
+// FLOATING HEARTS
+// ============================================
+function createHeart(x, y, isBackground = false) {
+    const heart = document.createElement('div');
+    heart.classList.add('floating-heart');
+    heart.textContent = heartEmojis[Math.floor(Math.random() * heartEmojis.length)];
+
+    const size = Math.random() * (isBackground ? 25 : 35) + 15;
+    const duration = Math.random() * 3 + 4;
+    const startX = x || Math.random() * window.innerWidth;
+
+    heart.style.left = `${startX}px`;
+    heart.style.top = `${y || window.innerHeight}px`;
+    heart.style.fontSize = `${size}px`;
+    heart.style.animationDuration = `${duration}s`;
+
+    backgroundContainer.appendChild(heart);
+
+    setTimeout(() => heart.remove(), duration * 1000);
+}
+
+// ============================================
+// ROSE PETALS
+// ============================================
+function createRosePetal() {
+    const petal = document.createElement('div');
+    petal.classList.add('rose-petal');
+    petal.textContent = roseEmojis[Math.floor(Math.random() * roseEmojis.length)];
+
+    const startX = Math.random() * window.innerWidth;
+    const duration = Math.random() * 4 + 6;
+    const size = Math.random() * 15 + 20;
+
+    petal.style.left = `${startX}px`;
+    petal.style.top = '-50px';
+    petal.style.fontSize = `${size}px`;
+    petal.style.animationDuration = `${duration}s`;
+
+    backgroundContainer.appendChild(petal);
+
+    setTimeout(() => petal.remove(), duration * 1000);
+}
+
+// ============================================
+// HEART BURST
+// ============================================
+function createBurst(x, y) {
+    for (let i = 0; i < 20; i++) {
+        setTimeout(() => {
+            createHeart(
+                x + (Math.random() * 150 - 75),
+                y + (Math.random() * 150 - 75)
+            );
+        }, i * 40);
+    }
+}
+
+// ============================================
+// SPARKLES
+// ============================================
+function createSparkles(x, y) {
+    for (let i = 0; i < 12; i++) {
+        const sparkle = document.createElement('div');
+        sparkle.className = 'sparkle';
+
+        const angle = (Math.PI * 2 * i) / 12;
+        const distance = 50 + Math.random() * 50;
+        const sparkleX = x + Math.cos(angle) * distance;
+        const sparkleY = y + Math.sin(angle) * distance;
+
+        sparkle.style.left = sparkleX + 'px';
+        sparkle.style.top = sparkleY + 'px';
+
+        backgroundContainer.appendChild(sparkle);
+        setTimeout(() => sparkle.remove(), 1500);
+    }
+}
+
+// ============================================
+// CONFETTI
+// ============================================
+function createConfetti(x, y) {
+    const confetti = document.createElement('div');
+    confetti.className = 'confetti';
+
+    const color = confettiColors[Math.floor(Math.random() * confettiColors.length)];
+    confetti.style.backgroundColor = color;
+    confetti.style.left = x + (Math.random() * 100 - 50) + 'px';
+    confetti.style.top = y + 'px';
+    confetti.style.width = Math.random() * 10 + 5 + 'px';
+    confetti.style.height = Math.random() * 10 + 5 + 'px';
+
+    backgroundContainer.appendChild(confetti);
+    setTimeout(() => confetti.remove(), 3000);
+}
+
+function createConfettiBurst(x, y) {
+    for (let i = 0; i < 50; i++) {
+        setTimeout(() => createConfetti(x, y), i * 20);
+    }
+}
+
+// ============================================
+// MOUSE TRAIL
+// ============================================
+let lastTrailTime = 0;
+document.addEventListener('mousemove', (e) => {
+    const now = Date.now();
+    if (now - lastTrailTime > 100) {
+        lastTrailTime = now;
+
+        const particle = document.createElement('div');
+        particle.className = 'trail-particle';
+        particle.textContent = heartEmojis[Math.floor(Math.random() * heartEmojis.length)];
+
+        const tx = (Math.random() - 0.5) * 50;
+        const ty = (Math.random() - 0.5) * 50;
+
+        particle.style.left = e.clientX + 'px';
+        particle.style.top = e.clientY + 'px';
+        particle.style.setProperty('--tx', tx + 'px');
+        particle.style.setProperty('--ty', ty + 'px');
+
+        document.body.appendChild(particle);
+        setTimeout(() => particle.remove(), 1000);
+    }
+});
+
+// ============================================
+// RIPPLE EFFECT
+// ============================================
+generateBtn.addEventListener('click', (e) => {
+    const rect = generateBtn.getBoundingClientRect();
+    const ripple = document.createElement('span');
+    ripple.className = 'ripple';
+
+    const size = Math.max(rect.width, rect.height);
+    const x = e.clientX - rect.left - size / 2;
+    const y = e.clientY - rect.top - size / 2;
+
+    ripple.style.width = ripple.style.height = size + 'px';
+    ripple.style.left = x + 'px';
+    ripple.style.top = y + 'px';
+
+    generateBtn.appendChild(ripple);
+
+    setTimeout(() => ripple.remove(), 600);
+
+    generateRandomPickupLine();
+    createBurst(e.clientX, e.clientY);
+});
+
+// ============================================
+// KEYBOARD SHORTCUTS
+// ============================================
+const helpBtn = document.getElementById('help-btn');
+const keyboardHelp = document.getElementById('keyboard-help');
+const closeHelp = document.getElementById('close-help');
+
+helpBtn.addEventListener('click', () => {
+    keyboardHelp.classList.add('show');
+    keyboardHelp.setAttribute('aria-hidden', 'false');
+});
+
+closeHelp.addEventListener('click', () => {
+    keyboardHelp.classList.remove('show');
+    keyboardHelp.setAttribute('aria-hidden', 'true');
+});
+
+document.addEventListener('keydown', (e) => {
+    // Close help dialog with Escape
+    if (e.key === 'Escape' && keyboardHelp.classList.contains('show')) {
+        keyboardHelp.classList.remove('show');
+        keyboardHelp.setAttribute('aria-hidden', 'true');
+        return;
+    }
+
+    // Don't trigger shortcuts when help is open
+    if (keyboardHelp.classList.contains('show')) return;
+
+    // Generate pickup line with Space or Enter
+    if (e.key === ' ' || e.key === 'Enter') {
+        e.preventDefault();
+        generateBtn.click();
+    }
+
+    // Confetti burst with 'C'
+    if (e.key === 'c' || e.key === 'C') {
+        createConfettiBurst(window.innerWidth / 2, window.innerHeight / 2);
+    }
+});
+
+// ============================================
+// BACKGROUND ANIMATION INTERVALS
+// ============================================
+setInterval(() => createHeart(null, null, true), 400);
+setInterval(() => createRosePetal(), 800);
+
+// ============================================
+// INITIALIZE
+// ============================================
+pickupLineDisplay.innerHTML = '<span class="placeholder">Click the button for a surprise...</span>';
+pickupLineDisplay.classList.add('show');

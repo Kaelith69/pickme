@@ -1,76 +1,809 @@
+:root {
+    --primary-color: #ff4d6d;
+    --secondary-color: #ff8fa3;
+    --accent-color: #c9184a;
+    --background-start: #ffdde1;
+    --background-end: #ee9ca7;
+    --text-color: #590d22;
+    --white: #ffffff;
+    --shadow-color: rgba(255, 77, 109, 0.4);
+    --glow-color: rgba(255, 77, 109, 0.6);
+}
+
+* {
+    box-sizing: border-box;
+}
+
 body {
-    font-family: 'Arial', sans-serif; /* Corrected font-family property */
-    background-color: #000; /* Black background */
-    color: #f0f0f0; /* Light text for contrast */
+    font-family: 'Quicksand', sans-serif;
+    background: linear-gradient(135deg, var(--background-start), var(--background-end), #ffc6d3, #ffb3c6);
+    background-size: 400% 400%;
+    animation: gradientShift 15s ease infinite;
+    color: var(--text-color);
     display: flex;
     justify-content: center;
-    align-items: center; /* Added semicolon */
-    height: 100vh;
+    align-items: center;
+    min-height: 100vh;
     margin: 0;
-    overflow: hidden; 
+    overflow: hidden;
+    position: relative;
+    cursor: none;
 }
 
+@keyframes gradientShift {
+    0% {
+        background-position: 0% 50%;
+    }
 
-.container {
-    text-align: center;
-    padding: 30px;
-    border-radius: 12px;
-    box-shadow: 0 4px 10px rgba(255, 0, 0, 0.3); /* Red glow shadow */ 
-    background-color: rgba(0, 0, 0, 0.8); /* Semi-transparent black background */
-    backdrop-filter: blur(10px); /* Optional: Add a blur effect */
-}
+    50% {
+        background-position: 100% 50%;
+    }
 
-h1 {
-    font-size: 3rem;
-    margin-bottom: 20px;
-    color: #e0e0e0; /* Slightly off-white title */
-    text-shadow: 0 0 5px #ff0000; /* Red glow effect */
-    font-family: 'Great Vibes', cursive; /* Romantic font (optional) */ 
-}
-
-#pickup-line {
-    font-size: 1.8rem;
-    margin: 20px 0;
-    opacity: 0;
-    transition: opacity 1s ease-in-out;
-    color: #ff69b4; /* Hot pink color */
-    text-shadow: 0 0 3px #ff0000; /* Red glow effect */
-    font-family: 'Great Vibes', cursive; /* Romantic font (optional) */ 
-}
-
-#pickup-line.show {
-    opacity: 1;
-}
-
-button {
-    padding: 12px 24px;
-    background-color: #ff69b4; /* Hot pink button */
-    color: white;
-    border: none;
-    border-radius: 6px;
-    cursor: pointer;
-    transition: background-color 0.3s ease, transform 0.2s ease;
-    font-size: 1.2rem;
-    box-shadow: 0 2px 5px rgba(255, 0, 0, 0.3); /* Red glow shadow */
-    font-family: 'Great Vibes', cursive; /* Romantic font (optional) */
-}
-
-button:hover {
-    background-color: #ff1493; /* Darker pink on hover */
-    transform: scale(1.05);
-}
-
-button:before {
-    content: none;
-}
-
-@keyframes beat {
-    to {
-        transform: scale(1.1);
-        box-shadow: 0 4px 10px rgba(255, 0, 0, 0.6); /* More intense red glow */
+    100% {
+        background-position: 0% 50%;
     }
 }
 
-button:hover {
-    animation: beat 0.5s infinite alternate;
+/* Custom Cursor */
+.custom-cursor {
+    position: fixed;
+    width: 20px;
+    height: 20px;
+    border: 2px solid var(--primary-color);
+    border-radius: 50%;
+    pointer-events: none;
+    z-index: 9999;
+    transition: transform 0.1s ease;
+    mix-blend-mode: difference;
+}
+
+.custom-cursor::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 6px;
+    height: 6px;
+    background: var(--primary-color);
+    border-radius: 50%;
+}
+
+.background-animation {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: 0;
+    overflow: hidden;
+}
+
+.container {
+    text-align: center;
+    padding: 2.5rem 3.5rem;
+    background: rgba(255, 255, 255, 0.9);
+    backdrop-filter: blur(15px);
+    border-radius: 25px;
+    box-shadow:
+        0 15px 40px var(--shadow-color),
+        0 0 80px rgba(255, 77, 109, 0.2);
+    border: 2px solid rgba(255, 255, 255, 0.6);
+    z-index: 10;
+    max-width: 650px;
+    width: 90%;
+    position: relative;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.container:hover {
+    transform: translateY(-8px) scale(1.01);
+    box-shadow:
+        0 20px 50px var(--shadow-color),
+        0 0 100px rgba(255, 77, 109, 0.3);
+}
+
+h1.title {
+    font-family: 'Great Vibes', cursive;
+    font-size: 4.5rem;
+    margin: 0 0 1.5rem 0;
+    color: var(--accent-color);
+    text-shadow:
+        2px 2px 4px rgba(0, 0, 0, 0.1),
+        0 0 20px var(--glow-color);
+    animation: titleGlow 3s ease-in-out infinite;
+}
+
+@keyframes titleGlow {
+
+    0%,
+    100% {
+        text-shadow:
+            2px 2px 4px rgba(0, 0, 0, 0.1),
+            0 0 20px var(--glow-color);
+    }
+
+    50% {
+        text-shadow:
+            2px 2px 4px rgba(0, 0, 0, 0.1),
+            0 0 40px var(--glow-color),
+            0 0 60px rgba(255, 77, 109, 0.3);
+    }
+}
+
+.pickup-line {
+    font-size: 1.6rem;
+    line-height: 1.8;
+    min-height: 100px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 2rem;
+    font-weight: 500;
+    color: var(--text-color);
+    opacity: 0;
+    transition: opacity 0.3s ease-in-out;
+    position: relative;
+}
+
+.pickup-line.show {
+    opacity: 1;
+}
+
+.pickup-line .placeholder {
+    font-style: italic;
+    opacity: 0.7;
+    font-size: 1.3rem;
+}
+
+.pickup-line::after {
+    content: '';
+    position: absolute;
+    bottom: -10px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 0;
+    height: 2px;
+    background: linear-gradient(90deg, transparent, var(--primary-color), transparent);
+    transition: width 0.5s ease;
+}
+
+.pickup-line.show::after {
+    width: 80%;
+}
+
+.love-btn {
+    background: linear-gradient(45deg, var(--primary-color), var(--accent-color));
+    border: none;
+    border-radius: 50px;
+    padding: 1.2rem 3rem;
+    color: var(--white);
+    font-family: 'Pacifico', cursive;
+    font-size: 1.6rem;
+    cursor: none;
+    box-shadow:
+        0 8px 20px var(--shadow-color),
+        0 0 40px rgba(255, 77, 109, 0.2);
+    transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    display: inline-flex;
+    align-items: center;
+    gap: 12px;
+    position: relative;
+    overflow: visible;
+    animation: buttonPulse 2s ease-in-out infinite;
+}
+
+@keyframes buttonPulse {
+
+    0%,
+    100% {
+        transform: scale(1);
+        box-shadow:
+            0 8px 20px var(--shadow-color),
+            0 0 40px rgba(255, 77, 109, 0.2);
+    }
+
+    50% {
+        transform: scale(1.05);
+        box-shadow:
+            0 10px 25px var(--shadow-color),
+            0 0 60px rgba(255, 77, 109, 0.4);
+    }
+}
+
+.love-btn:hover {
+    transform: scale(1.1) !important;
+    box-shadow:
+        0 12px 30px var(--shadow-color),
+        0 0 80px rgba(255, 77, 109, 0.5) !important;
+    animation: none;
+}
+
+.love-btn:active {
+    transform: scale(0.95) !important;
+}
+
+.heart-icon {
+    font-size: 1.4rem;
+    transition: transform 0.3s ease;
+    display: inline-block;
+    animation: heartBeat 1.5s ease-in-out infinite;
+}
+
+@keyframes heartBeat {
+
+    0%,
+    100% {
+        transform: scale(1);
+    }
+
+    10%,
+    30% {
+        transform: scale(1.2);
+    }
+
+    20%,
+    40% {
+        transform: scale(1);
+    }
+}
+
+.love-btn:hover .heart-icon {
+    transform: scale(1.5) rotate(20deg);
+    animation: none;
+}
+
+/* Ripple Effect */
+.ripple {
+    position: absolute;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.6);
+    transform: scale(0);
+    animation: rippleEffect 0.6s ease-out;
+    pointer-events: none;
+}
+
+@keyframes rippleEffect {
+    to {
+        transform: scale(4);
+        opacity: 0;
+    }
+}
+
+/* Floating Hearts Animation */
+.floating-heart {
+    position: absolute;
+    color: var(--primary-color);
+    font-size: 1.5rem;
+    pointer-events: none;
+    animation: floatUp 5s ease-in forwards;
+    opacity: 0;
+    filter: drop-shadow(0 0 3px rgba(255, 77, 109, 0.5));
+}
+
+@keyframes floatUp {
+    0% {
+        transform: translateY(0) scale(0.3) rotate(0deg);
+        opacity: 0;
+    }
+
+    10% {
+        opacity: 1;
+    }
+
+    100% {
+        transform: translateY(-120vh) scale(1.5) rotate(720deg);
+        opacity: 0;
+    }
+}
+
+/* Rose Petals */
+.rose-petal {
+    position: absolute;
+    font-size: 2rem;
+    pointer-events: none;
+    animation: petalFall 8s linear forwards;
+    opacity: 0;
+}
+
+@keyframes petalFall {
+    0% {
+        transform: translateY(-10vh) translateX(0) rotate(0deg);
+        opacity: 0;
+    }
+
+    10% {
+        opacity: 1;
+    }
+
+    90% {
+        opacity: 0.8;
+    }
+
+    100% {
+        transform: translateY(110vh) translateX(100px) rotate(360deg);
+        opacity: 0;
+    }
+}
+
+/* Mouse Trail Particle */
+.trail-particle {
+    position: fixed;
+    pointer-events: none;
+    font-size: 1rem;
+    animation: trailFade 1s ease-out forwards;
+    z-index: 9998;
+}
+
+@keyframes trailFade {
+    0% {
+        transform: translate(0, 0) scale(1);
+        opacity: 1;
+    }
+
+    100% {
+        transform: translate(var(--tx), var(--ty)) scale(0);
+        opacity: 0;
+    }
+}
+
+/* Sparkle Effect */
+.sparkle {
+    position: absolute;
+    width: 4px;
+    height: 4px;
+    background: white;
+    border-radius: 50%;
+    pointer-events: none;
+    animation: sparkleAnimation 1.5s ease-out forwards;
+    box-shadow: 0 0 6px white;
+}
+
+@keyframes sparkleAnimation {
+    0% {
+        transform: scale(0) rotate(0deg);
+        opacity: 1;
+    }
+
+    100% {
+        transform: scale(2) rotate(180deg);
+        opacity: 0;
+    }
+}
+
+/* Typing Cursor */
+.typing-cursor {
+    display: inline-block;
+    width: 2px;
+    height: 1.4em;
+    background: var(--text-color);
+    margin-left: 3px;
+    animation: blink 1s step-end infinite;
+    vertical-align: middle;
+}
+
+@keyframes blink {
+
+    0%,
+    100% {
+        opacity: 1;
+    }
+
+    50% {
+        opacity: 0;
+    }
+}
+
+/* Love Counter */
+.love-counter {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    background: rgba(255, 255, 255, 0.9);
+    backdrop-filter: blur(10px);
+    border-radius: 15px;
+    padding: 15px 20px;
+    box-shadow: 0 5px 20px var(--shadow-color);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 5px;
+    z-index: 100;
+    transition: transform 0.3s ease;
+}
+
+.love-counter:hover {
+    transform: scale(1.05);
+}
+
+.counter-icon {
+    font-size: 2rem;
+    animation: heartBeat 1.5s ease-in-out infinite;
+}
+
+.counter-value {
+    font-size: 2rem;
+    font-weight: 700;
+    color: var(--accent-color);
+    font-family: 'Pacifico', cursive;
+}
+
+.counter-label {
+    font-size: 0.8rem;
+    color: var(--text-color);
+    opacity: 0.8;
+}
+
+.counter-increment {
+    animation: counterPop 0.5s ease-out;
+}
+
+@keyframes counterPop {
+    0% {
+        transform: scale(1);
+    }
+
+    50% {
+        transform: scale(1.3);
+    }
+
+    100% {
+        transform: scale(1);
+    }
+}
+
+/* Help Button */
+.help-btn {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.9);
+    border: none;
+    font-size: 1.5rem;
+    cursor: pointer;
+    box-shadow: 0 3px 10px var(--shadow-color);
+    transition: all 0.3s ease;
+    z-index: 100;
+}
+
+.help-btn:hover {
+    transform: scale(1.1);
+    box-shadow: 0 5px 15px var(--shadow-color);
+}
+
+.help-btn:focus {
+    outline: 3px solid var(--primary-color);
+    outline-offset: 2px;
+}
+
+/* Keyboard Help Dialog */
+.keyboard-help {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%) scale(0);
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(15px);
+    border-radius: 20px;
+    padding: 30px;
+    box-shadow: 0 10px 40px var(--shadow-color);
+    z-index: 1000;
+    max-width: 400px;
+    width: 90%;
+    transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275), opacity 0.3s ease;
+    opacity: 0;
+}
+
+.keyboard-help.show {
+    transform: translate(-50%, -50%) scale(1);
+    opacity: 1;
+}
+
+.keyboard-help h3 {
+    margin: 0 0 20px 0;
+    color: var(--accent-color);
+    font-family: 'Pacifico', cursive;
+    font-size: 1.8rem;
+}
+
+.keyboard-help ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.keyboard-help li {
+    padding: 10px 0;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+.keyboard-help li:last-child {
+    border-bottom: none;
+}
+
+.keyboard-help kbd {
+    background: var(--primary-color);
+    color: white;
+    padding: 4px 8px;
+    border-radius: 5px;
+    font-family: 'Courier New', monospace;
+    font-size: 0.9rem;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.close-help {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background: none;
+    border: none;
+    font-size: 1.5rem;
+    cursor: pointer;
+    color: var(--accent-color);
+    transition: transform 0.2s ease;
+}
+
+.close-help:hover {
+    transform: rotate(90deg);
+}
+
+.close-help:focus {
+    outline: 2px solid var(--primary-color);
+    outline-offset: 2px;
+}
+
+/* Confetti Particle */
+.confetti {
+    position: absolute;
+    width: 10px;
+    height: 10px;
+    pointer-events: none;
+    animation: confettiFall 3s linear forwards;
+}
+
+@keyframes confettiFall {
+    0% {
+        transform: translateY(0) rotate(0deg);
+        opacity: 1;
+    }
+
+    100% {
+        transform: translateY(100vh) rotate(720deg);
+        opacity: 0;
+    }
+}
+
+/* 3D Card Tilt Effect */
+.container {
+    transition: transform 0.1s ease-out;
+    transform-style: preserve-3d;
+    will-change: transform;
+}
+
+/* Enhanced Focus States for Accessibility */
+button:focus-visible,
+.help-btn:focus-visible,
+.close-help:focus-visible {
+    outline: 3px solid var(--primary-color);
+    outline-offset: 3px;
+}
+
+.love-btn:focus-visible {
+    outline: 3px solid white;
+    outline-offset: 3px;
+}
+
+
+/* ===================================
+   RESPONSIVE DESIGN - MOBILE & TABLET
+   =================================== */
+
+/* Tablet Styles (768px - 1024px) */
+@media screen and (max-width: 1024px) {
+    .container {
+        padding: 2rem 2.5rem;
+        max-width: 550px;
+    }
+
+    h1.title {
+        font-size: 3.5rem;
+    }
+
+    .pickup-line {
+        font-size: 1.4rem;
+        min-height: 90px;
+    }
+
+    .love-btn {
+        font-size: 1.4rem;
+        padding: 1rem 2.5rem;
+    }
+}
+
+/* Mobile Landscape (max-width: 768px) */
+@media screen and (max-width: 768px) {
+    body {
+        cursor: auto;
+        /* Show default cursor on mobile */
+    }
+
+    .custom-cursor {
+        display: none;
+        /* Hide custom cursor on mobile */
+    }
+
+    .container {
+        padding: 1.5rem 2rem;
+        max-width: 90%;
+        border-radius: 20px;
+    }
+
+    h1.title {
+        font-size: 3rem;
+        margin-bottom: 1rem;
+    }
+
+    .pickup-line {
+        font-size: 1.3rem;
+        min-height: 80px;
+        margin-bottom: 1.5rem;
+        line-height: 1.6;
+    }
+
+    .pickup-line .placeholder {
+        font-size: 1.1rem;
+    }
+
+    .love-btn {
+        font-size: 1.3rem;
+        padding: 0.9rem 2rem;
+    }
+
+    .heart-icon {
+        font-size: 1.2rem;
+    }
+
+    /* Reduce particle frequency on mobile for performance */
+    .trail-particle {
+        display: none;
+        /* Disable mouse trail on mobile */
+    }
+}
+
+/* Mobile Portrait (max-width: 480px) */
+@media screen and (max-width: 480px) {
+    .container {
+        padding: 1.5rem;
+        width: 95%;
+        max-width: 95%;
+        border-radius: 15px;
+    }
+
+    h1.title {
+        font-size: 2.5rem;
+        margin-bottom: 1rem;
+    }
+
+    .pickup-line {
+        font-size: 1.1rem;
+        min-height: 70px;
+        margin-bottom: 1.2rem;
+        padding: 0 0.5rem;
+    }
+
+    .pickup-line .placeholder {
+        font-size: 1rem;
+    }
+
+    .love-btn {
+        font-size: 1.2rem;
+        padding: 0.8rem 1.8rem;
+        gap: 8px;
+    }
+
+    .heart-icon {
+        font-size: 1.1rem;
+    }
+
+    /* Smaller floating elements on mobile */
+    .floating-heart {
+        font-size: 1.2rem;
+    }
+
+    .rose-petal {
+        font-size: 1.5rem;
+    }
+
+    /* Reduce animation intensity */
+    @keyframes floatUp {
+        0% {
+            transform: translateY(0) scale(0.3) rotate(0deg);
+            opacity: 0;
+        }
+
+        10% {
+            opacity: 1;
+        }
+
+        100% {
+            transform: translateY(-80vh) scale(1.2) rotate(360deg);
+            opacity: 0;
+        }
+    }
+
+    @keyframes petalFall {
+        0% {
+            transform: translateY(-10vh) translateX(0) rotate(0deg);
+            opacity: 0;
+        }
+
+        10% {
+            opacity: 1;
+        }
+
+        90% {
+            opacity: 0.6;
+        }
+
+        100% {
+            transform: translateY(110vh) translateX(50px) rotate(180deg);
+            opacity: 0;
+        }
+    }
+}
+
+/* Small Mobile (max-width: 360px) */
+@media screen and (max-width: 360px) {
+    .container {
+        padding: 1rem;
+    }
+
+    h1.title {
+        font-size: 2rem;
+        margin-bottom: 0.8rem;
+    }
+
+    .pickup-line {
+        font-size: 1rem;
+        min-height: 60px;
+        margin-bottom: 1rem;
+    }
+
+    .pickup-line .placeholder {
+        font-size: 0.9rem;
+    }
+
+    .love-btn {
+        font-size: 1.1rem;
+        padding: 0.7rem 1.5rem;
+    }
+
+    .heart-icon {
+        font-size: 1rem;
+    }
+}
+
+/* Touch device optimization */
+@media (hover: none) and (pointer: coarse) {
+    .love-btn:hover {
+        transform: scale(1) !important;
+    }
+
+    .love-btn:active {
+        transform: scale(0.95) !important;
+    }
+
+    /* Disable hover-dependent animations */
+    .container:hover {
+        transform: none;
+    }
+
+    .love-btn:hover .heart-icon {
+        transform: scale(1);
+        animation: heartBeat 1.5s ease-in-out infinite;
+    }
 }

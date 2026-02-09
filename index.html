@@ -1,18 +1,54 @@
-
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Hey Girl</title>
+    <title>Be My Valentine?</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Great+Vibes&family=Pacifico&family=Quicksand:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet">
     <link rel="stylesheet" href="styles.css">
 </head>
+
 <body>
-    <main class="container"> 
-        <h1>Hey Darling!</h1>
-        <div id="pickup-line" class="pickup-line" aria-live="polite"></div>
-        <button id="generate-btn" aria-label="Generate Pickup Line">Generate</button>
+    <div class="background-animation" id="background-animation"></div>
+
+    <!-- Love Counter -->
+    <div class="love-counter" id="love-counter" role="status" aria-live="polite">
+        <div class="counter-icon">💕</div>
+        <div class="counter-value" id="counter-value">0</div>
+        <div class="counter-label">Love Clicks</div>
+    </div>
+
+    <!-- Keyboard Shortcuts Help -->
+    <button class="help-btn" id="help-btn" aria-label="Show keyboard shortcuts" title="Keyboard Shortcuts">
+        <span>⌨️</span>
+    </button>
+
+    <div class="keyboard-help" id="keyboard-help" role="dialog" aria-hidden="true">
+        <h3>Keyboard Shortcuts</h3>
+        <ul>
+            <li><kbd>Space</kbd> or <kbd>Enter</kbd> - Generate pickup line</li>
+            <li><kbd>C</kbd> - Confetti burst</li>
+            <li><kbd>Esc</kbd> - Close help</li>
+        </ul>
+        <button class="close-help" id="close-help" aria-label="Close help">✕</button>
+    </div>
+
+    <main class="container" id="main-container" role="main">
+        <h1 class="title">Hey Darling!</h1>
+        <div id="pickup-line" class="pickup-line" aria-live="polite" aria-atomic="true">
+            <span class="placeholder">Click the button for a surprise...</span>
+        </div>
+        <button id="generate-btn" class="love-btn" aria-label="Generate a romantic pickup line">
+            <span class="btn-text">Send Love</span>
+            <span class="heart-icon" aria-hidden="true">❤️</span>
+        </button>
     </main>
     <script src="script.js"></script>
 </body>
+
 </html>
