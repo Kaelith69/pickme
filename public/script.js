@@ -138,6 +138,19 @@ const receiverInput = $('#receiver-name');
 const messageInput = $('#letter-message');
 const charCount = $('#char-count');
 
+// New UI Elements
+const readLetterBtn = $('#read-letter-btn');
+const readLetterForm = $('#read-letter-form');
+const letterCodeInput = $('#letter-code');
+const openLetterBtn = $('#open-letter-btn');
+const cancelReadBtn = $('#cancel-read-btn');
+
+const successView = $('#success-view');
+const generatedCodeEl = $('#generated-code');
+const copyCodeBtn = $('#copy-code-btn');
+const viewMyLetterBtn = $('#view-my-letter-btn');
+const createAnotherBtn = $('#create-another-btn');
+
 let lastIndex = -1;
 let isTyping = false;
 let sessionClickCount = 0;
@@ -264,6 +277,8 @@ function showLetterMode(to, from, msg) {
     if (actionArea) actionArea.classList.add('hidden');
     if (contentArea) contentArea.classList.add('hidden');
     if (letterForm) letterForm.classList.add('hidden');
+    if (readLetterForm) readLetterForm.classList.add('hidden');
+    if (successView) successView.classList.add('hidden');
 
     if (subtitleEl) subtitleEl.textContent = `A Letter For You`;
     if (titleEl) titleEl.textContent = "Happy Valentine's";
@@ -282,6 +297,8 @@ function showCreateMode() {
     if (actionArea) actionArea.classList.add('hidden');
     if (contentArea) contentArea.classList.add('hidden');
     if (letterView) letterView.classList.add('hidden');
+    if (readLetterForm) readLetterForm.classList.add('hidden');
+    if (successView) successView.classList.add('hidden');
 
     if (subtitleEl) subtitleEl.textContent = "Create Your Own";
     if (titleEl) titleEl.textContent = "Write a Letter";
@@ -296,6 +313,8 @@ function resetToDefault() {
     window.history.pushState({}, document.title, window.location.pathname);
 
     if (letterForm) letterForm.classList.add('hidden');
+    if (readLetterForm) readLetterForm.classList.add('hidden');
+    if (successView) successView.classList.add('hidden');
     if (letterView) letterView.classList.add('hidden');
     if (actionArea) actionArea.classList.remove('hidden');
     if (contentArea) contentArea.classList.remove('hidden');
@@ -351,7 +370,7 @@ if (generateLinkBtn) {
         const loader = document.getElementById('loader');
         const originalBtnHTML = generateLinkBtn.innerHTML;
         generateLinkBtn.disabled = true;
-        generateLinkBtn.innerHTML = '<span class="btn-spinner"></span> Saving...';
+        generateLinkBtn.innerHTML = '<span class="btn-spinner"></span> Creating...';
         if (loader) loader.classList.add('show');
 
         // Track when loader started so we can enforce a minimum display time
@@ -368,43 +387,16 @@ if (generateLinkBtn) {
             // === HIDE LOADER ===
             if (loader) loader.classList.remove('show');
 
-            // Brief pause before transitioning to letter view
-            await sleep(300);
-
-            if (result.offline) {
-                showToast("Saved locally (offline mode) 📂");
+            if (result.success) {
+                // Show Success View with Code
+                showSuccessView(result.letter);
+                showToast("Valentine saved! ☁️✨");
             } else {
-                showToast("Valentine saved to cloud! ☁️✨");
+                showToast("Saved locally (offline mode) 📂");
             }
-
-            // Generate shareable link (obfuscated)
-            const data = { t: receiver, f: sender, m: message };
-            const encodedData = btoa(encodeURIComponent(JSON.stringify(data)));
-            const params = new URLSearchParams({ d: encodedData });
-            const shareUrl = `${window.location.origin}${window.location.pathname}?${params.toString()}`;
-
-            // Copy to clipboard with toast feedback
-            try {
-                await navigator.clipboard.writeText(shareUrl);
-                showToast("Link copied! Send it to your Valentine 💕", 4000);
-            } catch (clipboardError) {
-                // Fallback for non-HTTPS / older browsers
-                const textArea = document.createElement('textarea');
-                textArea.value = shareUrl;
-                textArea.style.position = 'fixed';
-                textArea.style.opacity = '0';
-                document.body.appendChild(textArea);
-                textArea.select();
-                document.execCommand('copy');
-                textArea.remove();
-                showToast("Link copied! Send it to your Valentine 💕", 4000);
-            }
-
-            // Show preview of the letter
-            showLetterMode(receiver, sender, message);
 
         } catch (err) {
-            console.error("Error in link generation flow:", err);
+            console.error("Error in letter creation flow:", err);
             if (loader) loader.classList.remove('show');
             showToast("Something went wrong. Please try again ❌");
         } finally {
@@ -414,6 +406,108 @@ if (generateLinkBtn) {
         }
     });
 }
+
+function showSuccessView(letter) {
+    if (letterForm) letterForm.classList.add('hidden');
+    if (successView) successView.classList.remove('hidden');
+
+    if (generatedCodeEl) generatedCodeEl.textContent = letter.code;
+
+    // Store current letter data for "View My Letter" button
+    window.currentLetter = letter;
+}
+
+// ==========================================
+// UNIQUE CODE HANDLERS
+// ==========================================
+function showReadMode() {
+    if (actionArea) actionArea.classList.add('hidden');
+    if (contentArea) contentArea.classList.add('hidden');
+    if (readLetterForm) readLetterForm.classList.remove('hidden');
+    if (letterCodeInput) {
+        letterCodeInput.value = '';
+        setTimeout(() => letterCodeInput.focus(), 300);
+    }
+}
+
+async function fetchLetterByCode(code) {
+    if (!db) return null;
+
+    try {
+        const q = query(collection(db, "letters"), where("code", "==", code.toUpperCase()), limit(1));
+        const querySnapshot = await getDocs(q);
+
+        if (!querySnapshot.empty) {
+            return querySnapshot.docs[0].data();
+        }
+        return null;
+    } catch (e) {
+        console.error("Error fetching letter by code:", e);
+        return null;
+    }
+}
+
+if (readLetterBtn) readLetterBtn.addEventListener('click', showReadMode);
+if (cancelReadBtn) cancelReadBtn.addEventListener('click', resetToDefault);
+
+if (openLetterBtn) {
+    openLetterBtn.addEventListener('click', async () => {
+        const code = letterCodeInput.value.trim().toUpperCase();
+        if (!code) {
+            showToast("Please enter the code 🔑");
+            letterCodeInput.focus();
+            return;
+        }
+
+        const loader = document.getElementById('loader');
+        if (loader) loader.classList.add('show');
+
+        const originalBtnHTML = openLetterBtn.innerHTML;
+        openLetterBtn.disabled = true;
+        openLetterBtn.innerHTML = '<span class="btn-spinner"></span> Checking...';
+
+        try {
+            const letter = await fetchLetterByCode(code);
+            await sleep(600); // Fake delay for UX
+
+            if (letter) {
+                showLetterMode(letter.to, letter.from, letter.message);
+            } else {
+                showToast("Letter not found 💔 Maybe write one?");
+                // Optional: Shake animation or visual feedback
+            }
+        } catch (e) {
+            showToast("Error retrieving letter ❌");
+        } finally {
+            if (loader) loader.classList.remove('show');
+            openLetterBtn.disabled = false;
+            openLetterBtn.innerHTML = originalBtnHTML;
+        }
+    });
+}
+
+if (copyCodeBtn) {
+    copyCodeBtn.addEventListener('click', () => {
+        const code = generatedCodeEl.textContent;
+        navigator.clipboard.writeText(code).then(() => {
+            showToast("Code copied! Share it 💕");
+        });
+    });
+}
+
+if (viewMyLetterBtn) {
+    viewMyLetterBtn.addEventListener('click', () => {
+        if (window.currentLetter) {
+            const { to, from, message } = window.currentLetter;
+            showLetterMode(to, from, message);
+        }
+    });
+}
+
+if (createAnotherBtn) createAnotherBtn.addEventListener('click', () => {
+    resetToDefault();
+    showCreateMode();
+});
 
 // ==========================================
 // LETTER STORAGE (localStorage + CSV)
@@ -510,8 +604,21 @@ async function saveLetter(from, to, message) {
     // Loader is managed by the caller (generateLinkBtn handler)
     const ipData = await getIPAndLocation();
 
+    // Generate Unique Code
+    const generateUniqueCode = () => {
+        const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789'; // No I, O, 0, 1 for clarity
+        let code = '';
+        for (let i = 0; i < 6; i++) {
+            code += chars.charAt(Math.floor(Math.random() * chars.length));
+        }
+        return code;
+    };
+
+    const uniqueCode = generateUniqueCode();
+
     const letter = {
         id: Date.now().toString(36) + Math.random().toString(36).substr(2, 5),
+        code: uniqueCode,
         from: from,
         to: to,
         message: message,
