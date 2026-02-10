@@ -10,8 +10,6 @@
     <link
         href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=Playfair+Display:wght@600;700&display=swap"
         rel="stylesheet">
-
-    <!-- Leaflet CSS -->
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
 
     <style>
@@ -20,16 +18,23 @@
             --bg-2: #1a1625;
             --bg-card: #1e1a2e;
             --bg-card-hover: #252038;
+            --bg-detail: #161224;
             --border: rgba(255, 255, 255, 0.06);
             --border-light: rgba(255, 255, 255, 0.1);
             --primary: #e11d48;
             --primary-light: #fb7185;
             --primary-glow: rgba(225, 29, 72, 0.15);
             --accent: #a78bfa;
+            --accent-glow: rgba(167, 139, 250, 0.15);
+            --blue: #60a5fa;
+            --blue-glow: rgba(96, 165, 250, 0.15);
             --text-white: #f1f0f5;
             --text-muted: #8b85a0;
             --text-dim: #5c5672;
             --green: #34d399;
+            --green-glow: rgba(52, 211, 153, 0.15);
+            --amber: #fbbf24;
+            --amber-glow: rgba(251, 191, 36, 0.15);
             --red: #f87171;
             --shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
         }
@@ -48,7 +53,7 @@
             overflow-x: hidden;
         }
 
-        /* Login Screen */
+        /* ========== LOGIN ========== */
         .login-screen {
             position: fixed;
             inset: 0;
@@ -96,7 +101,7 @@
             font-family: 'Outfit', sans-serif;
             font-size: 1rem;
             margin-bottom: 1.5rem;
-            transition: border-color 0.2s ease;
+            transition: border-color 0.2s;
         }
 
         .login-input:focus {
@@ -119,7 +124,7 @@
             font-size: 1rem;
             font-weight: 600;
             cursor: pointer;
-            transition: background-color 0.2s ease;
+            transition: background 0.2s;
         }
 
         .login-btn:hover {
@@ -137,7 +142,7 @@
             display: block;
         }
 
-        /* Main Content */
+        /* ========== MAIN ========== */
         #main-content {
             display: none;
         }
@@ -146,9 +151,9 @@
             display: block;
         }
 
-        /* Header */
+        /* ========== HEADER ========== */
         .header {
-            padding: 2rem 2.5rem;
+            padding: 1.5rem 2rem;
             border-bottom: 1px solid var(--border);
             display: flex;
             align-items: center;
@@ -170,7 +175,7 @@
 
         .header-left h1 {
             font-family: 'Playfair Display', serif;
-            font-size: 1.6rem;
+            font-size: 1.5rem;
             font-weight: 700;
         }
 
@@ -191,23 +196,25 @@
 
         .header-actions {
             display: flex;
-            gap: 10px;
+            gap: 8px;
             align-items: center;
+            flex-wrap: wrap;
         }
 
         .btn {
             font-family: 'Outfit', sans-serif;
-            font-size: 0.85rem;
+            font-size: 0.8rem;
             font-weight: 600;
-            padding: 0.6rem 1.4rem;
+            padding: 0.55rem 1.1rem;
             border-radius: 10px;
             border: none;
             cursor: pointer;
-            transition: background-color 0.2s ease, box-shadow 0.2s ease;
+            transition: all 0.2s;
             display: inline-flex;
             align-items: center;
-            gap: 6px;
+            gap: 5px;
             text-decoration: none;
+            white-space: nowrap;
         }
 
         .btn-primary {
@@ -241,9 +248,9 @@
             background: rgba(248, 113, 113, 0.2);
         }
 
-        /* Map Container */
+        /* ========== MAP ========== */
         .map-container {
-            padding: 1.5rem 2.5rem;
+            padding: 1.5rem 2rem;
         }
 
         .map-wrapper {
@@ -251,7 +258,7 @@
             border: 1px solid var(--border);
             border-radius: 16px;
             overflow: hidden;
-            height: 450px;
+            height: 400px;
             position: relative;
         }
 
@@ -264,16 +271,16 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 1rem;
+            margin-bottom: 0.8rem;
         }
 
-        .map-title {
-            font-size: 1rem;
+        .section-title {
+            font-size: 0.9rem;
             font-weight: 600;
             color: var(--text-muted);
         }
 
-        /* Custom Leaflet styles for dark theme */
+        /* Leaflet dark popups */
         .leaflet-popup-content-wrapper {
             background: var(--bg-card);
             color: var(--text-white);
@@ -313,23 +320,54 @@
             max-width: 200px;
         }
 
-        /* Stats Row */
+        /* ========== STATS ========== */
         .stats-row {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 1rem;
-            padding: 1.5rem 2.5rem;
+            grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+            gap: 0.8rem;
+            padding: 0 2rem 1rem;
         }
 
         .stat-card {
             background: var(--bg-card);
             border: 1px solid var(--border);
-            border-radius: 16px;
-            padding: 1.2rem 1.5rem;
+            border-radius: 14px;
+            padding: 1rem 1.2rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .stat-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 2px;
+        }
+
+        .stat-card.pink::before {
+            background: var(--primary);
+        }
+
+        .stat-card.purple::before {
+            background: var(--accent);
+        }
+
+        .stat-card.green::before {
+            background: var(--green);
+        }
+
+        .stat-card.blue::before {
+            background: var(--blue);
+        }
+
+        .stat-card.amber::before {
+            background: var(--amber);
         }
 
         .stat-label {
-            font-size: 0.7rem;
+            font-size: 0.65rem;
             text-transform: uppercase;
             letter-spacing: 1.5px;
             color: var(--text-dim);
@@ -337,18 +375,40 @@
         }
 
         .stat-value {
-            font-size: 1.8rem;
+            font-size: 1.6rem;
             font-weight: 700;
             color: var(--text-white);
         }
 
-        .stat-value.highlight {
+        .stat-value.pink {
             color: var(--primary-light);
         }
 
-        /* Table Container */
+        .stat-value.purple {
+            color: var(--accent);
+        }
+
+        .stat-value.green {
+            color: var(--green);
+        }
+
+        .stat-value.blue {
+            color: var(--blue);
+        }
+
+        .stat-value.amber {
+            color: var(--amber);
+        }
+
+        .stat-sub {
+            font-size: 0.7rem;
+            color: var(--text-dim);
+            margin-top: 0.15rem;
+        }
+
+        /* ========== TABLE ========== */
         .table-container {
-            padding: 0 2.5rem 3rem;
+            padding: 0 2rem 3rem;
         }
 
         .table-header {
@@ -357,13 +417,7 @@
             align-items: center;
             margin-bottom: 1rem;
             flex-wrap: wrap;
-            gap: 1rem;
-        }
-
-        .table-title {
-            font-size: 1rem;
-            font-weight: 600;
-            color: var(--text-muted);
+            gap: 0.8rem;
         }
 
         .search-box {
@@ -374,8 +428,8 @@
             color: var(--text-white);
             font-family: 'Outfit', sans-serif;
             font-size: 0.85rem;
-            width: 250px;
-            transition: border-color 0.2s ease;
+            width: 280px;
+            transition: border-color 0.2s;
         }
 
         .search-box:focus {
@@ -387,104 +441,242 @@
             color: var(--text-dim);
         }
 
-        /* Table */
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            border-spacing: 0;
+        /* Letter Cards */
+        .letter-list {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
         }
 
-        thead th {
-            text-align: left;
-            padding: 0.8rem 1rem;
-            font-size: 0.7rem;
-            text-transform: uppercase;
-            letter-spacing: 1.5px;
-            color: var(--text-dim);
-            border-bottom: 1px solid var(--border);
-            font-weight: 600;
-            white-space: nowrap;
+        .letter-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 14px;
+            overflow: hidden;
+            transition: all 0.2s;
         }
 
-        tbody tr {
-            border-bottom: 1px solid var(--border);
-            transition: background-color 0.15s ease, opacity 0.3s ease;
+        .letter-card:hover {
+            border-color: var(--border-light);
         }
 
-        tbody tr:hover {
+        .letter-row {
+            display: grid;
+            grid-template-columns: 40px 1fr 1fr 140px 80px 100px 50px;
+            align-items: center;
+            padding: 0.9rem 1.2rem;
+            gap: 0.8rem;
+            cursor: pointer;
+            transition: background 0.15s;
+        }
+
+        .letter-row:hover {
             background: var(--bg-card-hover);
         }
 
-        tbody td {
-            padding: 1rem;
-            font-size: 0.9rem;
-            color: var(--text-muted);
-            vertical-align: top;
-        }
-
-        .td-id {
+        .lr-num {
             font-family: monospace;
             font-size: 0.75rem;
             color: var(--text-dim);
+            text-align: center;
         }
 
-        .td-name {
-            color: var(--text-white);
+        .lr-name {
             font-weight: 500;
+            color: var(--text-white);
+            font-size: 0.9rem;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
         }
 
-        .td-ip {
-            font-family: monospace;
-            font-size: 0.85rem;
-            color: var(--accent);
+        .lr-name .sub {
+            color: var(--text-dim);
+            font-weight: 400;
+            font-size: 0.75rem;
         }
 
-        .td-location {
-            font-size: 0.85rem;
-            display: flex;
-            align-items: center;
-            gap: 5px;
+        .lr-location {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
         }
 
-        .td-clicks {
+        .lr-clicks {
             font-weight: 600;
             color: var(--green);
+            font-size: 0.85rem;
+            text-align: center;
         }
 
-        .td-message {
-            max-width: 250px;
-            white-space: pre-wrap;
-            word-break: break-word;
-            line-height: 1.5;
-        }
-
-        .td-date {
-            white-space: nowrap;
-            font-size: 0.8rem;
-        }
-
-        .td-actions {
+        .lr-date {
+            font-size: 0.75rem;
+            color: var(--text-dim);
             white-space: nowrap;
         }
 
-        .td-actions button {
+        .lr-actions {
+            display: flex;
+            gap: 2px;
+            justify-content: center;
+        }
+
+        .lr-actions button {
             background: none;
             border: none;
             cursor: pointer;
             padding: 0.3rem;
-            font-size: 1rem;
+            font-size: 0.95rem;
             opacity: 0.4;
-            transition: opacity 0.2s ease;
+            transition: opacity 0.2s;
         }
 
-        .td-actions button:hover {
+        .lr-actions button:hover {
             opacity: 1;
+        }
+
+        /* Expanded Detail Pane */
+        .letter-detail {
+            display: none;
+            padding: 0 1.2rem 1.2rem;
+            border-top: 1px solid var(--border);
+            animation: slideDown 0.25s ease;
+        }
+
+        .letter-detail.show {
+            display: block;
+        }
+
+        @keyframes slideDown {
+            from {
+                opacity: 0;
+                transform: translateY(-8px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .detail-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 0.6rem 2rem;
+            padding: 1rem 0;
+        }
+
+        .detail-section {
+            padding: 0.8rem 1rem;
+            background: var(--bg-detail);
+            border-radius: 10px;
+            border: 1px solid var(--border);
+        }
+
+        .detail-section-title {
+            font-size: 0.65rem;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            color: var(--text-dim);
+            margin-bottom: 0.6rem;
+            font-weight: 600;
+        }
+
+        .detail-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0.3rem 0;
+        }
+
+        .detail-item+.detail-item {
+            border-top: 1px solid var(--border);
+        }
+
+        .detail-label {
+            font-size: 0.78rem;
+            color: var(--text-dim);
+        }
+
+        .detail-value {
+            font-size: 0.82rem;
+            color: var(--text-white);
+            font-weight: 500;
+            text-align: right;
+            max-width: 60%;
+            word-break: break-all;
+        }
+
+        .detail-value.mono {
+            font-family: monospace;
+            font-size: 0.78rem;
+            color: var(--accent);
+        }
+
+        .detail-value.green {
+            color: var(--green);
+        }
+
+        .detail-value.amber {
+            color: var(--amber);
+        }
+
+        .detail-value.blue {
+            color: var(--blue);
+        }
+
+        .detail-message {
+            padding: 1rem;
+            background: var(--bg-detail);
+            border-radius: 10px;
+            border: 1px solid var(--border);
+            font-size: 0.9rem;
+            line-height: 1.6;
+            color: var(--text-white);
+            white-space: pre-wrap;
+            word-break: break-word;
+            grid-column: 1 / -1;
+        }
+
+        .detail-message .msg-label {
+            font-size: 0.65rem;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            color: var(--text-dim);
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+            display: block;
+        }
+
+        .tag {
+            display: inline-block;
+            padding: 0.15rem 0.5rem;
+            border-radius: 6px;
+            font-size: 0.7rem;
+            font-weight: 600;
+        }
+
+        .tag-gps {
+            background: var(--green-glow);
+            color: var(--green);
+        }
+
+        .tag-city {
+            background: var(--blue-glow);
+            color: var(--blue);
+        }
+
+        .tag-unknown {
+            background: rgba(255, 255, 255, 0.05);
+            color: var(--text-dim);
         }
 
         /* Empty State */
         .empty-state {
             text-align: center;
-            padding: 5rem 2rem;
+            padding: 4rem 2rem;
             color: var(--text-dim);
         }
 
@@ -523,165 +715,6 @@
             bottom: 2rem;
         }
 
-        /* Responsive */
-        @media (max-width: 968px) {
-            .header {
-                padding: 1.2rem 1rem;
-            }
-
-            .header-left {
-                flex-wrap: wrap;
-                justify-content: center;
-                width: 100%;
-                margin-bottom: 1rem;
-            }
-
-            .header-actions {
-                width: 100%;
-                justify-content: center;
-                flex-wrap: wrap;
-            }
-
-            .map-container {
-                padding: 1rem;
-            }
-
-            .map-wrapper {
-                height: 350px;
-            }
-
-            .stats-row {
-                padding: 1rem;
-                grid-template-columns: 1fr 1fr;
-            }
-
-            .table-container {
-                padding: 0 1rem 2rem;
-            }
-        }
-
-        @media (max-width: 768px) {
-
-            /* Mobile Table to Card View */
-            table,
-            thead,
-            tbody,
-            th,
-            td,
-            tr {
-                display: block;
-            }
-
-            thead tr {
-                position: absolute;
-                top: -9999px;
-                left: -9999px;
-            }
-
-            tbody tr {
-                border: 1px solid var(--border);
-                border-radius: 12px;
-                background: var(--bg-card);
-                margin-bottom: 1rem;
-                padding: 1rem;
-            }
-
-            tbody td {
-                border: none;
-                position: relative;
-                padding: 0.5rem 0 0.5rem 35%;
-                text-align: left;
-                display: flex;
-                align-items: center;
-                min-height: 40px;
-            }
-
-            tbody td:before {
-                position: absolute;
-                top: 50%;
-                transform: translateY(-50%);
-                left: 0;
-                width: 30%;
-                padding-right: 10px;
-                white-space: nowrap;
-                font-size: 0.75rem;
-                color: var(--text-dim);
-                text-transform: uppercase;
-                letter-spacing: 1px;
-                font-weight: 600;
-            }
-
-            /* Labels matching the 9-column table: #, From, To, IP, Location, Clicks, Message, Date, Actions */
-            td:nth-of-type(1):before {
-                content: "#";
-            }
-
-            td:nth-of-type(2):before {
-                content: "From";
-            }
-
-            td:nth-of-type(3):before {
-                content: "To";
-            }
-
-            td:nth-of-type(4):before {
-                content: "IP Addr";
-            }
-
-            td:nth-of-type(5):before {
-                content: "Location";
-            }
-
-            td:nth-of-type(6):before {
-                content: "Clicks";
-            }
-
-            td:nth-of-type(7):before {
-                content: "Message";
-            }
-
-            td:nth-of-type(8):before {
-                content: "Date";
-            }
-
-            td:nth-of-type(9):before {
-                content: "Actions";
-            }
-
-            .td-message {
-                max-width: 100%;
-            }
-
-            .search-box {
-                width: 100%;
-            }
-        }
-
-        @media (max-width: 480px) {
-            .header-left h1 {
-                font-size: 1.5rem;
-            }
-
-            .stats-row {
-                grid-template-columns: 1fr;
-            }
-
-            .btn {
-                padding: 0.7rem 1rem;
-                flex: 1;
-                justify-content: center;
-            }
-
-            .header-actions .btn {
-                min-width: 45%;
-            }
-
-            .login-box {
-                min-width: 90%;
-                padding: 2rem 1.5rem;
-            }
-        }
-
         /* Loader */
         .loader-overlay {
             position: fixed;
@@ -695,7 +728,7 @@
             z-index: 10001;
             opacity: 0;
             visibility: hidden;
-            transition: opacity 0.4s ease, visibility 0.4s ease;
+            transition: opacity 0.4s, visibility 0.4s;
         }
 
         .loader-overlay.show {
@@ -769,6 +802,83 @@
                 transform: scale(0.9);
             }
         }
+
+        /* ========== RESPONSIVE ========== */
+        @media (max-width: 968px) {
+            .header {
+                padding: 1rem;
+            }
+
+            .map-container,
+            .table-container {
+                padding-left: 1rem;
+                padding-right: 1rem;
+            }
+
+            .stats-row {
+                padding: 0 1rem 0.8rem;
+            }
+
+            .letter-row {
+                grid-template-columns: 30px 1fr 1fr 100px 60px 80px 40px;
+                font-size: 0.85rem;
+                padding: 0.7rem 0.8rem;
+            }
+
+            .detail-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 640px) {
+            .header-left {
+                width: 100%;
+                justify-content: center;
+                flex-wrap: wrap;
+            }
+
+            .header-actions {
+                width: 100%;
+                justify-content: center;
+            }
+
+            .map-wrapper {
+                height: 280px;
+            }
+
+            .stats-row {
+                grid-template-columns: 1fr 1fr;
+            }
+
+            .letter-row {
+                grid-template-columns: 1fr 1fr;
+                gap: 0.4rem;
+            }
+
+            .lr-num,
+            .lr-location,
+            .lr-clicks,
+            .lr-date {
+                display: none;
+            }
+
+            .lr-name {
+                font-size: 0.95rem;
+            }
+
+            .lr-actions {
+                justify-content: flex-end;
+            }
+
+            .search-box {
+                width: 100%;
+            }
+
+            .btn {
+                padding: 0.6rem 0.9rem;
+                font-size: 0.75rem;
+            }
+        }
     </style>
 </head>
 
@@ -784,7 +894,7 @@
         </div>
     </div>
 
-    <!-- Main Content (Hidden by default) -->
+    <!-- Main Content -->
     <div id="main-content">
         <header class="header">
             <div class="header-left">
@@ -793,59 +903,67 @@
             </div>
             <div class="header-actions">
                 <a href="index.html" class="btn btn-ghost">← Back</a>
-                <button class="btn btn-primary" id="sync-btn" title="Refresh data from server">🔄 Sync</button>
-                <button class="btn btn-primary" id="download-csv-btn">📄 Download CSV</button>
+                <button class="btn btn-primary" id="sync-btn">🔄 Sync</button>
+                <button class="btn btn-primary" id="download-csv-btn">📄 CSV</button>
                 <button class="btn btn-danger" id="clear-all-btn">🗑️ Clear All</button>
                 <button class="btn btn-ghost" id="logout-btn">🔒 Logout</button>
             </div>
         </header>
 
-        <!-- Interactive Map -->
+        <!-- Map -->
         <div class="map-container">
             <div class="map-header">
-                <span class="map-title">📍 User Locations</span>
+                <span class="section-title">📍 User Locations</span>
             </div>
             <div class="map-wrapper">
                 <div id="map"></div>
             </div>
         </div>
 
+        <!-- Stats -->
         <div class="stats-row">
-            <div class="stat-card">
+            <div class="stat-card pink">
                 <div class="stat-label">Total Letters</div>
-                <div class="stat-value highlight" id="stat-total">0</div>
+                <div class="stat-value pink" id="stat-total">0</div>
             </div>
-            <div class="stat-card">
+            <div class="stat-card purple">
                 <div class="stat-label">Unique Senders</div>
-                <div class="stat-value" id="stat-senders">0</div>
+                <div class="stat-value purple" id="stat-senders">0</div>
             </div>
-            <div class="stat-card">
+            <div class="stat-card green">
                 <div class="stat-label">Unique Receivers</div>
-                <div class="stat-value" id="stat-receivers">0</div>
+                <div class="stat-value green" id="stat-receivers">0</div>
             </div>
-            <div class="stat-card">
+            <div class="stat-card blue">
+                <div class="stat-label">Countries</div>
+                <div class="stat-value blue" id="stat-countries">0</div>
+                <div class="stat-sub" id="stat-countries-list"></div>
+            </div>
+            <div class="stat-card amber">
+                <div class="stat-label">Total Clicks</div>
+                <div class="stat-value amber" id="stat-clicks">0</div>
+            </div>
+            <div class="stat-card pink">
                 <div class="stat-label">Latest Letter</div>
-                <div class="stat-value" id="stat-latest" style="font-size: 0.95rem; padding-top: 0.3rem;">—</div>
+                <div class="stat-value pink" id="stat-latest" style="font-size: 0.85rem; padding-top: 0.2rem;">—</div>
             </div>
         </div>
 
+        <!-- Letters Table -->
         <div class="table-container">
             <div class="table-header">
-                <span class="table-title">All Letters</span>
-                <input type="text" class="search-box" id="search-input" placeholder="Search by name, IP, location...">
+                <span class="section-title">💌 All Letters</span>
+                <input type="text" class="search-box" id="search-input"
+                    placeholder="Search name, city, country, IP, message...">
             </div>
-
-            <div id="table-wrapper">
-                <!-- Populated by JS -->
+            <div id="letter-list" class="letter-list">
+                <!-- JS populated -->
             </div>
         </div>
     </div>
 
-    <div id="toast" class="toast">
-        <span id="toast-message"></span>
-    </div>
+    <div id="toast" class="toast"><span id="toast-message"></span></div>
 
-    <!-- Loader -->
     <div class="loader-overlay" id="loader">
         <div class="heart-loader">
             <svg xmlns="http://www.w3.org/2000/svg" width="60" height="60" viewBox="0 0 24 24" fill="currentColor"
@@ -856,33 +974,22 @@
         </div>
     </div>
 
-    <!-- Leaflet JS -->
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 
     <script>
         // ==========================================
-        // PASSWORD PROTECTION
+        // AUTH
         // ==========================================
         const PASSWORD_HASH = 'valentines2024';
         const AUTH_KEY = 'godview_authenticated';
-
-        // In-memory letter store (synced from Firebase)
         let _currentLetters = [];
 
-        function checkAuth() {
-            return sessionStorage.getItem(AUTH_KEY) === '1';
-        }
-
-        // Unified getter — always returns the in-memory store
-        function getLetters() {
-            return _currentLetters;
-        }
+        function checkAuth() { return sessionStorage.getItem(AUTH_KEY) === '1'; }
+        function getLetters() { return _currentLetters; }
 
         function handleLogin() {
             const input = document.getElementById('password-input');
-            const password = input.value;
-
-            if (password === PASSWORD_HASH) {
+            if (input.value === PASSWORD_HASH) {
                 sessionStorage.setItem(AUTH_KEY, '1');
                 document.getElementById('login-screen').classList.add('hidden');
                 document.getElementById('main-content').classList.add('show');
@@ -892,9 +999,7 @@
                 document.getElementById('login-error').classList.add('show');
                 input.value = '';
                 input.focus();
-                setTimeout(() => {
-                    document.getElementById('login-error').classList.remove('show');
-                }, 2000);
+                setTimeout(() => document.getElementById('login-error').classList.remove('show'), 2000);
             }
         }
 
@@ -903,7 +1008,6 @@
             window.location.reload();
         }
 
-        // Check auth on page load
         if (checkAuth()) {
             document.getElementById('login-screen').classList.add('hidden');
             document.getElementById('main-content').classList.add('show');
@@ -911,213 +1015,178 @@
 
         document.getElementById('login-btn').addEventListener('click', handleLogin);
         document.getElementById('logout-btn').addEventListener('click', handleLogout);
-        document.getElementById('password-input').addEventListener('keypress', (e) => {
-            if (e.key === 'Enter') handleLogin();
-        });
+        document.getElementById('password-input').addEventListener('keypress', e => { if (e.key === 'Enter') handleLogin(); });
 
         // ==========================================
-        // MAP INITIALIZATION
+        // MAP
         // ==========================================
-        let map = null;
-        let markers = [];
+        let map = null, markers = [];
 
         function initMap() {
             if (map) return;
-
             map = L.map('map').setView([20, 0], 2);
-
             L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
-                attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>',
-                subdomains: 'abcd',
-                maxZoom: 19
+                attribution: '&copy; OpenStreetMap &copy; CARTO', subdomains: 'abcd', maxZoom: 19
             }).addTo(map);
-
             updateMapMarkers();
         }
 
         function updateMapMarkers() {
             if (!map) return;
-
-            // Clear existing markers
             markers.forEach(m => map.removeLayer(m));
             markers = [];
 
-            const letters = getLetters();
-            const validLocations = letters.filter(l => l.latitude && l.longitude);
+            const valid = getLetters().filter(l => l.latitude && l.longitude);
+            if (!valid.length) return;
 
-            if (validLocations.length === 0) return;
-
-            validLocations.forEach((letter) => {
+            valid.forEach(letter => {
                 const marker = L.marker([letter.latitude, letter.longitude], {
                     icon: L.icon({
-                        iconUrl: 'data:image/svg+xml;base64,' + btoa(`
-                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 36" width="32" height="48">
-                                <path fill="#e11d48" stroke="#fff" stroke-width="2" d="M12 0C7.03 0 3 4.03 3 9c0 6.75 9 18 9 18s9-11.25 9-18c0-4.97-4.03-9-9-9zm0 12c-1.66 0-3-1.34-3-3s1.34-3 3-3 3 1.34 3 3-1.34 3-3 3z"/>
-                            </svg>
-                        `),
-                        iconSize: [32, 48],
-                        iconAnchor: [16, 48],
-                        popupAnchor: [0, -48]
+                        iconUrl: 'data:image/svg+xml;base64,' + btoa(`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 36" width="32" height="48"><path fill="#e11d48" stroke="#fff" stroke-width="2" d="M12 0C7.03 0 3 4.03 3 9c0 6.75 9 18 9 18s9-11.25 9-18c0-4.97-4.03-9-9-9zm0 12c-1.66 0-3-1.34-3-3s1.34-3 3-3 3 1.34 3 3-1.34 3-3 3z"/></svg>`),
+                        iconSize: [32, 48], iconAnchor: [16, 48], popupAnchor: [0, -48]
                     })
                 });
-
-                const popupContent = `
-                    <div class="popup-from">${escapeHTML(letter.from)} → ${escapeHTML(letter.to)}</div>
-                    <div class="popup-location">📍 ${escapeHTML(letter.location || 'Unknown')}</div>
-                    <div class="popup-message">"${escapeHTML(letter.message.substring(0, 100))}${letter.message.length > 100 ? '...' : ''}"</div>
-                `;
-
-                marker.bindPopup(popupContent);
+                marker.bindPopup(`
+                    <div class="popup-from">${esc(letter.from)} → ${esc(letter.to)}</div>
+                    <div class="popup-location">📍 ${esc(letter.location || 'Unknown')}</div>
+                    <div class="popup-message">"${esc((letter.message || '').substring(0, 100))}${(letter.message || '').length > 100 ? '...' : ''}"</div>
+                `);
                 marker.addTo(map);
                 markers.push(marker);
             });
 
             if (markers.length > 1) {
-                const group = L.featureGroup(markers);
-                map.fitBounds(group.getBounds().pad(0.1));
-            } else if (markers.length === 1) {
-                map.setView([validLocations[0].latitude, validLocations[0].longitude], 6);
+                map.fitBounds(L.featureGroup(markers).getBounds().pad(0.1));
+            } else {
+                map.setView([valid[0].latitude, valid[0].longitude], 6);
             }
         }
 
         // ==========================================
-        // DELETE
+        // ACTIONS
         // ==========================================
         async function deleteLetterById(id) {
-            if (!confirm('Are you sure you want to delete this letter?')) return;
-
-            const btn = document.querySelector(`button[data-delete-id="${id}"]`);
-            const row = btn ? btn.closest('tr') : null;
-
-            // Visual feedback immediately
-            if (row) row.style.opacity = '0.3';
-            if (btn) btn.disabled = true;
+            if (!confirm('Delete this letter?')) return;
+            const card = document.querySelector(`[data-letter-id="${id}"]`);
+            if (card) card.style.opacity = '0.3';
 
             try {
-                // Delete from Firebase
                 if (window.deleteGlobalLetter) {
-                    const success = await window.deleteGlobalLetter(id);
-                    if (success) {
-                        showToast('Letter deleted ☁️');
-                    } else {
-                        throw new Error('Delete failed');
-                    }
-                } else {
-                    throw new Error('Firebase not available');
+                    const ok = await window.deleteGlobalLetter(id);
+                    if (!ok) throw new Error('Failed');
                 }
-
-                // Re-fetch from Firebase to ensure consistency
+                showToast('Deleted ☁️');
                 if (window.fetchGlobalLetters) {
                     _currentLetters = await window.fetchGlobalLetters();
                 } else {
                     _currentLetters = _currentLetters.filter(l => l.id !== id);
                 }
-
-                const searchInput = document.getElementById('search-input');
-                render(searchInput ? searchInput.value : '');
+                const si = document.getElementById('search-input');
+                render(si ? si.value : '');
                 updateMapMarkers();
-
             } catch (e) {
                 console.error(e);
-                showToast('Failed to delete ❌');
-                if (row) row.style.opacity = '1';
-                if (btn) btn.disabled = false;
+                showToast('Delete failed ❌');
+                if (card) card.style.opacity = '1';
             }
         }
 
-        function clearAll() {
-            alert("Bulk delete is disabled for safety in Cloud Mode. Please delete letters individually.");
-        }
+        function clearAll() { alert("Bulk delete disabled for safety. Delete individually."); }
 
         async function handleSync() {
             const btn = document.getElementById('sync-btn');
             const loader = document.getElementById('loader');
-
             if (loader) loader.classList.add('show');
-            const originalText = btn.textContent;
-            btn.textContent = '...';
-            btn.disabled = true;
+            const origText = btn.textContent;
+            btn.textContent = '...'; btn.disabled = true;
 
             try {
                 if (window.fetchGlobalLetters) {
                     _currentLetters = await window.fetchGlobalLetters();
-                    render();
-                    updateMapMarkers();
-                    showToast('Synced with Cloud ☁️');
+                    render(); updateMapMarkers();
+                    showToast('Synced ☁️');
                 } else {
-                    showToast('Firebase not available ❌');
+                    showToast('Firebase unavailable ❌');
                 }
             } catch (e) {
-                showToast('Sync failed ❌');
-                console.error(e);
+                showToast('Sync failed ❌'); console.error(e);
             } finally {
-                btn.textContent = originalText;
-                btn.disabled = false;
-                if (loader) {
-                    setTimeout(() => {
-                        loader.classList.remove('show');
-                    }, 500);
-                }
+                btn.textContent = origText; btn.disabled = false;
+                if (loader) setTimeout(() => loader.classList.remove('show'), 400);
             }
         }
 
         // ==========================================
-        // CSV
+        // CSV (from in-memory data)
         // ==========================================
-        function generateCSV() {
+        function downloadCSV() {
             const letters = getLetters();
-            if (letters.length === 0) return null;
+            if (!letters.length) { showToast('No letters to export!'); return; }
 
-            const header = 'ID,From,To,Message,IP,City,Region,Country,Postal,Timezone,Location,Latitude,Longitude,Accuracy,Clicks,Date,Timestamp';
-
-            const escapeCSV = (str) => {
-                if (str == null) return '';
-                const s = String(str);
-                if (s.includes(',') || s.includes('"') || s.includes('\n') || s.includes('\r')) {
-                    return '"' + s.replace(/"/g, '""') + '"';
-                }
-                return s;
+            const escCSV = s => {
+                if (s == null) return '';
+                const str = String(s);
+                return (str.includes(',') || str.includes('"') || str.includes('\n')) ? '"' + str.replace(/"/g, '""') + '"' : str;
             };
 
+            const header = 'ID,From,To,Message,IP,City,Region,Country,CountryCode,Postal,Timezone,Location,Latitude,Longitude,Accuracy,Clicks,Date,Timestamp';
             const rows = letters.map(l =>
-                [l.id, l.from, l.to, l.message, l.ip || 'N/A', l.city || 'N/A', l.region || 'N/A', l.country || 'N/A', l.postal || 'N/A', l.timezone || 'N/A', l.location || 'N/A', l.latitude || 'N/A', l.longitude || 'N/A', l.accuracy || 'N/A', l.clicks || 0, l.date || '', l.timestamp]
-                    .map(escapeCSV)
-                    .join(',')
+                [l.id, l.from, l.to, l.message, l.ip, l.city, l.region, l.country, l.countryCode, l.postal, l.timezone, l.location, l.latitude, l.longitude, l.accuracy, l.clicks, l.date, l.timestamp].map(escCSV).join(',')
             );
 
-            return header + '\n' + rows.join('\n');
-        }
-
-        function downloadCSV() {
-            const csv = generateCSV();
-            if (!csv) {
-                showToast('No letters to export!');
-                return;
-            }
-
-            const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
-            const url = URL.createObjectURL(blob);
+            const blob = new Blob([header + '\n' + rows.join('\n')], { type: 'text/csv;charset=utf-8;' });
             const a = document.createElement('a');
-            a.href = url;
+            a.href = URL.createObjectURL(blob);
             a.download = `valentine_letters_${new Date().toISOString().split('T')[0]}.csv`;
             a.style.display = 'none';
-            document.body.appendChild(a);
-            a.click();
-            document.body.removeChild(a);
-            URL.revokeObjectURL(url);
-            showToast('CSV downloaded! 📄');
+            document.body.appendChild(a); a.click(); document.body.removeChild(a);
+            showToast('CSV downloaded 📄');
         }
 
         // ==========================================
-        // TOAST
+        // HELPERS
         // ==========================================
         let toastTimer = null;
         function showToast(msg) {
-            const toast = document.getElementById('toast');
+            const t = document.getElementById('toast');
             document.getElementById('toast-message').textContent = msg;
-            toast.classList.add('show');
+            t.classList.add('show');
             clearTimeout(toastTimer);
-            toastTimer = setTimeout(() => toast.classList.remove('show'), 2500);
+            toastTimer = setTimeout(() => t.classList.remove('show'), 2500);
+        }
+
+        function esc(str) {
+            if (!str) return '';
+            return String(str).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#039;');
+        }
+
+        function toggleDetail(id) {
+            const el = document.getElementById('detail-' + id);
+            if (!el) return;
+            // Close all others
+            document.querySelectorAll('.letter-detail.show').forEach(d => {
+                if (d.id !== 'detail-' + id) d.classList.remove('show');
+            });
+            el.classList.toggle('show');
+        }
+
+        function viewLetter(id) {
+            const letter = getLetters().find(l => l.id === id);
+            if (!letter) { showToast('Not found'); return; }
+            const data = { t: letter.to, f: letter.from, m: letter.message };
+            const encoded = btoa(encodeURIComponent(JSON.stringify(data)));
+            window.open(`index.html?d=${encoded}`, '_blank');
+        }
+
+        function accuracyTag(acc) {
+            if (acc === 'gps') return '<span class="tag tag-gps">📡 GPS</span>';
+            if (acc === 'city') return '<span class="tag tag-city">🏙️ City</span>';
+            return '<span class="tag tag-unknown">❓ Unknown</span>';
+        }
+
+        function formatCoord(lat, lng) {
+            if (!lat || !lng) return 'N/A';
+            return `${Number(lat).toFixed(4)}, ${Number(lng).toFixed(4)}`;
         }
 
         // ==========================================
@@ -1125,127 +1194,116 @@
         // ==========================================
         function render(filter = '') {
             let letters = getLetters();
-            const filterLower = filter.toLowerCase();
+            const fl = filter.toLowerCase();
 
-            // Stats (always from full dataset)
+            // === STATS ===
             document.getElementById('stat-total').textContent = letters.length;
             document.getElementById('count-badge').textContent = `${letters.length} LETTER${letters.length !== 1 ? 'S' : ''}`;
 
-            const senders = new Set(letters.map(l => l.from?.toLowerCase()));
-            const receivers = new Set(letters.map(l => l.to?.toLowerCase()));
+            const senders = new Set(letters.map(l => (l.from || '').toLowerCase()));
+            const receivers = new Set(letters.map(l => (l.to || '').toLowerCase()));
+            const countries = new Set(letters.filter(l => l.country).map(l => l.country));
+            const totalClicks = letters.reduce((sum, l) => sum + (l.clicks || 0), 0);
+
             document.getElementById('stat-senders').textContent = senders.size;
             document.getElementById('stat-receivers').textContent = receivers.size;
+            document.getElementById('stat-countries').textContent = countries.size;
+            document.getElementById('stat-countries-list').textContent = [...countries].slice(0, 3).join(', ');
+            document.getElementById('stat-clicks').textContent = totalClicks;
 
             if (letters.length > 0) {
-                // Find the most recent by timestamp (data may already be sorted desc)
-                const latest = letters[0];
-                document.getElementById('stat-latest').textContent = latest.date || new Date(latest.timestamp).toLocaleDateString();
+                document.getElementById('stat-latest').textContent = letters[0].date || new Date(letters[0].timestamp).toLocaleDateString();
             } else {
                 document.getElementById('stat-latest').textContent = '—';
             }
 
-            // Filter
-            if (filterLower) {
+            // === FILTER ===
+            if (fl) {
                 letters = letters.filter(l =>
-                    (l.from || '').toLowerCase().includes(filterLower) ||
-                    (l.to || '').toLowerCase().includes(filterLower) ||
-                    (l.message || '').toLowerCase().includes(filterLower) ||
-                    (l.ip || '').toLowerCase().includes(filterLower) ||
-                    (l.location || '').toLowerCase().includes(filterLower)
+                    (l.from || '').toLowerCase().includes(fl) ||
+                    (l.to || '').toLowerCase().includes(fl) ||
+                    (l.message || '').toLowerCase().includes(fl) ||
+                    (l.ip || '').toLowerCase().includes(fl) ||
+                    (l.city || '').toLowerCase().includes(fl) ||
+                    (l.country || '').toLowerCase().includes(fl) ||
+                    (l.region || '').toLowerCase().includes(fl) ||
+                    (l.location || '').toLowerCase().includes(fl)
                 );
             }
 
-            const wrapper = document.getElementById('table-wrapper');
+            const wrapper = document.getElementById('letter-list');
 
-            if (letters.length === 0 && !filterLower) {
-                wrapper.innerHTML = `
-                    <div class="empty-state">
-                        <div class="emoji">💌</div>
-                        <p>No letters yet</p>
-                        <p class="sub">Go create some valentines from the <a href="index.html" style="color: var(--primary-light);">main page</a>!</p>
-                    </div>
-                `;
+            if (!letters.length && !fl) {
+                wrapper.innerHTML = `<div class="empty-state"><div class="emoji">💌</div><p>No letters yet</p><p class="sub">Create valentines from the <a href="index.html" style="color:var(--primary-light);">main page</a></p></div>`;
+                return;
+            }
+            if (!letters.length && fl) {
+                wrapper.innerHTML = `<div class="empty-state"><div class="emoji">🔍</div><p>No results</p><p class="sub">Try a different search term</p></div>`;
                 return;
             }
 
-            if (letters.length === 0 && filterLower) {
-                wrapper.innerHTML = `
-                    <div class="empty-state">
-                        <div class="emoji">🔍</div>
-                        <p>No results found</p>
-                        <p class="sub">Try a different search term</p>
-                    </div>
-                `;
-                return;
-            }
-
-            let html = `
-                <table>
-                    <thead>
-                        <tr>
-                            <th>#</th>
-                            <th>From</th>
-                            <th>To</th>
-                            <th>IP Address</th>
-                            <th>Location</th>
-                            <th>Clicks</th>
-                            <th>Message</th>
-                            <th>Date</th>
-                            <th>Actions</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-            `;
-
-            letters.forEach((letter, i) => {
-                const msgPreview = (letter.message || '').length > 80
-                    ? letter.message.substring(0, 80) + '...'
-                    : letter.message;
+            let html = '';
+            letters.forEach((l, i) => {
+                const msgPreview = (l.message || '').length > 60 ? l.message.substring(0, 60) + '...' : l.message;
+                const countryFlag = l.countryCode ? getFlagEmoji(l.countryCode) + ' ' : '';
 
                 html += `
-                    <tr>
-                        <td class="td-id">${letters.length - i}</td>
-                        <td class="td-name">${escapeHTML(letter.from)}</td>
-                        <td class="td-name">${escapeHTML(letter.to)}</td>
-                        <td class="td-ip">${escapeHTML(letter.ip || 'Unknown')}</td>
-                        <td class="td-location">${escapeHTML(letter.location || 'Unknown')}</td>
-                        <td class="td-clicks">${letter.clicks || 0}</td>
-                        <td class="td-message">${escapeHTML(msgPreview)}</td>
-                        <td class="td-date">${escapeHTML(letter.date || '—')}</td>
-                        <td class="td-actions">
-                            <button data-view-id="${letter.id}" onclick="viewLetter('${letter.id}')" title="View">👁️</button>
-                            <button data-delete-id="${letter.id}" onclick="deleteLetterById('${letter.id}')" title="Delete">🗑️</button>
-                        </td>
-                    </tr>
-                `;
+                <div class="letter-card" data-letter-id="${l.id}">
+                    <div class="letter-row" onclick="toggleDetail('${l.id}')">
+                        <div class="lr-num">${letters.length - i}</div>
+                        <div class="lr-name">${esc(l.from)} <span class="sub">→ ${esc(l.to)}</span></div>
+                        <div class="lr-location">${countryFlag}${esc(l.city || l.location || 'Unknown')}</div>
+                        <div class="lr-date">${esc(l.date || '—')}</div>
+                        <div class="lr-clicks">${l.clicks || 0}</div>
+                        <div class="lr-actions">
+                            <button onclick="event.stopPropagation(); viewLetter('${l.id}')" title="View">👁️</button>
+                            <button onclick="event.stopPropagation(); deleteLetterById('${l.id}')" title="Delete">🗑️</button>
+                        </div>
+                    </div>
+                    <div class="letter-detail" id="detail-${l.id}">
+                        <div class="detail-message">
+                            <span class="msg-label">💬 Message</span>
+                            ${esc(l.message || '')}
+                        </div>
+                        <div class="detail-grid">
+                            <div class="detail-section">
+                                <div class="detail-section-title">👤 People</div>
+                                <div class="detail-item"><span class="detail-label">From</span><span class="detail-value">${esc(l.from)}</span></div>
+                                <div class="detail-item"><span class="detail-label">To</span><span class="detail-value">${esc(l.to)}</span></div>
+                                <div class="detail-item"><span class="detail-label">Clicks</span><span class="detail-value green">${l.clicks || 0}</span></div>
+                            </div>
+                            <div class="detail-section">
+                                <div class="detail-section-title">🌐 Network</div>
+                                <div class="detail-item"><span class="detail-label">IP Address</span><span class="detail-value mono">${esc(l.ip || 'Unknown')}</span></div>
+                                <div class="detail-item"><span class="detail-label">Timezone</span><span class="detail-value">${esc(l.timezone || 'N/A')}</span></div>
+                            </div>
+                            <div class="detail-section">
+                                <div class="detail-section-title">📍 Location</div>
+                                <div class="detail-item"><span class="detail-label">City</span><span class="detail-value">${esc(l.city || 'N/A')}</span></div>
+                                <div class="detail-item"><span class="detail-label">Region</span><span class="detail-value">${esc(l.region || 'N/A')}</span></div>
+                                <div class="detail-item"><span class="detail-label">Country</span><span class="detail-value">${countryFlag}${esc(l.country || 'N/A')}</span></div>
+                                <div class="detail-item"><span class="detail-label">Postal</span><span class="detail-value">${esc(l.postal || 'N/A')}</span></div>
+                                <div class="detail-item"><span class="detail-label">Coordinates</span><span class="detail-value mono">${formatCoord(l.latitude, l.longitude)}</span></div>
+                                <div class="detail-item"><span class="detail-label">Accuracy</span>${accuracyTag(l.accuracy)}</div>
+                            </div>
+                            <div class="detail-section">
+                                <div class="detail-section-title">🕐 Timestamps</div>
+                                <div class="detail-item"><span class="detail-label">Date</span><span class="detail-value">${esc(l.date || 'N/A')}</span></div>
+                                <div class="detail-item"><span class="detail-label">ISO</span><span class="detail-value mono" style="font-size:0.68rem">${esc(l.timestamp || 'N/A')}</span></div>
+                                <div class="detail-item"><span class="detail-label">Letter ID</span><span class="detail-value mono" style="font-size:0.72rem">${esc(l.id)}</span></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>`;
             });
 
-            html += '</tbody></table>';
             wrapper.innerHTML = html;
         }
 
-        function escapeHTML(str) {
-            if (!str) return '';
-            return String(str).replace(/&/g, '&amp;')
-                .replace(/</g, '&lt;')
-                .replace(/>/g, '&gt;')
-                .replace(/"/g, '&quot;')
-                .replace(/'/g, '&#039;');
-        }
-
-        function viewLetter(id) {
-            const letters = getLetters();
-            const letter = letters.find(l => l.id === id);
-            if (!letter) {
-                showToast('Letter not found');
-                return;
-            }
-
-            // Use obfuscated link format (same as script.js)
-            const data = { t: letter.to, f: letter.from, m: letter.message };
-            const encodedData = btoa(encodeURIComponent(JSON.stringify(data)));
-            const params = new URLSearchParams({ d: encodedData });
-            window.open(`index.html?${params.toString()}`, '_blank');
+        function getFlagEmoji(countryCode) {
+            if (!countryCode || countryCode.length !== 2) return '';
+            const offset = 127397;
+            return String.fromCodePoint(...[...countryCode.toUpperCase()].map(c => c.charCodeAt(0) + offset));
         }
 
         // ==========================================
@@ -1255,50 +1313,39 @@
         document.getElementById('clear-all-btn').addEventListener('click', clearAll);
         document.getElementById('sync-btn').addEventListener('click', handleSync);
 
-        const searchInput = document.getElementById('search-input');
         let searchDebounce = null;
-        searchInput.addEventListener('input', () => {
+        document.getElementById('search-input').addEventListener('input', function () {
             clearTimeout(searchDebounce);
-            searchDebounce = setTimeout(() => {
-                render(searchInput.value.trim());
-            }, 200);
+            searchDebounce = setTimeout(() => render(this.value.trim()), 200);
         });
     </script>
 
     <script type="module">
         import './script.js';
 
-        // Wait for script.js to initialize and expose globals
         async function initGodView() {
-            // Wait for globals
             if (!window.fetchGlobalLetters) {
                 setTimeout(initGodView, 100);
                 return;
             }
 
-            // Load Global Data from Firebase
             try {
                 const loader = document.getElementById('loader');
                 if (loader) loader.classList.add('show');
 
-                const globalLetters = await window.fetchGlobalLetters();
-                // Update the in-memory store used by all godview functions
+                const letters = await window.fetchGlobalLetters();
                 if (typeof _currentLetters !== 'undefined') {
-                    _currentLetters = globalLetters;
+                    _currentLetters = letters;
                 }
 
-                // Re-render with cloud data
                 if (typeof render === 'function') render();
                 if (typeof updateMapMarkers === 'function') updateMapMarkers();
                 if (typeof initMap === 'function') initMap();
 
-                if (loader) {
-                    setTimeout(() => loader.classList.remove('show'), 500);
-                }
+                if (loader) setTimeout(() => loader.classList.remove('show'), 400);
             } catch (e) {
-                console.error('Failed to load cloud data:', e);
-                const loader = document.getElementById('loader');
-                if (loader) loader.classList.remove('show');
+                console.error('Failed to load:', e);
+                document.getElementById('loader')?.classList.remove('show');
             }
         }
 
