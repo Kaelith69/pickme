@@ -408,7 +408,7 @@
 
         tbody tr {
             border-bottom: 1px solid var(--border);
-            transition: background-color 0.15s ease;
+            transition: background-color 0.15s ease, opacity 0.3s ease;
         }
 
         tbody tr:hover {
@@ -523,7 +523,7 @@
             bottom: 2rem;
         }
 
-        /* Responsive Improvements */
+        /* Responsive */
         @media (max-width: 968px) {
             .header {
                 padding: 1.2rem 1rem;
@@ -590,7 +590,6 @@
                 border: none;
                 position: relative;
                 padding: 0.5rem 0 0.5rem 35%;
-                /* Space for label */
                 text-align: left;
                 display: flex;
                 align-items: center;
@@ -612,36 +611,40 @@
                 font-weight: 600;
             }
 
-            /* Add labels via CSS */
+            /* Labels matching the 9-column table: #, From, To, IP, Location, Clicks, Message, Date, Actions */
             td:nth-of-type(1):before {
-                content: "ID";
+                content: "#";
             }
 
             td:nth-of-type(2):before {
-                content: "From -> To";
+                content: "From";
             }
 
             td:nth-of-type(3):before {
-                content: "IP Addr";
+                content: "To";
             }
 
             td:nth-of-type(4):before {
-                content: "Location";
+                content: "IP Addr";
             }
 
             td:nth-of-type(5):before {
-                content: "Clicks";
+                content: "Location";
             }
 
             td:nth-of-type(6):before {
-                content: "Message";
+                content: "Clicks";
             }
 
             td:nth-of-type(7):before {
-                content: "Date";
+                content: "Message";
             }
 
             td:nth-of-type(8):before {
+                content: "Date";
+            }
+
+            td:nth-of-type(9):before {
                 content: "Actions";
             }
 
@@ -676,6 +679,94 @@
             .login-box {
                 min-width: 90%;
                 padding: 2rem 1.5rem;
+            }
+        }
+
+        /* Loader */
+        .loader-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(15, 13, 26, 0.7);
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 10001;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.4s ease, visibility 0.4s ease;
+        }
+
+        .loader-overlay.show {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .heart-loader {
+            position: relative;
+            width: 60px;
+            height: 60px;
+        }
+
+        .heart-loader::before,
+        .heart-loader::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            border-radius: 50%;
+            background: var(--primary);
+            opacity: 0.6;
+            animation: ripple 2s cubic-bezier(0, 0.2, 0.8, 1) infinite;
+        }
+
+        .heart-loader::after {
+            animation-delay: -1s;
+        }
+
+        .heart-icon-loader {
+            position: relative;
+            z-index: 10;
+            color: var(--primary);
+            filter: drop-shadow(0 0 10px var(--primary));
+            animation: heartBeat 1.2s infinite ease-in-out;
+        }
+
+        @keyframes ripple {
+            0% {
+                transform: scale(0);
+                opacity: 1;
+            }
+
+            100% {
+                transform: scale(2.5);
+                opacity: 0;
+            }
+        }
+
+        @keyframes heartBeat {
+            0% {
+                transform: scale(0.95);
+            }
+
+            5% {
+                transform: scale(1.1);
+            }
+
+            39% {
+                transform: scale(0.85);
+            }
+
+            45% {
+                transform: scale(1);
+            }
+
+            60% {
+                transform: scale(0.95);
+            }
+
+            100% {
+                transform: scale(0.9);
             }
         }
     </style>
@@ -754,6 +845,17 @@
         <span id="toast-message"></span>
     </div>
 
+    <!-- Loader -->
+    <div class="loader-overlay" id="loader">
+        <div class="heart-loader">
+            <svg xmlns="http://www.w3.org/2000/svg" width="60" height="60" viewBox="0 0 24 24" fill="currentColor"
+                class="heart-icon-loader">
+                <path
+                    d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" />
+            </svg>
+        </div>
+    </div>
+
     <!-- Leaflet JS -->
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 
@@ -761,11 +863,19 @@
         // ==========================================
         // PASSWORD PROTECTION
         // ==========================================
-        const PASSWORD_HASH = 'valentines2024'; // Change this to your own password
+        const PASSWORD_HASH = 'valentines2024';
         const AUTH_KEY = 'godview_authenticated';
+
+        // In-memory letter store (synced from Firebase)
+        let _currentLetters = [];
 
         function checkAuth() {
             return sessionStorage.getItem(AUTH_KEY) === '1';
+        }
+
+        // Unified getter — always returns the in-memory store
+        function getLetters() {
+            return _currentLetters;
         }
 
         function handleLogin() {
@@ -790,9 +900,7 @@
 
         function handleLogout() {
             sessionStorage.removeItem(AUTH_KEY);
-            document.getElementById('login-screen').classList.remove('hidden');
-            document.getElementById('main-content').classList.remove('show');
-            document.getElementById('password-input').value = '';
+            window.location.reload();
         }
 
         // Check auth on page load
@@ -814,12 +922,10 @@
         let markers = [];
 
         function initMap() {
-            if (map) return; // Already initialized
+            if (map) return;
 
-            // Initialize map centered on world
             map = L.map('map').setView([20, 0], 2);
 
-            // Dark theme tile layer
             L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
                 attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>',
                 subdomains: 'abcd',
@@ -839,13 +945,9 @@
             const letters = getLetters();
             const validLocations = letters.filter(l => l.latitude && l.longitude);
 
-            if (validLocations.length === 0) {
-                showToast('No location data available yet');
-                return;
-            }
+            if (validLocations.length === 0) return;
 
-            // Add markers for each letter
-            validLocations.forEach((letter, idx) => {
+            validLocations.forEach((letter) => {
                 const marker = L.marker([letter.latitude, letter.longitude], {
                     icon: L.icon({
                         iconUrl: 'data:image/svg+xml;base64,' + btoa(`
@@ -870,7 +972,6 @@
                 markers.push(marker);
             });
 
-            // Auto-fit bounds if multiple markers
             if (markers.length > 1) {
                 const group = L.featureGroup(markers);
                 map.fitBounds(group.getBounds().pad(0.1));
@@ -880,47 +981,48 @@
         }
 
         // ==========================================
-        // STORAGE HELPERS
+        // DELETE
         // ==========================================
-        function getLetters() {
-            try {
-                return JSON.parse(localStorage.getItem('valentine_letters') || '[]');
-            } catch {
-                return [];
-            }
-        }
-
         async function deleteLetterById(id) {
             if (!confirm('Are you sure you want to delete this letter?')) return;
 
-            // Delete from UI immediately for responsiveness
-            const row = document.querySelector(`button[onclick="deleteLetterById('${id}')"]`).closest('tr');
+            const btn = document.querySelector(`button[data-delete-id="${id}"]`);
+            const row = btn ? btn.closest('tr') : null;
+
+            // Visual feedback immediately
             if (row) row.style.opacity = '0.3';
+            if (btn) btn.disabled = true;
 
-            // Delete from Firebase
-            if (window.deleteGlobalLetter) {
-                const success = await window.deleteGlobalLetter(id);
-                if (success) {
-                    showToast('Letter deleted from cloud ☁️');
+            try {
+                // Delete from Firebase
+                if (window.deleteGlobalLetter) {
+                    const success = await window.deleteGlobalLetter(id);
+                    if (success) {
+                        showToast('Letter deleted ☁️');
+                    } else {
+                        throw new Error('Delete failed');
+                    }
                 } else {
-                    showToast('Failed to delete from cloud ❌');
-                    if (row) row.style.opacity = '1';
-                    return;
+                    throw new Error('Firebase not available');
                 }
+
+                // Re-fetch from Firebase to ensure consistency
+                if (window.fetchGlobalLetters) {
+                    _currentLetters = await window.fetchGlobalLetters();
+                } else {
+                    _currentLetters = _currentLetters.filter(l => l.id !== id);
+                }
+
+                const searchInput = document.getElementById('search-input');
+                render(searchInput ? searchInput.value : '');
+                updateMapMarkers();
+
+            } catch (e) {
+                console.error(e);
+                showToast('Failed to delete ❌');
+                if (row) row.style.opacity = '1';
+                if (btn) btn.disabled = false;
             }
-
-            // Update local state to reflect change
-            let letters = getLetters();
-            letters = letters.filter(l => l.id !== id);
-            // We don't save back to localStorage if we are in "Cloud Mode" (which we are), 
-            // but we update the in-memory array for next render if needed.
-            // Actually, we should just re-fetch or manually remove from the current list.
-
-            // Re-render
-            const globalLetters = await window.fetchGlobalLetters();
-            window.getLetters = () => globalLetters;
-            render();
-            updateMapMarkers();
         }
 
         function clearAll() {
@@ -929,17 +1031,21 @@
 
         async function handleSync() {
             const btn = document.getElementById('sync-btn');
+            const loader = document.getElementById('loader');
+
+            if (loader) loader.classList.add('show');
             const originalText = btn.textContent;
             btn.textContent = '...';
             btn.disabled = true;
 
             try {
                 if (window.fetchGlobalLetters) {
-                    const globalLetters = await window.fetchGlobalLetters();
-                    window.getLetters = () => globalLetters;
+                    _currentLetters = await window.fetchGlobalLetters();
                     render();
                     updateMapMarkers();
                     showToast('Synced with Cloud ☁️');
+                } else {
+                    showToast('Firebase not available ❌');
                 }
             } catch (e) {
                 showToast('Sync failed ❌');
@@ -947,6 +1053,11 @@
             } finally {
                 btn.textContent = originalText;
                 btn.disabled = false;
+                if (loader) {
+                    setTimeout(() => {
+                        loader.classList.remove('show');
+                    }, 500);
+                }
             }
         }
 
@@ -1016,7 +1127,7 @@
             let letters = getLetters();
             const filterLower = filter.toLowerCase();
 
-            // Stats
+            // Stats (always from full dataset)
             document.getElementById('stat-total').textContent = letters.length;
             document.getElementById('count-badge').textContent = `${letters.length} LETTER${letters.length !== 1 ? 'S' : ''}`;
 
@@ -1026,7 +1137,8 @@
             document.getElementById('stat-receivers').textContent = receivers.size;
 
             if (letters.length > 0) {
-                const latest = letters[letters.length - 1];
+                // Find the most recent by timestamp (data may already be sorted desc)
+                const latest = letters[0];
                 document.getElementById('stat-latest').textContent = latest.date || new Date(latest.timestamp).toLocaleDateString();
             } else {
                 document.getElementById('stat-latest').textContent = '—';
@@ -1042,9 +1154,6 @@
                     (l.location || '').toLowerCase().includes(filterLower)
                 );
             }
-
-            // Reverse to show newest first
-            letters = letters.slice().reverse();
 
             const wrapper = document.getElementById('table-wrapper');
 
@@ -1104,8 +1213,8 @@
                         <td class="td-message">${escapeHTML(msgPreview)}</td>
                         <td class="td-date">${escapeHTML(letter.date || '—')}</td>
                         <td class="td-actions">
-                            <button onclick="viewLetter('${letter.id}')" title="View">👁️</button>
-                            <button onclick="deleteLetterById('${letter.id}')" title="Delete">🗑️</button>
+                            <button data-view-id="${letter.id}" onclick="viewLetter('${letter.id}')" title="View">👁️</button>
+                            <button data-delete-id="${letter.id}" onclick="deleteLetterById('${letter.id}')" title="Delete">🗑️</button>
                         </td>
                     </tr>
                 `;
@@ -1117,22 +1226,25 @@
 
         function escapeHTML(str) {
             if (!str) return '';
-            return str.replace(/&/g, '&amp;')
+            return String(str).replace(/&/g, '&amp;')
                 .replace(/</g, '&lt;')
                 .replace(/>/g, '&gt;')
-                .replace(/"/g, '&quot;');
+                .replace(/"/g, '&quot;')
+                .replace(/'/g, '&#039;');
         }
 
         function viewLetter(id) {
             const letters = getLetters();
             const letter = letters.find(l => l.id === id);
-            if (!letter) return;
+            if (!letter) {
+                showToast('Letter not found');
+                return;
+            }
 
-            const params = new URLSearchParams({
-                to: letter.to,
-                from: letter.from,
-                msg: letter.message
-            });
+            // Use obfuscated link format (same as script.js)
+            const data = { t: letter.to, f: letter.from, m: letter.message };
+            const encodedData = btoa(encodeURIComponent(JSON.stringify(data)));
+            const params = new URLSearchParams({ d: encodedData });
             window.open(`index.html?${params.toString()}`, '_blank');
         }
 
@@ -1158,29 +1270,42 @@
 
         // Wait for script.js to initialize and expose globals
         async function initGodView() {
-            // Wait for globals (checking checkAuth as a proxy for script.js load)
-            if (!window.checkAuth) {
+            // Wait for globals
+            if (!window.fetchGlobalLetters) {
                 setTimeout(initGodView, 100);
                 return;
             }
 
-            if (!window.checkAuth()) return;
+            // Load Global Data from Firebase
+            try {
+                const loader = document.getElementById('loader');
+                if (loader) loader.classList.add('show');
 
-            // Load Global Data
-            if (window.fetchGlobalLetters) {
                 const globalLetters = await window.fetchGlobalLetters();
-                window.getLetters = () => globalLetters;
-            }
+                // Update the in-memory store used by all godview functions
+                if (typeof _currentLetters !== 'undefined') {
+                    _currentLetters = globalLetters;
+                }
 
-            // Init Map and Render
-            if (typeof initMap === 'function') initMap();
-            if (typeof render === 'function') render();
+                // Re-render with cloud data
+                if (typeof render === 'function') render();
+                if (typeof updateMapMarkers === 'function') updateMapMarkers();
+                if (typeof initMap === 'function') initMap();
+
+                if (loader) {
+                    setTimeout(() => loader.classList.remove('show'), 500);
+                }
+            } catch (e) {
+                console.error('Failed to load cloud data:', e);
+                const loader = document.getElementById('loader');
+                if (loader) loader.classList.remove('show');
+            }
         }
 
         if (document.readyState === 'loading') {
-            document.addEventListener('DOMContentLoaded', () => setTimeout(initGodView, 500));
+            document.addEventListener('DOMContentLoaded', () => setTimeout(initGodView, 300));
         } else {
-            setTimeout(initGodView, 500);
+            setTimeout(initGodView, 300);
         }
     </script>
 </body>

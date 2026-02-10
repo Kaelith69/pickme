@@ -691,3 +691,114 @@ textarea:focus {
         transition-duration: 0.01ms !important;
     }
 }
+
+/* ==========================================
+   BUTTON SPINNER (inline loading indicator)
+   ========================================== */
+.btn-spinner {
+    display: inline-block;
+    width: 16px;
+    height: 16px;
+    border: 2px solid rgba(255, 255, 255, 0.3);
+    border-top-color: white;
+    border-radius: 50%;
+    animation: btnSpin 0.6s linear infinite;
+    vertical-align: middle;
+    margin-right: 4px;
+}
+
+@keyframes btnSpin {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+/* ==========================================
+   BUFFERING ANIMATION
+   ========================================== */
+.loader-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(15, 13, 26, 0.7);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 10001;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.4s ease, visibility 0.4s ease;
+}
+
+.loader-overlay.show {
+    opacity: 1;
+    visibility: visible;
+}
+
+.heart-loader {
+    position: relative;
+    width: 60px;
+    height: 60px;
+}
+
+.heart-loader::before,
+.heart-loader::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: 50%;
+    background: var(--primary);
+    opacity: 0.6;
+    animation: ripple 2s cubic-bezier(0, 0.2, 0.8, 1) infinite;
+}
+
+.heart-loader::after {
+    animation-delay: -1s;
+}
+
+.heart-icon-loader {
+    position: relative;
+    z-index: 10;
+    color: var(--primary);
+    filter: drop-shadow(0 0 10px var(--primary));
+    animation: heartBeat 1.2s infinite ease-in-out;
+}
+
+@keyframes ripple {
+    0% {
+        transform: scale(0);
+        opacity: 1;
+    }
+
+    100% {
+        transform: scale(2.5);
+        opacity: 0;
+    }
+}
+
+@keyframes heartBeat {
+    0% {
+        transform: scale(0.95);
+    }
+
+    5% {
+        transform: scale(1.1);
+    }
+
+    39% {
+        transform: scale(0.85);
+    }
+
+    45% {
+        transform: scale(1);
+    }
+
+    60% {
+        transform: scale(0.95);
+    }
+
+    100% {
+        transform: scale(0.9);
+    }
+}

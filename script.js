@@ -13,28 +13,42 @@ const firebaseConfig = {
     appId: "1:204606590244:web:79c270a5085d2d8a7b77b1"
 };
 
-const app = initializeApp(firebaseConfig);
-const db = getFirestore(app);
+let app, db;
+try {
+    app = initializeApp(firebaseConfig);
+    db = getFirestore(app);
+} catch (e) {
+    console.error("Firebase initialization failed:", e);
+}
 
+// ==========================================
+// FIREBASE HELPERS
+// ==========================================
 async function fetchGlobalLetters() {
+    if (!db) {
+        console.warn("Firebase not available");
+        return [];
+    }
     try {
         const q = query(collection(db, "letters"), orderBy("timestamp", "desc"), limit(100));
         const querySnapshot = await getDocs(q);
         const globalLetters = [];
-        querySnapshot.forEach((doc) => {
-            const data = doc.data();
-            globalLetters.push(data);
+        querySnapshot.forEach((docSnap) => {
+            globalLetters.push(docSnap.data());
         });
         return globalLetters;
     } catch (e) {
         console.error("Error getting documents: ", e);
-        return getLetters(); // Fallback to local
+        return [];
     }
 }
 
 async function deleteGlobalLetter(id) {
+    if (!db) {
+        console.warn("Firebase not available, cannot delete from cloud");
+        return false;
+    }
     try {
-        // Query for the document with the matching custom 'id' field
         const q = query(collection(db, "letters"), where("id", "==", id));
         const querySnapshot = await getDocs(q);
 
@@ -134,6 +148,7 @@ let sessionClickCount = 0;
 let toastTimer = null;
 
 function showToast(message, duration = 3000) {
+    if (!toastMessage || !toast) return;
     toastMessage.textContent = message;
     toast.classList.add('show');
 
@@ -197,41 +212,46 @@ function generateRandomPickupLine() {
 const mesh = $('.background-mesh');
 let rafId = null;
 
-document.addEventListener('mousemove', (e) => {
-    if (rafId) return; // Throttle with rAF
+if (mesh) {
+    document.addEventListener('mousemove', (e) => {
+        if (rafId) return; // Throttle with rAF
 
-    rafId = requestAnimationFrame(() => {
-        const x = e.clientX / window.innerWidth;
-        const y = e.clientY / window.innerHeight;
-        mesh.style.transform = `translate(${-(x * 15)}px, ${-(y * 15)}px)`;
-        rafId = null;
-    });
-}, { passive: true });
+        rafId = requestAnimationFrame(() => {
+            const x = e.clientX / window.innerWidth;
+            const y = e.clientY / window.innerHeight;
+            mesh.style.transform = `translate(${-(x * 15)}px, ${-(y * 15)}px)`;
+            rafId = null;
+        });
+    }, { passive: true });
+}
 
 // ==========================================
 // EVENT LISTENERS
 // ==========================================
-generateBtn.addEventListener('click', (e) => {
-    if (isTyping) return; // Don't act if still typing
-    sessionClickCount++;
-    generateRandomPickupLine();
-});
+if (generateBtn) {
+    generateBtn.addEventListener('click', (e) => {
+        if (isTyping) return;
+        sessionClickCount++;
+        generateRandomPickupLine();
+    });
+}
 
 // Keyboard shortcuts (only when not in form)
 document.addEventListener('keydown', (e) => {
-    // Don't trigger if user is typing in a form field
     const activeTag = document.activeElement.tagName;
     if (activeTag === 'INPUT' || activeTag === 'TEXTAREA') return;
 
-    const formIsHidden = letterForm.classList.contains('hidden');
-    if ((e.code === 'Space' || e.code === 'Enter') && !isTyping && formIsHidden) {
-        e.preventDefault();
-        generateBtn.click();
+    if (letterForm && generateBtn) {
+        const formIsHidden = letterForm.classList.contains('hidden');
+        if ((e.code === 'Space' || e.code === 'Enter') && !isTyping && formIsHidden) {
+            e.preventDefault();
+            generateBtn.click();
+        }
     }
 });
 
 // Character counter for textarea
-if (messageInput) {
+if (messageInput && charCount) {
     messageInput.addEventListener('input', () => {
         charCount.textContent = messageInput.value.length;
     });
@@ -241,125 +261,159 @@ if (messageInput) {
 // VIEW SWITCHING
 // ==========================================
 function showLetterMode(to, from, msg) {
-    actionArea.classList.add('hidden');
-    contentArea.classList.add('hidden');
-    letterForm.classList.add('hidden');
+    if (actionArea) actionArea.classList.add('hidden');
+    if (contentArea) contentArea.classList.add('hidden');
+    if (letterForm) letterForm.classList.add('hidden');
 
-    subtitleEl.textContent = `A Letter For You`;
-    titleEl.textContent = "Happy Valentine's";
+    if (subtitleEl) subtitleEl.textContent = `A Letter For You`;
+    if (titleEl) titleEl.textContent = "Happy Valentine's";
 
-    $('#letter-to').textContent = to;
-    $('#letter-from').textContent = from;
-    $('#letter-body').textContent = msg;
+    const letterTo = $('#letter-to');
+    const letterFrom = $('#letter-from');
+    const letterBody = $('#letter-body');
+    if (letterTo) letterTo.textContent = to;
+    if (letterFrom) letterFrom.textContent = from;
+    if (letterBody) letterBody.textContent = msg;
 
-    letterView.classList.remove('hidden');
+    if (letterView) letterView.classList.remove('hidden');
 }
 
 function showCreateMode() {
-    actionArea.classList.add('hidden');
-    contentArea.classList.add('hidden');
-    letterView.classList.add('hidden');
+    if (actionArea) actionArea.classList.add('hidden');
+    if (contentArea) contentArea.classList.add('hidden');
+    if (letterView) letterView.classList.add('hidden');
 
-    subtitleEl.textContent = "Create Your Own";
-    titleEl.textContent = "Write a Letter";
+    if (subtitleEl) subtitleEl.textContent = "Create Your Own";
+    if (titleEl) titleEl.textContent = "Write a Letter";
 
-    letterForm.classList.remove('hidden');
+    if (letterForm) letterForm.classList.remove('hidden');
 
     // Focus on first input for UX
-    setTimeout(() => senderInput.focus(), 300);
+    if (senderInput) setTimeout(() => senderInput.focus(), 300);
 }
 
 function resetToDefault() {
     window.history.pushState({}, document.title, window.location.pathname);
 
-    letterForm.classList.add('hidden');
-    letterView.classList.add('hidden');
-    actionArea.classList.remove('hidden');
-    contentArea.classList.remove('hidden');
+    if (letterForm) letterForm.classList.add('hidden');
+    if (letterView) letterView.classList.add('hidden');
+    if (actionArea) actionArea.classList.remove('hidden');
+    if (contentArea) contentArea.classList.remove('hidden');
 
-    subtitleEl.textContent = "For You";
-    titleEl.textContent = "Hey Darling";
+    if (subtitleEl) subtitleEl.textContent = "For You";
+    if (titleEl) titleEl.textContent = "Hey Darling";
 
     // Reset form fields
-    senderInput.value = '';
-    receiverInput.value = '';
-    messageInput.value = '';
-    charCount.textContent = '0';
+    if (senderInput) senderInput.value = '';
+    if (receiverInput) receiverInput.value = '';
+    if (messageInput) messageInput.value = '';
+    if (charCount) charCount.textContent = '0';
 }
 
 // ==========================================
 // LETTER CREATION & SHARING
 // ==========================================
-createLetterBtn.addEventListener('click', showCreateMode);
-cancelFormBtn.addEventListener('click', resetToDefault);
-createOwnBtn.addEventListener('click', () => {
-    resetToDefault();
-    showCreateMode();
-});
-
-generateLinkBtn.addEventListener('click', async (e) => {
-    e.preventDefault();
-
-    const sender = senderInput.value.trim();
-    const receiver = receiverInput.value.trim();
-    const message = messageInput.value.trim();
-
-    // Validation
-    if (!sender) {
-        senderInput.focus();
-        showToast("Please enter your name 💕");
-        return;
-    }
-    if (!receiver) {
-        receiverInput.focus();
-        showToast("Who is this for? 💌");
-        return;
-    }
-    if (!message) {
-        messageInput.focus();
-        showToast("Write something from the heart ❤️");
-        return;
-    }
-
-    // Save to localStorage (with IP tracking)
-    await saveLetter(sender, receiver, message);
-
-    // Generate shareable link
-    // Generate shareable link
-    // Obfuscate data
-    const data = {
-        t: receiver,
-        f: sender,
-        m: message
-    };
-    const encodedData = btoa(encodeURIComponent(JSON.stringify(data)));
-
-    // Create params
-    const params = new URLSearchParams({
-        d: encodedData
+if (createLetterBtn) createLetterBtn.addEventListener('click', showCreateMode);
+if (cancelFormBtn) cancelFormBtn.addEventListener('click', resetToDefault);
+if (createOwnBtn) {
+    createOwnBtn.addEventListener('click', () => {
+        resetToDefault();
+        showCreateMode();
     });
+}
 
-    const shareUrl = `${window.location.origin}${window.location.pathname}?${params.toString()}`;
+if (generateLinkBtn) {
+    generateLinkBtn.addEventListener('click', async (e) => {
+        e.preventDefault();
 
-    // Copy to clipboard with toast feedback
-    navigator.clipboard.writeText(shareUrl).then(() => {
-        showToast("Link copied! Send it to your Valentine 💕");
-    }).catch(() => {
-        // Fallback for non-HTTPS / older browsers
-        const textArea = document.createElement('textarea');
-        textArea.value = shareUrl;
-        textArea.style.position = 'fixed';
-        textArea.style.opacity = '0';
-        document.body.appendChild(textArea);
-        textArea.select();
-        document.execCommand('copy');
-        textArea.remove();
-        showToast("Link copied! Send it to your Valentine 💕");
+        const sender = senderInput.value.trim();
+        const receiver = receiverInput.value.trim();
+        const message = messageInput.value.trim();
+
+        // Validation
+        if (!sender) {
+            senderInput.focus();
+            showToast("Please enter your name 💕");
+            return;
+        }
+        if (!receiver) {
+            receiverInput.focus();
+            showToast("Who is this for? 💌");
+            return;
+        }
+        if (!message) {
+            messageInput.focus();
+            showToast("Write something from the heart ❤️");
+            return;
+        }
+
+        // === LOADING STATE ===
+        const loader = document.getElementById('loader');
+        const originalBtnHTML = generateLinkBtn.innerHTML;
+        generateLinkBtn.disabled = true;
+        generateLinkBtn.innerHTML = '<span class="btn-spinner"></span> Saving...';
+        if (loader) loader.classList.add('show');
+
+        // Track when loader started so we can enforce a minimum display time
+        const loaderStartTime = Date.now();
+
+        try {
+            const result = await saveLetter(sender, receiver, message);
+
+            // Enforce minimum 800ms loader display for smooth UX
+            const elapsed = Date.now() - loaderStartTime;
+            const remaining = Math.max(0, 800 - elapsed);
+            await sleep(remaining);
+
+            // === HIDE LOADER ===
+            if (loader) loader.classList.remove('show');
+
+            // Brief pause before transitioning to letter view
+            await sleep(300);
+
+            if (result.offline) {
+                showToast("Saved locally (offline mode) 📂");
+            } else {
+                showToast("Valentine saved to cloud! ☁️✨");
+            }
+
+            // Generate shareable link (obfuscated)
+            const data = { t: receiver, f: sender, m: message };
+            const encodedData = btoa(encodeURIComponent(JSON.stringify(data)));
+            const params = new URLSearchParams({ d: encodedData });
+            const shareUrl = `${window.location.origin}${window.location.pathname}?${params.toString()}`;
+
+            // Copy to clipboard with toast feedback
+            try {
+                await navigator.clipboard.writeText(shareUrl);
+                showToast("Link copied! Send it to your Valentine 💕", 4000);
+            } catch (clipboardError) {
+                // Fallback for non-HTTPS / older browsers
+                const textArea = document.createElement('textarea');
+                textArea.value = shareUrl;
+                textArea.style.position = 'fixed';
+                textArea.style.opacity = '0';
+                document.body.appendChild(textArea);
+                textArea.select();
+                document.execCommand('copy');
+                textArea.remove();
+                showToast("Link copied! Send it to your Valentine 💕", 4000);
+            }
+
+            // Show preview of the letter
+            showLetterMode(receiver, sender, message);
+
+        } catch (err) {
+            console.error("Error in link generation flow:", err);
+            if (loader) loader.classList.remove('show');
+            showToast("Something went wrong. Please try again ❌");
+        } finally {
+            // Always restore button state
+            generateLinkBtn.disabled = false;
+            generateLinkBtn.innerHTML = originalBtnHTML;
+        }
     });
-
-    // Show preview of the letter
-    showLetterMode(receiver, sender, message);
-});
+}
 
 // ==========================================
 // LETTER STORAGE (localStorage + CSV)
@@ -395,13 +449,11 @@ async function getIPAndLocation() {
         console.log('Geolocation failed or denied, falling back to IP');
     }
 
-    // 2. Fetch IP Data (we need this for City/Country even if we have coords, 
-    // unless we do reverse geocoding, but IP API is easier for text location)
+    // 2. Fetch IP Data
     try {
         const response = await fetch('https://ipapi.co/json/');
         const data = await response.json();
 
-        // Build detailed location string
         const locationParts = [];
         if (data.city) locationParts.push(data.city);
         if (data.region) locationParts.push(data.region);
@@ -416,48 +468,31 @@ async function getIPAndLocation() {
             postal: data.postal || '',
             timezone: data.timezone || '',
             location: locationParts.join(', ') || 'Unknown',
-            // Prefer GPS coords if available, else IP coords
             latitude: geoData ? geoData.latitude : (data.latitude || null),
             longitude: geoData ? geoData.longitude : (data.longitude || null),
             accuracy: geoData ? 'gps' : (data.latitude && data.longitude ? 'city' : 'unknown')
         };
     } catch (error) {
         console.error('Failed to fetch IP/location:', error);
-        // Fallback if IP API fails but we have GPS
         if (geoData) {
             return {
-                ip: 'Unknown',
-                city: 'Unknown',
-                region: 'Unknown',
-                country: 'Unknown',
-                countryCode: '',
-                postal: '',
-                timezone: '',
-                location: `${geoData.latitude.toFixed(4)}, ${geoData.longitude.toFixed(4)}`, // Fallback name
-                latitude: geoData.latitude,
-                longitude: geoData.longitude,
-                accuracy: 'gps'
+                ip: 'Unknown', city: 'Unknown', region: 'Unknown', country: 'Unknown',
+                countryCode: '', postal: '', timezone: '',
+                location: `${geoData.latitude.toFixed(4)}, ${geoData.longitude.toFixed(4)}`,
+                latitude: geoData.latitude, longitude: geoData.longitude, accuracy: 'gps'
             };
         }
 
         return {
-            ip: 'Unknown',
-            city: 'Unknown',
-            region: 'Unknown',
-            country: 'Unknown',
-            countryCode: '',
-            postal: '',
-            timezone: '',
-            location: 'Unknown',
-            latitude: null,
-            longitude: null,
-            accuracy: 'unknown'
+            ip: 'Unknown', city: 'Unknown', region: 'Unknown', country: 'Unknown',
+            countryCode: '', postal: '', timezone: '', location: 'Unknown',
+            latitude: null, longitude: null, accuracy: 'unknown'
         };
     }
 }
 
 async function saveLetter(from, to, message) {
-    const letters = getLetters();
+    // Loader is managed by the caller (generateLinkBtn handler)
     const ipData = await getIPAndLocation();
 
     const letter = {
@@ -467,11 +502,8 @@ async function saveLetter(from, to, message) {
         message: message,
         timestamp: new Date().toISOString(),
         date: new Date().toLocaleDateString('en-IN', {
-            day: '2-digit',
-            month: 'short',
-            year: 'numeric',
-            hour: '2-digit',
-            minute: '2-digit'
+            day: '2-digit', month: 'short', year: 'numeric',
+            hour: '2-digit', minute: '2-digit'
         }),
         ip: ipData.ip,
         location: ipData.location,
@@ -484,50 +516,37 @@ async function saveLetter(from, to, message) {
         latitude: ipData.latitude,
         longitude: ipData.longitude,
         accuracy: ipData.accuracy,
-        clicks: sessionClickCount // Record clicks from this session
+        clicks: sessionClickCount
     };
 
-    // Save to LocalStorage (Backup/Personal)
-    letters.push(letter);
-    localStorage.setItem('valentine_letters', JSON.stringify(letters));
-
-    // Save to Firebase (Global)
-    try {
-        const docRef = await addDoc(collection(db, "letters"), letter);
-        console.log("Document written with ID: ", docRef.id);
-    } catch (e) {
-        console.error("Error adding document to Firebase: ", e);
-        // We still return the letter/success because local save worked
+    // Save to Firebase only
+    let offline = false;
+    if (db) {
+        try {
+            const docRef = await addDoc(collection(db, "letters"), letter);
+            console.log("Document written with ID: ", docRef.id);
+        } catch (e) {
+            console.error("Error adding document to Firebase: ", e);
+            offline = true;
+        }
+    } else {
+        console.warn("Firebase not available — letter not saved");
+        offline = true;
     }
 
-    return letter;
-}
-
-async function fetchGlobalLetters() {
-    try {
-        const q = query(collection(db, "letters"), orderBy("timestamp", "desc"), limit(100));
-        const querySnapshot = await getDocs(q);
-        const globalLetters = [];
-        querySnapshot.forEach((doc) => {
-            const data = doc.data();
-            globalLetters.push(data);
-        });
-        return globalLetters;
-    } catch (e) {
-        console.error("Error getting documents: ", e);
-        return getLetters(); // Fallback to local
-    }
+    return { letter, success: true, offline };
 }
 
 function checkAuth() {
-    if (sessionStorage.getItem('godview_authenticated') === 'true') {
+    // Use '1' to match godview.html's inline auth system
+    if (sessionStorage.getItem('godview_authenticated') === '1') {
         return true;
     }
     // Only prompt if on godview page
     if (window.location.pathname.includes('godview.html')) {
         const password = prompt("Enter Admin Password:");
         if (password === "valentines2024") {
-            sessionStorage.setItem('godview_authenticated', 'true');
+            sessionStorage.setItem('godview_authenticated', '1');
             return true;
         } else {
             alert("Incorrect password!");
@@ -538,66 +557,8 @@ function checkAuth() {
     return true;
 }
 
-function getLetters() {
-    try {
-        return JSON.parse(localStorage.getItem('valentine_letters') || '[]');
-    } catch {
-        return [];
-    }
-}
-
-function generateCSV() {
-    const letters = getLetters();
-    if (letters.length === 0) return null;
-
-    // CSV header
-    const header = 'ID,From,To,Message,IP,Location,Date,Timestamp';
-
-    // Escape CSV fields properly
-    const escapeCSV = (str) => {
-        if (str == null) return '';
-        const s = String(str);
-        if (s.includes(',') || s.includes('"') || s.includes('\n') || s.includes('\r')) {
-            return '"' + s.replace(/"/g, '""') + '"';
-        }
-        return s;
-    };
-
-    const rows = letters.map(l =>
-        [l.id, l.from, l.to, l.message, l.ip || 'N/A', l.location || 'N/A', l.date || '', l.timestamp]
-            .map(escapeCSV)
-            .join(',')
-    );
-
-    return header + '\n' + rows.join('\n');
-}
-
-function downloadCSV() {
-    const csv = generateCSV();
-    if (!csv) {
-        showToast("No letters saved yet!");
-        return;
-    }
-
-    const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = `valentine_letters_${new Date().toISOString().split('T')[0]}.csv`;
-    a.style.display = 'none';
-    document.body.appendChild(a);
-    a.click();
-    document.body.removeChild(a);
-    URL.revokeObjectURL(url);
-    showToast("CSV downloaded! 📄");
-}
-
 // Make functions available globally for godview.html
-// Make functions available globally for godview.html
-window.getLetters = getLetters;
 window.saveLetter = saveLetter;
-window.generateCSV = generateCSV;
-window.downloadCSV = downloadCSV;
 window.fetchGlobalLetters = fetchGlobalLetters;
 window.deleteGlobalLetter = deleteGlobalLetter;
 window.checkAuth = checkAuth;
@@ -630,7 +591,6 @@ window.checkAuth = checkAuth;
     }
 
     if (to && from && msg) {
-        // If coming from legacy params, they might need decoding
         const finalTo = d ? to : decodeURIComponent(to);
         const finalFrom = d ? from : decodeURIComponent(from);
         const finalMsg = d ? msg : decodeURIComponent(msg);
@@ -638,4 +598,3 @@ window.checkAuth = checkAuth;
         showLetterMode(finalTo, finalFrom, finalMsg);
     }
 })();
-
