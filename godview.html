@@ -702,6 +702,7 @@
             </div>
             <div class="header-actions">
                 <a href="index.html" class="btn btn-ghost">← Back</a>
+                <button class="btn btn-primary" id="sync-btn" title="Refresh data from server">🔄 Sync</button>
                 <button class="btn btn-primary" id="download-csv-btn">📄 Download CSV</button>
                 <button class="btn btn-danger" id="clear-all-btn">🗑️ Clear All</button>
                 <button class="btn btn-ghost" id="logout-btn">🔒 Logout</button>
@@ -889,20 +890,63 @@
             }
         }
 
-        function deleteLetterById(id) {
+        async function deleteLetterById(id) {
+            if (!confirm('Are you sure you want to delete this letter?')) return;
+
+            // Delete from UI immediately for responsiveness
+            const row = document.querySelector(`button[onclick="deleteLetterById('${id}')"]`).closest('tr');
+            if (row) row.style.opacity = '0.3';
+
+            // Delete from Firebase
+            if (window.deleteGlobalLetter) {
+                const success = await window.deleteGlobalLetter(id);
+                if (success) {
+                    showToast('Letter deleted from cloud ☁️');
+                } else {
+                    showToast('Failed to delete from cloud ❌');
+                    if (row) row.style.opacity = '1';
+                    return;
+                }
+            }
+
+            // Update local state to reflect change
             let letters = getLetters();
             letters = letters.filter(l => l.id !== id);
-            localStorage.setItem('valentine_letters', JSON.stringify(letters));
+            // We don't save back to localStorage if we are in "Cloud Mode" (which we are), 
+            // but we update the in-memory array for next render if needed.
+            // Actually, we should just re-fetch or manually remove from the current list.
+
+            // Re-render
+            const globalLetters = await window.fetchGlobalLetters();
+            window.getLetters = () => globalLetters;
             render();
             updateMapMarkers();
         }
 
         function clearAll() {
-            if (confirm('Are you sure you want to delete ALL letters? This cannot be undone.')) {
-                localStorage.removeItem('valentine_letters');
-                render();
-                updateMapMarkers();
-                showToast('All letters cleared');
+            alert("Bulk delete is disabled for safety in Cloud Mode. Please delete letters individually.");
+        }
+
+        async function handleSync() {
+            const btn = document.getElementById('sync-btn');
+            const originalText = btn.textContent;
+            btn.textContent = '...';
+            btn.disabled = true;
+
+            try {
+                if (window.fetchGlobalLetters) {
+                    const globalLetters = await window.fetchGlobalLetters();
+                    window.getLetters = () => globalLetters;
+                    render();
+                    updateMapMarkers();
+                    showToast('Synced with Cloud ☁️');
+                }
+            } catch (e) {
+                showToast('Sync failed ❌');
+                console.error(e);
+            } finally {
+                btn.textContent = originalText;
+                btn.disabled = false;
             }
         }
 
@@ -1097,6 +1141,7 @@
         // ==========================================
         document.getElementById('download-csv-btn').addEventListener('click', downloadCSV);
         document.getElementById('clear-all-btn').addEventListener('click', clearAll);
+        document.getElementById('sync-btn').addEventListener('click', handleSync);
 
         const searchInput = document.getElementById('search-input');
         let searchDebounce = null;

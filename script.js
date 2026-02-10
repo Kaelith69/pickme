@@ -2,7 +2,7 @@
 // FIREBASE CONFIG & INIT
 // ==========================================
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-import { getFirestore, collection, addDoc, getDocs, query, orderBy, limit } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+import { getFirestore, collection, addDoc, getDocs, query, orderBy, limit, where, deleteDoc, doc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
 const firebaseConfig = {
     apiKey: "AIzaSyBEIiqPpy2JU2oqds9BS3yAJnAnxK4rJ58",
@@ -15,6 +15,42 @@ const firebaseConfig = {
 
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
+
+async function fetchGlobalLetters() {
+    try {
+        const q = query(collection(db, "letters"), orderBy("timestamp", "desc"), limit(100));
+        const querySnapshot = await getDocs(q);
+        const globalLetters = [];
+        querySnapshot.forEach((doc) => {
+            const data = doc.data();
+            globalLetters.push(data);
+        });
+        return globalLetters;
+    } catch (e) {
+        console.error("Error getting documents: ", e);
+        return getLetters(); // Fallback to local
+    }
+}
+
+async function deleteGlobalLetter(id) {
+    try {
+        // Query for the document with the matching custom 'id' field
+        const q = query(collection(db, "letters"), where("id", "==", id));
+        const querySnapshot = await getDocs(q);
+
+        const deletePromises = [];
+        querySnapshot.forEach((document) => {
+            deletePromises.push(deleteDoc(document.ref));
+        });
+
+        await Promise.all(deletePromises);
+        console.log(`Deleted global letter with ID: ${id}`);
+        return true;
+    } catch (e) {
+        console.error("Error deleting document: ", e);
+        return false;
+    }
+}
 
 // ==========================================
 // PICKUP LINES DATA
@@ -563,6 +599,7 @@ window.saveLetter = saveLetter;
 window.generateCSV = generateCSV;
 window.downloadCSV = downloadCSV;
 window.fetchGlobalLetters = fetchGlobalLetters;
+window.deleteGlobalLetter = deleteGlobalLetter;
 window.checkAuth = checkAuth;
 
 // ==========================================
