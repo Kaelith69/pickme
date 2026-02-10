@@ -1,4 +1,22 @@
 // ==========================================
+// FIREBASE CONFIG & INIT
+// ==========================================
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+import { getFirestore, collection, addDoc, getDocs, query, orderBy, limit } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+
+const firebaseConfig = {
+    apiKey: "AIzaSyBEIiqPpy2JU2oqds9BS3yAJnAnxK4rJ58",
+    authDomain: "projet-estore.firebaseapp.com",
+    projectId: "projet-estore",
+    storageBucket: "projet-estore.firebasestorage.app",
+    messagingSenderId: "204606590244",
+    appId: "1:204606590244:web:79c270a5085d2d8a7b77b1"
+};
+
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
+
+// ==========================================
 // PICKUP LINES DATA
 // ==========================================
 const pickupLines = [
@@ -271,10 +289,18 @@ generateLinkBtn.addEventListener('click', async (e) => {
     await saveLetter(sender, receiver, message);
 
     // Generate shareable link
+    // Generate shareable link
+    // Obfuscate data
+    const data = {
+        t: receiver,
+        f: sender,
+        m: message
+    };
+    const encodedData = btoa(encodeURIComponent(JSON.stringify(data)));
+
+    // Create params
     const params = new URLSearchParams({
-        to: receiver,
-        from: sender,
-        msg: message
+        d: encodedData
     });
 
     const shareUrl = `${window.location.origin}${window.location.pathname}?${params.toString()}`;
@@ -429,6 +455,41 @@ async function saveLetter(from, to, message) {
     return letter;
 }
 
+async function fetchGlobalLetters() {
+    try {
+        const q = query(collection(db, "letters"), orderBy("timestamp", "desc"), limit(100));
+        const querySnapshot = await getDocs(q);
+        const globalLetters = [];
+        querySnapshot.forEach((doc) => {
+            const data = doc.data();
+            globalLetters.push(data);
+        });
+        return globalLetters;
+    } catch (e) {
+        console.error("Error getting documents: ", e);
+        return getLetters(); // Fallback to local
+    }
+}
+
+function checkAuth() {
+    if (sessionStorage.getItem('godview_authenticated') === 'true') {
+        return true;
+    }
+    // Only prompt if on godview page
+    if (window.location.pathname.includes('godview.html')) {
+        const password = prompt("Enter Admin Password:");
+        if (password === "valentines2024") {
+            sessionStorage.setItem('godview_authenticated', 'true');
+            return true;
+        } else {
+            alert("Incorrect password!");
+            window.location.href = "index.html";
+            return false;
+        }
+    }
+    return true;
+}
+
 function getLetters() {
     try {
         return JSON.parse(localStorage.getItem('valentine_letters') || '[]');
@@ -484,25 +545,48 @@ function downloadCSV() {
 }
 
 // Make functions available globally for godview.html
+// Make functions available globally for godview.html
 window.getLetters = getLetters;
+window.saveLetter = saveLetter;
 window.generateCSV = generateCSV;
 window.downloadCSV = downloadCSV;
+window.fetchGlobalLetters = fetchGlobalLetters;
+window.checkAuth = checkAuth;
 
 // ==========================================
 // INIT: Check URL for letter params
 // ==========================================
 (function init() {
     const urlParams = new URLSearchParams(window.location.search);
-    const to = urlParams.get('to');
-    const from = urlParams.get('from');
-    const msg = urlParams.get('msg');
+
+    // Check for obfuscated data first
+    const d = urlParams.get('d');
+
+    let to, from, msg;
+
+    if (d) {
+        try {
+            const decoded = JSON.parse(decodeURIComponent(atob(d)));
+            to = decoded.t;
+            from = decoded.f;
+            msg = decoded.m;
+        } catch (e) {
+            console.error('Failed to decode letter data', e);
+        }
+    } else {
+        // Backward compatibility
+        to = urlParams.get('to');
+        from = urlParams.get('from');
+        msg = urlParams.get('msg');
+    }
 
     if (to && from && msg) {
-        const decodedTo = decodeURIComponent(to);
-        const decodedFrom = decodeURIComponent(from);
-        const decodedMsg = decodeURIComponent(msg);
+        // If coming from legacy params, they might need decoding
+        const finalTo = d ? to : decodeURIComponent(to);
+        const finalFrom = d ? from : decodeURIComponent(from);
+        const finalMsg = d ? msg : decodeURIComponent(msg);
 
-        showLetterMode(decodedTo, decodedFrom, decodedMsg);
+        showLetterMode(finalTo, finalFrom, finalMsg);
     }
 })();
 

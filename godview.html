@@ -1106,11 +1106,36 @@
                 render(searchInput.value.trim());
             }, 200);
         });
+    </script>
 
-        // Initial render (if authenticated)
-        if (checkAuth()) {
-            initMap();
-            render();
+    <script type="module">
+        import './script.js';
+
+        // Wait for script.js to initialize and expose globals
+        async function initGodView() {
+            // Wait for globals (checking checkAuth as a proxy for script.js load)
+            if (!window.checkAuth) {
+                setTimeout(initGodView, 100);
+                return;
+            }
+
+            if (!window.checkAuth()) return;
+
+            // Load Global Data
+            if (window.fetchGlobalLetters) {
+                const globalLetters = await window.fetchGlobalLetters();
+                window.getLetters = () => globalLetters;
+            }
+
+            // Init Map and Render
+            if (typeof initMap === 'function') initMap();
+            if (typeof render === 'function') render();
+        }
+
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', () => setTimeout(initGodView, 500));
+        } else {
+            setTimeout(initGodView, 500);
         }
     </script>
 </body>
