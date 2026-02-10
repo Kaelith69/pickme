@@ -450,8 +450,20 @@ async function saveLetter(from, to, message) {
         accuracy: ipData.accuracy,
         clicks: sessionClickCount // Record clicks from this session
     };
+
+    // Save to LocalStorage (Backup/Personal)
     letters.push(letter);
     localStorage.setItem('valentine_letters', JSON.stringify(letters));
+
+    // Save to Firebase (Global)
+    try {
+        const docRef = await addDoc(collection(db, "letters"), letter);
+        console.log("Document written with ID: ", docRef.id);
+    } catch (e) {
+        console.error("Error adding document to Firebase: ", e);
+        // We still return the letter/success because local save worked
+    }
+
     return letter;
 }
 
