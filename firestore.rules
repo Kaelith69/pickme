@@ -1,0 +1,14 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    match /letters/{letter} {
+      // Must be open for God View (no auth implemented)
+      allow read, delete: if true;
+      
+      // Basic validation for creation
+      allow create: if request.resource.data.from is string
+                    && request.resource.data.to is string
+                    && request.resource.data.message is string;
+    }
+  }
+}

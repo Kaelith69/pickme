@@ -1,0 +1,10 @@
+{
+  "projectId": "pickme-love-2026",
+  "appId": "1:1024313568025:web:b36d90f9b46d681e96b388",
+  "storageBucket": "pickme-love-2026.firebasestorage.app",
+  "apiKey": "AIzaSyAlLL2fcqWXASQ8kYcMHURlHG-haf3vl4s",
+  "authDomain": "pickme-love-2026.firebaseapp.com",
+  "messagingSenderId": "1024313568025",
+  "projectNumber": "1024313568025",
+  "version": "2"
+}
