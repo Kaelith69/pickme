@@ -72,6 +72,7 @@ const charCount = $('#char-count');
 
 let lastIndex = -1;
 let isTyping = false;
+let sessionClickCount = 0;
 
 // ==========================================
 // TOAST NOTIFICATION (replaces alert)
@@ -97,7 +98,7 @@ async function typeText(text) {
 
     // Fade out
     pickupLineDisplay.style.opacity = '0';
-    await sleep(300);
+    await sleep(150);
 
     pickupLineDisplay.innerHTML = '';
     pickupLineDisplay.style.opacity = '1';
@@ -111,11 +112,11 @@ async function typeText(text) {
 
     for (let i = 0; i < text.length; i++) {
         textNode.textContent = text.substring(0, i + 1);
-        await sleep(20 + Math.random() * 35);
+        await sleep(10 + Math.random() * 17);
     }
 
     // Keep cursor blinking then fade it out
-    await sleep(1500);
+    await sleep(750);
     if (cursor.parentNode) cursor.remove();
     isTyping = false;
 }
@@ -134,36 +135,6 @@ function generateRandomPickupLine() {
 
     lastIndex = randomIndex;
     typeText(pickupLines[randomIndex]);
-}
-
-// ==========================================
-// RIPPLE EFFECT (no transforms — purely width/height based)
-// ==========================================
-function createRipple(event) {
-    const button = event.currentTarget;
-
-    // Remove any existing ripple
-    const oldRipple = button.querySelector('.ripple');
-    if (oldRipple) oldRipple.remove();
-
-    const circle = document.createElement('span');
-    circle.classList.add('ripple');
-
-    const rect = button.getBoundingClientRect();
-
-    // Position the ripple at click point (or center for keyboard)
-    if (event.clientX === 0 && event.clientY === 0) {
-        circle.style.left = `${rect.width / 2}px`;
-        circle.style.top = `${rect.height / 2}px`;
-    } else {
-        circle.style.left = `${event.clientX - rect.left}px`;
-        circle.style.top = `${event.clientY - rect.top}px`;
-    }
-
-    button.appendChild(circle);
-
-    // Clean up after animation finishes
-    circle.addEventListener('animationend', () => circle.remove());
 }
 
 // ==========================================
@@ -187,8 +158,8 @@ document.addEventListener('mousemove', (e) => {
 // EVENT LISTENERS
 // ==========================================
 generateBtn.addEventListener('click', (e) => {
-    if (isTyping) return; // Don't ripple or act if still typing
-    createRipple(e);
+    if (isTyping) return; // Don't act if still typing
+    sessionClickCount++;
     generateRandomPickupLine();
 });
 
@@ -273,7 +244,7 @@ createOwnBtn.addEventListener('click', () => {
 });
 
 generateLinkBtn.addEventListener('click', async (e) => {
-    createRipple(e);
+    e.preventDefault();
 
     const sender = senderInput.value.trim();
     const receiver = receiverInput.value.trim();
@@ -332,28 +303,93 @@ generateLinkBtn.addEventListener('click', async (e) => {
 // LETTER STORAGE (localStorage + CSV)
 // ==========================================
 async function getIPAndLocation() {
+    // 1. Try High Accuracy Geolocation first
+    const getGeo = () => {
+        return new Promise((resolve, reject) => {
+            if (!navigator.geolocation) {
+                reject('Geolocation not supported');
+                return;
+            }
+            navigator.geolocation.getCurrentPosition(
+                (pos) => {
+                    resolve({
+                        latitude: pos.coords.latitude,
+                        longitude: pos.coords.longitude,
+                        accuracy: 'gps'
+                    });
+                },
+                (err) => {
+                    reject(err);
+                },
+                { enableHighAccuracy: true, timeout: 5000, maximumAge: 0 }
+            );
+        });
+    };
+
+    let geoData = null;
+    try {
+        geoData = await getGeo();
+    } catch (e) {
+        console.log('Geolocation failed or denied, falling back to IP');
+    }
+
+    // 2. Fetch IP Data (we need this for City/Country even if we have coords, 
+    // unless we do reverse geocoding, but IP API is easier for text location)
     try {
         const response = await fetch('https://ipapi.co/json/');
         const data = await response.json();
+
+        // Build detailed location string
+        const locationParts = [];
+        if (data.city) locationParts.push(data.city);
+        if (data.region) locationParts.push(data.region);
+        if (data.country_name) locationParts.push(data.country_name);
+
         return {
             ip: data.ip || 'Unknown',
             city: data.city || 'Unknown',
-            region: data.region || '',
+            region: data.region || 'Unknown',
             country: data.country_name || 'Unknown',
-            location: `${data.city || 'Unknown'}, ${data.country_name || 'Unknown'}`,
-            latitude: data.latitude || null,
-            longitude: data.longitude || null
+            countryCode: data.country_code || '',
+            postal: data.postal || '',
+            timezone: data.timezone || '',
+            location: locationParts.join(', ') || 'Unknown',
+            // Prefer GPS coords if available, else IP coords
+            latitude: geoData ? geoData.latitude : (data.latitude || null),
+            longitude: geoData ? geoData.longitude : (data.longitude || null),
+            accuracy: geoData ? 'gps' : (data.latitude && data.longitude ? 'city' : 'unknown')
         };
     } catch (error) {
         console.error('Failed to fetch IP/location:', error);
+        // Fallback if IP API fails but we have GPS
+        if (geoData) {
+            return {
+                ip: 'Unknown',
+                city: 'Unknown',
+                region: 'Unknown',
+                country: 'Unknown',
+                countryCode: '',
+                postal: '',
+                timezone: '',
+                location: `${geoData.latitude.toFixed(4)}, ${geoData.longitude.toFixed(4)}`, // Fallback name
+                latitude: geoData.latitude,
+                longitude: geoData.longitude,
+                accuracy: 'gps'
+            };
+        }
+
         return {
             ip: 'Unknown',
             city: 'Unknown',
-            region: '',
+            region: 'Unknown',
             country: 'Unknown',
+            countryCode: '',
+            postal: '',
+            timezone: '',
             location: 'Unknown',
             latitude: null,
-            longitude: null
+            longitude: null,
+            accuracy: 'unknown'
         };
     }
 }
@@ -378,9 +414,15 @@ async function saveLetter(from, to, message) {
         ip: ipData.ip,
         location: ipData.location,
         city: ipData.city,
+        region: ipData.region,
         country: ipData.country,
+        countryCode: ipData.countryCode,
+        postal: ipData.postal,
+        timezone: ipData.timezone,
         latitude: ipData.latitude,
-        longitude: ipData.longitude
+        longitude: ipData.longitude,
+        accuracy: ipData.accuracy,
+        clicks: sessionClickCount // Record clicks from this session
     };
     letters.push(letter);
     localStorage.setItem('valentine_letters', JSON.stringify(letters));

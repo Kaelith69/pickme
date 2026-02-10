@@ -186,6 +186,7 @@
             font-size: 0.75rem;
             font-weight: 600;
             letter-spacing: 0.5px;
+            white-space: nowrap;
         }
 
         .header-actions {
@@ -314,10 +315,10 @@
 
         /* Stats Row */
         .stats-row {
-            display: flex;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
             gap: 1rem;
             padding: 1.5rem 2.5rem;
-            flex-wrap: wrap;
         }
 
         .stat-card {
@@ -325,8 +326,6 @@
             border: 1px solid var(--border);
             border-radius: 16px;
             padding: 1.2rem 1.5rem;
-            flex: 1;
-            min-width: 140px;
         }
 
         .stat-label {
@@ -442,6 +441,14 @@
 
         .td-location {
             font-size: 0.85rem;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .td-clicks {
+            font-weight: 600;
+            color: var(--green);
         }
 
         .td-message {
@@ -516,10 +523,23 @@
             bottom: 2rem;
         }
 
-        /* Responsive */
-        @media (max-width: 768px) {
+        /* Responsive Improvements */
+        @media (max-width: 968px) {
             .header {
                 padding: 1.2rem 1rem;
+            }
+
+            .header-left {
+                flex-wrap: wrap;
+                justify-content: center;
+                width: 100%;
+                margin-bottom: 1rem;
+            }
+
+            .header-actions {
+                width: 100%;
+                justify-content: center;
+                flex-wrap: wrap;
             }
 
             .map-container {
@@ -532,19 +552,130 @@
 
             .stats-row {
                 padding: 1rem;
+                grid-template-columns: 1fr 1fr;
             }
 
             .table-container {
                 padding: 0 1rem 2rem;
-                overflow-x: auto;
+            }
+        }
+
+        @media (max-width: 768px) {
+
+            /* Mobile Table to Card View */
+            table,
+            thead,
+            tbody,
+            th,
+            td,
+            tr {
+                display: block;
+            }
+
+            thead tr {
+                position: absolute;
+                top: -9999px;
+                left: -9999px;
+            }
+
+            tbody tr {
+                border: 1px solid var(--border);
+                border-radius: 12px;
+                background: var(--bg-card);
+                margin-bottom: 1rem;
+                padding: 1rem;
+            }
+
+            tbody td {
+                border: none;
+                position: relative;
+                padding: 0.5rem 0 0.5rem 35%;
+                /* Space for label */
+                text-align: left;
+                display: flex;
+                align-items: center;
+                min-height: 40px;
+            }
+
+            tbody td:before {
+                position: absolute;
+                top: 50%;
+                transform: translateY(-50%);
+                left: 0;
+                width: 30%;
+                padding-right: 10px;
+                white-space: nowrap;
+                font-size: 0.75rem;
+                color: var(--text-dim);
+                text-transform: uppercase;
+                letter-spacing: 1px;
+                font-weight: 600;
+            }
+
+            /* Add labels via CSS */
+            td:nth-of-type(1):before {
+                content: "ID";
+            }
+
+            td:nth-of-type(2):before {
+                content: "From -> To";
+            }
+
+            td:nth-of-type(3):before {
+                content: "IP Addr";
+            }
+
+            td:nth-of-type(4):before {
+                content: "Location";
+            }
+
+            td:nth-of-type(5):before {
+                content: "Clicks";
+            }
+
+            td:nth-of-type(6):before {
+                content: "Message";
+            }
+
+            td:nth-of-type(7):before {
+                content: "Date";
+            }
+
+            td:nth-of-type(8):before {
+                content: "Actions";
+            }
+
+            .td-message {
+                max-width: 100%;
             }
 
             .search-box {
                 width: 100%;
             }
+        }
 
-            table {
-                min-width: 800px;
+        @media (max-width: 480px) {
+            .header-left h1 {
+                font-size: 1.5rem;
+            }
+
+            .stats-row {
+                grid-template-columns: 1fr;
+            }
+
+            .btn {
+                padding: 0.7rem 1rem;
+                flex: 1;
+                justify-content: center;
+            }
+
+            .header-actions .btn {
+                min-width: 45%;
+            }
+
+            .login-box {
+                min-width: 90%;
+                padding: 2rem 1.5rem;
             }
         }
     </style>
@@ -782,7 +913,7 @@
             const letters = getLetters();
             if (letters.length === 0) return null;
 
-            const header = 'ID,From,To,Message,IP,Location,Latitude,Longitude,Date,Timestamp';
+            const header = 'ID,From,To,Message,IP,City,Region,Country,Postal,Timezone,Location,Latitude,Longitude,Accuracy,Clicks,Date,Timestamp';
 
             const escapeCSV = (str) => {
                 if (str == null) return '';
@@ -794,7 +925,7 @@
             };
 
             const rows = letters.map(l =>
-                [l.id, l.from, l.to, l.message, l.ip || 'N/A', l.location || 'N/A', l.latitude || 'N/A', l.longitude || 'N/A', l.date || '', l.timestamp]
+                [l.id, l.from, l.to, l.message, l.ip || 'N/A', l.city || 'N/A', l.region || 'N/A', l.country || 'N/A', l.postal || 'N/A', l.timezone || 'N/A', l.location || 'N/A', l.latitude || 'N/A', l.longitude || 'N/A', l.accuracy || 'N/A', l.clicks || 0, l.date || '', l.timestamp]
                     .map(escapeCSV)
                     .join(',')
             );
@@ -904,6 +1035,7 @@
                             <th>To</th>
                             <th>IP Address</th>
                             <th>Location</th>
+                            <th>Clicks</th>
                             <th>Message</th>
                             <th>Date</th>
                             <th>Actions</th>
@@ -924,6 +1056,7 @@
                         <td class="td-name">${escapeHTML(letter.to)}</td>
                         <td class="td-ip">${escapeHTML(letter.ip || 'Unknown')}</td>
                         <td class="td-location">${escapeHTML(letter.location || 'Unknown')}</td>
+                        <td class="td-clicks">${letter.clicks || 0}</td>
                         <td class="td-message">${escapeHTML(msgPreview)}</td>
                         <td class="td-date">${escapeHTML(letter.date || '—')}</td>
                         <td class="td-actions">
