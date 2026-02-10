@@ -1,0 +1,985 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>God View — Valentine Letters</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=Playfair+Display:wght@600;700&display=swap"
+        rel="stylesheet">
+
+    <!-- Leaflet CSS -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+
+    <style>
+        :root {
+            --bg-1: #0f0d1a;
+            --bg-2: #1a1625;
+            --bg-card: #1e1a2e;
+            --bg-card-hover: #252038;
+            --border: rgba(255, 255, 255, 0.06);
+            --border-light: rgba(255, 255, 255, 0.1);
+            --primary: #e11d48;
+            --primary-light: #fb7185;
+            --primary-glow: rgba(225, 29, 72, 0.15);
+            --accent: #a78bfa;
+            --text-white: #f1f0f5;
+            --text-muted: #8b85a0;
+            --text-dim: #5c5672;
+            --green: #34d399;
+            --red: #f87171;
+            --shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Outfit', -apple-system, sans-serif;
+            background: var(--bg-1);
+            color: var(--text-white);
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        /* Login Screen */
+        .login-screen {
+            position: fixed;
+            inset: 0;
+            background: var(--bg-1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 10000;
+        }
+
+        .login-screen.hidden {
+            display: none;
+        }
+
+        .login-box {
+            background: var(--bg-card);
+            border: 1px solid var(--border-light);
+            border-radius: 20px;
+            padding: 3rem 2.5rem;
+            min-width: 350px;
+            text-align: center;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+        }
+
+        .login-box h1 {
+            font-family: 'Playfair Display', serif;
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+            color: var(--primary-light);
+        }
+
+        .login-box p {
+            color: var(--text-muted);
+            font-size: 0.9rem;
+            margin-bottom: 2rem;
+        }
+
+        .login-input {
+            width: 100%;
+            padding: 0.9rem 1.2rem;
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            color: var(--text-white);
+            font-family: 'Outfit', sans-serif;
+            font-size: 1rem;
+            margin-bottom: 1.5rem;
+            transition: border-color 0.2s ease;
+        }
+
+        .login-input:focus {
+            outline: none;
+            border-color: var(--primary);
+        }
+
+        .login-input::placeholder {
+            color: var(--text-dim);
+        }
+
+        .login-btn {
+            width: 100%;
+            padding: 0.9rem;
+            background: var(--primary);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-family: 'Outfit', sans-serif;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background-color 0.2s ease;
+        }
+
+        .login-btn:hover {
+            background: #be123c;
+        }
+
+        .login-error {
+            color: var(--red);
+            font-size: 0.85rem;
+            margin-top: 1rem;
+            display: none;
+        }
+
+        .login-error.show {
+            display: block;
+        }
+
+        /* Main Content */
+        #main-content {
+            display: none;
+        }
+
+        #main-content.show {
+            display: block;
+        }
+
+        /* Header */
+        .header {
+            padding: 2rem 2.5rem;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 1rem;
+            background: var(--bg-2);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            backdrop-filter: blur(12px);
+        }
+
+        .header-left {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .header-left h1 {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.6rem;
+            font-weight: 700;
+        }
+
+        .header-left h1 span {
+            color: var(--primary);
+        }
+
+        .badge {
+            background: var(--primary-glow);
+            color: var(--primary-light);
+            padding: 0.3rem 0.8rem;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+        }
+
+        .header-actions {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+
+        .btn {
+            font-family: 'Outfit', sans-serif;
+            font-size: 0.85rem;
+            font-weight: 600;
+            padding: 0.6rem 1.4rem;
+            border-radius: 10px;
+            border: none;
+            cursor: pointer;
+            transition: background-color 0.2s ease, box-shadow 0.2s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            text-decoration: none;
+        }
+
+        .btn-primary {
+            background: var(--primary);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #be123c;
+            box-shadow: 0 4px 15px rgba(225, 29, 72, 0.3);
+        }
+
+        .btn-ghost {
+            background: rgba(255, 255, 255, 0.05);
+            color: var(--text-muted);
+            border: 1px solid var(--border-light);
+        }
+
+        .btn-ghost:hover {
+            background: rgba(255, 255, 255, 0.1);
+            color: var(--text-white);
+        }
+
+        .btn-danger {
+            background: rgba(248, 113, 113, 0.1);
+            color: var(--red);
+            border: 1px solid rgba(248, 113, 113, 0.2);
+        }
+
+        .btn-danger:hover {
+            background: rgba(248, 113, 113, 0.2);
+        }
+
+        /* Map Container */
+        .map-container {
+            padding: 1.5rem 2.5rem;
+        }
+
+        .map-wrapper {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            overflow: hidden;
+            height: 450px;
+            position: relative;
+        }
+
+        #map {
+            width: 100%;
+            height: 100%;
+        }
+
+        .map-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+
+        .map-title {
+            font-size: 1rem;
+            font-weight: 600;
+            color: var(--text-muted);
+        }
+
+        /* Custom Leaflet styles for dark theme */
+        .leaflet-popup-content-wrapper {
+            background: var(--bg-card);
+            color: var(--text-white);
+            border: 1px solid var(--border-light);
+            border-radius: 10px;
+        }
+
+        .leaflet-popup-tip {
+            background: var(--bg-card);
+            border: 1px solid var(--border-light);
+        }
+
+        .leaflet-popup-content {
+            margin: 12px;
+            font-family: 'Outfit', sans-serif;
+        }
+
+        .popup-from {
+            font-weight: 600;
+            color: var(--primary-light);
+            font-size: 0.95rem;
+            margin-bottom: 0.3rem;
+        }
+
+        .popup-location {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            margin-bottom: 0.5rem;
+        }
+
+        .popup-message {
+            font-size: 0.85rem;
+            line-height: 1.4;
+            color: var(--text-white);
+            padding-top: 0.5rem;
+            border-top: 1px solid var(--border);
+            max-width: 200px;
+        }
+
+        /* Stats Row */
+        .stats-row {
+            display: flex;
+            gap: 1rem;
+            padding: 1.5rem 2.5rem;
+            flex-wrap: wrap;
+        }
+
+        .stat-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 1.2rem 1.5rem;
+            flex: 1;
+            min-width: 140px;
+        }
+
+        .stat-label {
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            color: var(--text-dim);
+            margin-bottom: 0.3rem;
+        }
+
+        .stat-value {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: var(--text-white);
+        }
+
+        .stat-value.highlight {
+            color: var(--primary-light);
+        }
+
+        /* Table Container */
+        .table-container {
+            padding: 0 2.5rem 3rem;
+        }
+
+        .table-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        .table-title {
+            font-size: 1rem;
+            font-weight: 600;
+            color: var(--text-muted);
+        }
+
+        .search-box {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            padding: 0.5rem 1rem;
+            color: var(--text-white);
+            font-family: 'Outfit', sans-serif;
+            font-size: 0.85rem;
+            width: 250px;
+            transition: border-color 0.2s ease;
+        }
+
+        .search-box:focus {
+            outline: none;
+            border-color: var(--primary);
+        }
+
+        .search-box::placeholder {
+            color: var(--text-dim);
+        }
+
+        /* Table */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            border-spacing: 0;
+        }
+
+        thead th {
+            text-align: left;
+            padding: 0.8rem 1rem;
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            color: var(--text-dim);
+            border-bottom: 1px solid var(--border);
+            font-weight: 600;
+            white-space: nowrap;
+        }
+
+        tbody tr {
+            border-bottom: 1px solid var(--border);
+            transition: background-color 0.15s ease;
+        }
+
+        tbody tr:hover {
+            background: var(--bg-card-hover);
+        }
+
+        tbody td {
+            padding: 1rem;
+            font-size: 0.9rem;
+            color: var(--text-muted);
+            vertical-align: top;
+        }
+
+        .td-id {
+            font-family: monospace;
+            font-size: 0.75rem;
+            color: var(--text-dim);
+        }
+
+        .td-name {
+            color: var(--text-white);
+            font-weight: 500;
+        }
+
+        .td-ip {
+            font-family: monospace;
+            font-size: 0.85rem;
+            color: var(--accent);
+        }
+
+        .td-location {
+            font-size: 0.85rem;
+        }
+
+        .td-message {
+            max-width: 250px;
+            white-space: pre-wrap;
+            word-break: break-word;
+            line-height: 1.5;
+        }
+
+        .td-date {
+            white-space: nowrap;
+            font-size: 0.8rem;
+        }
+
+        .td-actions {
+            white-space: nowrap;
+        }
+
+        .td-actions button {
+            background: none;
+            border: none;
+            cursor: pointer;
+            padding: 0.3rem;
+            font-size: 1rem;
+            opacity: 0.4;
+            transition: opacity 0.2s ease;
+        }
+
+        .td-actions button:hover {
+            opacity: 1;
+        }
+
+        /* Empty State */
+        .empty-state {
+            text-align: center;
+            padding: 5rem 2rem;
+            color: var(--text-dim);
+        }
+
+        .empty-state .emoji {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+        }
+
+        .empty-state p {
+            font-size: 1.1rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .empty-state .sub {
+            font-size: 0.85rem;
+        }
+
+        /* Toast */
+        .toast {
+            position: fixed;
+            bottom: -80px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: var(--text-white);
+            color: var(--bg-1);
+            padding: 0.8rem 1.5rem;
+            border-radius: 10px;
+            font-size: 0.9rem;
+            font-weight: 500;
+            z-index: 9999;
+            transition: bottom 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+        }
+
+        .toast.show {
+            bottom: 2rem;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .header {
+                padding: 1.2rem 1rem;
+            }
+
+            .map-container {
+                padding: 1rem;
+            }
+
+            .map-wrapper {
+                height: 350px;
+            }
+
+            .stats-row {
+                padding: 1rem;
+            }
+
+            .table-container {
+                padding: 0 1rem 2rem;
+                overflow-x: auto;
+            }
+
+            .search-box {
+                width: 100%;
+            }
+
+            table {
+                min-width: 800px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Login Screen -->
+    <div class="login-screen" id="login-screen">
+        <div class="login-box">
+            <h1>🔒 God View</h1>
+            <p>Enter password to access</p>
+            <input type="password" class="login-input" id="password-input" placeholder="Password" autofocus>
+            <button class="login-btn" id="login-btn">Unlock</button>
+            <p class="login-error" id="login-error">Incorrect password. Try again.</p>
+        </div>
+    </div>
+
+    <!-- Main Content (Hidden by default) -->
+    <div id="main-content">
+        <header class="header">
+            <div class="header-left">
+                <h1>👁️ <span>God</span> View</h1>
+                <span class="badge" id="count-badge">0 LETTERS</span>
+            </div>
+            <div class="header-actions">
+                <a href="index.html" class="btn btn-ghost">← Back</a>
+                <button class="btn btn-primary" id="download-csv-btn">📄 Download CSV</button>
+                <button class="btn btn-danger" id="clear-all-btn">🗑️ Clear All</button>
+                <button class="btn btn-ghost" id="logout-btn">🔒 Logout</button>
+            </div>
+        </header>
+
+        <!-- Interactive Map -->
+        <div class="map-container">
+            <div class="map-header">
+                <span class="map-title">📍 User Locations</span>
+            </div>
+            <div class="map-wrapper">
+                <div id="map"></div>
+            </div>
+        </div>
+
+        <div class="stats-row">
+            <div class="stat-card">
+                <div class="stat-label">Total Letters</div>
+                <div class="stat-value highlight" id="stat-total">0</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-label">Unique Senders</div>
+                <div class="stat-value" id="stat-senders">0</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-label">Unique Receivers</div>
+                <div class="stat-value" id="stat-receivers">0</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-label">Latest Letter</div>
+                <div class="stat-value" id="stat-latest" style="font-size: 0.95rem; padding-top: 0.3rem;">—</div>
+            </div>
+        </div>
+
+        <div class="table-container">
+            <div class="table-header">
+                <span class="table-title">All Letters</span>
+                <input type="text" class="search-box" id="search-input" placeholder="Search by name, IP, location...">
+            </div>
+
+            <div id="table-wrapper">
+                <!-- Populated by JS -->
+            </div>
+        </div>
+    </div>
+
+    <div id="toast" class="toast">
+        <span id="toast-message"></span>
+    </div>
+
+    <!-- Leaflet JS -->
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
+    <script>
+        // ==========================================
+        // PASSWORD PROTECTION
+        // ==========================================
+        const PASSWORD_HASH = 'valentines2024'; // Change this to your own password
+        const AUTH_KEY = 'godview_authenticated';
+
+        function checkAuth() {
+            return sessionStorage.getItem(AUTH_KEY) === '1';
+        }
+
+        function handleLogin() {
+            const input = document.getElementById('password-input');
+            const password = input.value;
+
+            if (password === PASSWORD_HASH) {
+                sessionStorage.setItem(AUTH_KEY, '1');
+                document.getElementById('login-screen').classList.add('hidden');
+                document.getElementById('main-content').classList.add('show');
+                initMap();
+                render();
+            } else {
+                document.getElementById('login-error').classList.add('show');
+                input.value = '';
+                input.focus();
+                setTimeout(() => {
+                    document.getElementById('login-error').classList.remove('show');
+                }, 2000);
+            }
+        }
+
+        function handleLogout() {
+            sessionStorage.removeItem(AUTH_KEY);
+            document.getElementById('login-screen').classList.remove('hidden');
+            document.getElementById('main-content').classList.remove('show');
+            document.getElementById('password-input').value = '';
+        }
+
+        // Check auth on page load
+        if (checkAuth()) {
+            document.getElementById('login-screen').classList.add('hidden');
+            document.getElementById('main-content').classList.add('show');
+        }
+
+        document.getElementById('login-btn').addEventListener('click', handleLogin);
+        document.getElementById('logout-btn').addEventListener('click', handleLogout);
+        document.getElementById('password-input').addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') handleLogin();
+        });
+
+        // ==========================================
+        // MAP INITIALIZATION
+        // ==========================================
+        let map = null;
+        let markers = [];
+
+        function initMap() {
+            if (map) return; // Already initialized
+
+            // Initialize map centered on world
+            map = L.map('map').setView([20, 0], 2);
+
+            // Dark theme tile layer
+            L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
+                attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>',
+                subdomains: 'abcd',
+                maxZoom: 19
+            }).addTo(map);
+
+            updateMapMarkers();
+        }
+
+        function updateMapMarkers() {
+            if (!map) return;
+
+            // Clear existing markers
+            markers.forEach(m => map.removeLayer(m));
+            markers = [];
+
+            const letters = getLetters();
+            const validLocations = letters.filter(l => l.latitude && l.longitude);
+
+            if (validLocations.length === 0) {
+                showToast('No location data available yet');
+                return;
+            }
+
+            // Add markers for each letter
+            validLocations.forEach((letter, idx) => {
+                const marker = L.marker([letter.latitude, letter.longitude], {
+                    icon: L.icon({
+                        iconUrl: 'data:image/svg+xml;base64,' + btoa(`
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 36" width="32" height="48">
+                                <path fill="#e11d48" stroke="#fff" stroke-width="2" d="M12 0C7.03 0 3 4.03 3 9c0 6.75 9 18 9 18s9-11.25 9-18c0-4.97-4.03-9-9-9zm0 12c-1.66 0-3-1.34-3-3s1.34-3 3-3 3 1.34 3 3-1.34 3-3 3z"/>
+                            </svg>
+                        `),
+                        iconSize: [32, 48],
+                        iconAnchor: [16, 48],
+                        popupAnchor: [0, -48]
+                    })
+                });
+
+                const popupContent = `
+                    <div class="popup-from">${escapeHTML(letter.from)} → ${escapeHTML(letter.to)}</div>
+                    <div class="popup-location">📍 ${escapeHTML(letter.location || 'Unknown')}</div>
+                    <div class="popup-message">"${escapeHTML(letter.message.substring(0, 100))}${letter.message.length > 100 ? '...' : ''}"</div>
+                `;
+
+                marker.bindPopup(popupContent);
+                marker.addTo(map);
+                markers.push(marker);
+            });
+
+            // Auto-fit bounds if multiple markers
+            if (markers.length > 1) {
+                const group = L.featureGroup(markers);
+                map.fitBounds(group.getBounds().pad(0.1));
+            } else if (markers.length === 1) {
+                map.setView([validLocations[0].latitude, validLocations[0].longitude], 6);
+            }
+        }
+
+        // ==========================================
+        // STORAGE HELPERS
+        // ==========================================
+        function getLetters() {
+            try {
+                return JSON.parse(localStorage.getItem('valentine_letters') || '[]');
+            } catch {
+                return [];
+            }
+        }
+
+        function deleteLetterById(id) {
+            let letters = getLetters();
+            letters = letters.filter(l => l.id !== id);
+            localStorage.setItem('valentine_letters', JSON.stringify(letters));
+            render();
+            updateMapMarkers();
+        }
+
+        function clearAll() {
+            if (confirm('Are you sure you want to delete ALL letters? This cannot be undone.')) {
+                localStorage.removeItem('valentine_letters');
+                render();
+                updateMapMarkers();
+                showToast('All letters cleared');
+            }
+        }
+
+        // ==========================================
+        // CSV
+        // ==========================================
+        function generateCSV() {
+            const letters = getLetters();
+            if (letters.length === 0) return null;
+
+            const header = 'ID,From,To,Message,IP,Location,Latitude,Longitude,Date,Timestamp';
+
+            const escapeCSV = (str) => {
+                if (str == null) return '';
+                const s = String(str);
+                if (s.includes(',') || s.includes('"') || s.includes('\n') || s.includes('\r')) {
+                    return '"' + s.replace(/"/g, '""') + '"';
+                }
+                return s;
+            };
+
+            const rows = letters.map(l =>
+                [l.id, l.from, l.to, l.message, l.ip || 'N/A', l.location || 'N/A', l.latitude || 'N/A', l.longitude || 'N/A', l.date || '', l.timestamp]
+                    .map(escapeCSV)
+                    .join(',')
+            );
+
+            return header + '\n' + rows.join('\n');
+        }
+
+        function downloadCSV() {
+            const csv = generateCSV();
+            if (!csv) {
+                showToast('No letters to export!');
+                return;
+            }
+
+            const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `valentine_letters_${new Date().toISOString().split('T')[0]}.csv`;
+            a.style.display = 'none';
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+            showToast('CSV downloaded! 📄');
+        }
+
+        // ==========================================
+        // TOAST
+        // ==========================================
+        let toastTimer = null;
+        function showToast(msg) {
+            const toast = document.getElementById('toast');
+            document.getElementById('toast-message').textContent = msg;
+            toast.classList.add('show');
+            clearTimeout(toastTimer);
+            toastTimer = setTimeout(() => toast.classList.remove('show'), 2500);
+        }
+
+        // ==========================================
+        // RENDER
+        // ==========================================
+        function render(filter = '') {
+            let letters = getLetters();
+            const filterLower = filter.toLowerCase();
+
+            // Stats
+            document.getElementById('stat-total').textContent = letters.length;
+            document.getElementById('count-badge').textContent = `${letters.length} LETTER${letters.length !== 1 ? 'S' : ''}`;
+
+            const senders = new Set(letters.map(l => l.from?.toLowerCase()));
+            const receivers = new Set(letters.map(l => l.to?.toLowerCase()));
+            document.getElementById('stat-senders').textContent = senders.size;
+            document.getElementById('stat-receivers').textContent = receivers.size;
+
+            if (letters.length > 0) {
+                const latest = letters[letters.length - 1];
+                document.getElementById('stat-latest').textContent = latest.date || new Date(latest.timestamp).toLocaleDateString();
+            } else {
+                document.getElementById('stat-latest').textContent = '—';
+            }
+
+            // Filter
+            if (filterLower) {
+                letters = letters.filter(l =>
+                    (l.from || '').toLowerCase().includes(filterLower) ||
+                    (l.to || '').toLowerCase().includes(filterLower) ||
+                    (l.message || '').toLowerCase().includes(filterLower) ||
+                    (l.ip || '').toLowerCase().includes(filterLower) ||
+                    (l.location || '').toLowerCase().includes(filterLower)
+                );
+            }
+
+            // Reverse to show newest first
+            letters = letters.slice().reverse();
+
+            const wrapper = document.getElementById('table-wrapper');
+
+            if (letters.length === 0 && !filterLower) {
+                wrapper.innerHTML = `
+                    <div class="empty-state">
+                        <div class="emoji">💌</div>
+                        <p>No letters yet</p>
+                        <p class="sub">Go create some valentines from the <a href="index.html" style="color: var(--primary-light);">main page</a>!</p>
+                    </div>
+                `;
+                return;
+            }
+
+            if (letters.length === 0 && filterLower) {
+                wrapper.innerHTML = `
+                    <div class="empty-state">
+                        <div class="emoji">🔍</div>
+                        <p>No results found</p>
+                        <p class="sub">Try a different search term</p>
+                    </div>
+                `;
+                return;
+            }
+
+            let html = `
+                <table>
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>From</th>
+                            <th>To</th>
+                            <th>IP Address</th>
+                            <th>Location</th>
+                            <th>Message</th>
+                            <th>Date</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+            `;
+
+            letters.forEach((letter, i) => {
+                const msgPreview = (letter.message || '').length > 80
+                    ? letter.message.substring(0, 80) + '...'
+                    : letter.message;
+
+                html += `
+                    <tr>
+                        <td class="td-id">${letters.length - i}</td>
+                        <td class="td-name">${escapeHTML(letter.from)}</td>
+                        <td class="td-name">${escapeHTML(letter.to)}</td>
+                        <td class="td-ip">${escapeHTML(letter.ip || 'Unknown')}</td>
+                        <td class="td-location">${escapeHTML(letter.location || 'Unknown')}</td>
+                        <td class="td-message">${escapeHTML(msgPreview)}</td>
+                        <td class="td-date">${escapeHTML(letter.date || '—')}</td>
+                        <td class="td-actions">
+                            <button onclick="viewLetter('${letter.id}')" title="View">👁️</button>
+                            <button onclick="deleteLetterById('${letter.id}')" title="Delete">🗑️</button>
+                        </td>
+                    </tr>
+                `;
+            });
+
+            html += '</tbody></table>';
+            wrapper.innerHTML = html;
+        }
+
+        function escapeHTML(str) {
+            if (!str) return '';
+            return str.replace(/&/g, '&amp;')
+                .replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;')
+                .replace(/"/g, '&quot;');
+        }
+
+        function viewLetter(id) {
+            const letters = getLetters();
+            const letter = letters.find(l => l.id === id);
+            if (!letter) return;
+
+            const params = new URLSearchParams({
+                to: letter.to,
+                from: letter.from,
+                msg: letter.message
+            });
+            window.open(`index.html?${params.toString()}`, '_blank');
+        }
+
+        // ==========================================
+        // EVENT LISTENERS
+        // ==========================================
+        document.getElementById('download-csv-btn').addEventListener('click', downloadCSV);
+        document.getElementById('clear-all-btn').addEventListener('click', clearAll);
+
+        const searchInput = document.getElementById('search-input');
+        let searchDebounce = null;
+        searchInput.addEventListener('input', () => {
+            clearTimeout(searchDebounce);
+            searchDebounce = setTimeout(() => {
+                render(searchInput.value.trim());
+            }, 200);
+        });
+
+        // Initial render (if authenticated)
+        if (checkAuth()) {
+            initMap();
+            render();
+        }
+    </script>
+</body>
+
+</html>

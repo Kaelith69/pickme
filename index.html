@@ -4,50 +4,102 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Be My Valentine?</title>
+    <meta name="description" content="Send a personalized Valentine's message to your special someone">
+    <title>Be My Valentine? 💌</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link
-        href="https://fonts.googleapis.com/css2?family=Great+Vibes&family=Pacifico&family=Quicksand:wght@300;400;500;600;700&display=swap"
+        href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&family=Dancing+Script:wght@400;500;600;700&display=swap"
         rel="stylesheet">
     <link rel="stylesheet" href="styles.css">
 </head>
 
 <body>
-    <div class="background-animation" id="background-animation"></div>
+    <div class="background-mesh" aria-hidden="true"></div>
 
-    <!-- Love Counter -->
-    <div class="love-counter" id="love-counter" role="status" aria-live="polite">
-        <div class="counter-icon">💕</div>
-        <div class="counter-value" id="counter-value">0</div>
-        <div class="counter-label">Love Clicks</div>
+    <!-- Toast Notification -->
+    <div id="toast" class="toast" role="alert" aria-live="assertive">
+        <span class="toast-icon">✅</span>
+        <span id="toast-message">Link copied!</span>
     </div>
 
-    <!-- Keyboard Shortcuts Help -->
-    <button class="help-btn" id="help-btn" aria-label="Show keyboard shortcuts" title="Keyboard Shortcuts">
-        <span>⌨️</span>
-    </button>
+    <main class="card-container" id="main-card">
+        <header class="card-header">
+            <div class="subtitle" id="subtitle-text">For You</div>
+            <h1 class="title" id="title-text">Hey Darling</h1>
+        </header>
 
-    <div class="keyboard-help" id="keyboard-help" role="dialog" aria-hidden="true">
-        <h3>Keyboard Shortcuts</h3>
-        <ul>
-            <li><kbd>Space</kbd> or <kbd>Enter</kbd> - Generate pickup line</li>
-            <li><kbd>C</kbd> - Confetti burst</li>
-            <li><kbd>Esc</kbd> - Close help</li>
-        </ul>
-        <button class="close-help" id="close-help" aria-label="Close help">✕</button>
-    </div>
+        <!-- Default: Pickup Line Mode -->
+        <section class="content-area" id="content-area">
+            <div id="pickup-line" class="pickup-line">
+                <p class="placeholder">Tap the button for a sweet surprise...</p>
+            </div>
+        </section>
 
-    <main class="container" id="main-container" role="main">
-        <h1 class="title">Hey Darling!</h1>
-        <div id="pickup-line" class="pickup-line" aria-live="polite" aria-atomic="true">
-            <span class="placeholder">Click the button for a surprise...</span>
+        <div class="action-area" id="action-area">
+            <button id="generate-btn" class="love-btn" aria-label="Generate pickup line">
+                <span>Send Love</span>
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="currentColor"
+                    stroke="none" class="heart-icon" aria-hidden="true">
+                    <path
+                        d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z">
+                    </path>
+                </svg>
+            </button>
+            <button id="create-letter-btn" class="secondary-btn" aria-label="Write a personalized letter">
+                ✉️ Write a Letter
+            </button>
         </div>
-        <button id="generate-btn" class="love-btn" aria-label="Generate a romantic pickup line">
-            <span class="btn-text">Send Love</span>
-            <span class="heart-icon" aria-hidden="true">❤️</span>
-        </button>
+
+        <!-- Letter Creation Form -->
+        <div id="letter-form" class="letter-form hidden">
+            <h2 class="form-title">💌 Write a Love Letter</h2>
+            <div class="input-group">
+                <label for="sender-name">From</label>
+                <input type="text" id="sender-name" placeholder="Your name" maxlength="50" required>
+            </div>
+            <div class="input-group">
+                <label for="receiver-name">To</label>
+                <input type="text" id="receiver-name" placeholder="Their name" maxlength="50" required>
+            </div>
+            <div class="input-group">
+                <label for="letter-message">Your Message</label>
+                <textarea id="letter-message" placeholder="Pour your heart out..." rows="5" maxlength="500"
+                    required></textarea>
+                <div class="char-count"><span id="char-count">0</span>/500</div>
+            </div>
+            <button id="generate-link-btn" class="love-btn full-width">
+                <span>Create Valentine</span>
+                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none"
+                    stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                    aria-hidden="true">
+                    <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path>
+                    <path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path>
+                </svg>
+            </button>
+            <button id="cancel-form-btn" class="text-btn">← Back</button>
+        </div>
+
+        <!-- Letter View (Receiver sees this) -->
+        <div id="letter-view" class="letter-view hidden">
+            <div class="paper">
+                <div class="paper-lines" aria-hidden="true"></div>
+                <div class="paper-content">
+                    <p class="greeting">Dearest <span id="letter-to"></span>,</p>
+                    <p id="letter-body" class="letter-body"></p>
+                    <p class="signature">
+                        With all my love,<br>
+                        <span id="letter-from" class="from-name"></span>
+                        <span class="heart-doodle">♥</span>
+                    </p>
+                </div>
+            </div>
+            <div class="letter-actions">
+                <button id="create-own-btn" class="secondary-btn">✉️ Create Your Own</button>
+            </div>
+        </div>
     </main>
+
     <script src="script.js"></script>
 </body>
 
