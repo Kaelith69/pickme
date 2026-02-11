@@ -149,6 +149,8 @@ const successView = $('#success-view');
 const generatedCodeEl = $('#generated-code');
 const copyCodeBtn = $('#copy-code-btn');
 const viewMyLetterBtn = $('#view-my-letter-btn');
+const viewSurpriseBtn = $('#view-surprise-btn');
+const viewSurpriseReaderBtn = $('#view-surprise-reader-btn');
 const createAnotherBtn = $('#create-another-btn');
 
 let lastIndex = -1;
@@ -471,6 +473,7 @@ if (openLetterBtn) {
             await sleep(600); // Fake delay for UX
 
             if (letter) {
+                window.currentReadLetter = letter; // Store for surprise view
                 showLetterMode(letter.to, letter.from, letter.message);
             } else {
                 showToast("Letter not found 💔 Maybe write one?");
@@ -508,6 +511,40 @@ if (createAnotherBtn) createAnotherBtn.addEventListener('click', () => {
     resetToDefault();
     showCreateMode();
 });
+
+// ==========================================
+// SURPRISE PAGE HANDLERS
+// ==========================================
+function openSurprisePage(letter) {
+    if (!letter) return;
+
+    // Encode data to be URL safe
+    const data = {
+        t: letter.to,
+        f: letter.from,
+        m: letter.message
+    };
+
+    const encoded = btoa(encodeURIComponent(JSON.stringify(data)));
+    window.open(`valentine.html?d=${encoded}`, '_blank');
+}
+
+if (viewSurpriseBtn) {
+    viewSurpriseBtn.addEventListener('click', () => {
+        if (window.currentLetter) {
+            openSurprisePage(window.currentLetter);
+        }
+    });
+}
+
+if (viewSurpriseReaderBtn) {
+    viewSurpriseReaderBtn.addEventListener('click', () => {
+        // We need to store the current letter when reading too
+        if (window.currentReadLetter) {
+            openSurprisePage(window.currentReadLetter);
+        }
+    });
+}
 
 // ==========================================
 // LETTER STORAGE (localStorage + CSV)

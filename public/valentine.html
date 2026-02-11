@@ -1,0 +1,1202 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>💌 A Valentine's Surprise</title>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@400;600;700&family=Playfair+Display:ital,wght@0,400;1,400&family=Parisienne&family=Alex+Brush&display=swap"
+    rel="stylesheet">
+  <style>
+    :root {
+      --rose: #c8365e;
+      --deep-rose: #be123c;
+      /* Matched to app primary-dark */
+      --blush: #f2c4ce;
+      --cream: #fdf6f0;
+      --gold: #d4a847;
+      --soft-green: #7a9e6e;
+      --petal-pink: #f08fa0;
+      --leaf: #5a7a50;
+      --bg: #1a0a10;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      background: linear-gradient(135deg, #0f0508 0%, #1a0a10 50%, #120610 100%);
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+      font-family: 'Dancing Script', cursive;
+      position: relative;
+    }
+
+    /* === FLOATING PARTICLES === */
+    .particles {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: 0;
+      overflow: hidden;
+    }
+
+    .particle {
+      position: absolute;
+      font-size: 14px;
+      opacity: 0;
+      animation: floatUp linear infinite;
+      will-change: transform, opacity;
+    }
+
+    @keyframes floatUp {
+      0% {
+        transform: translateY(110vh) translateX(0) rotate(0deg);
+        opacity: 0;
+      }
+
+      10% {
+        opacity: 0.7;
+      }
+
+      50% {
+        transform: translateY(50vh) translateX(20px) rotate(180deg);
+        opacity: 0.5;
+      }
+
+      90% {
+        opacity: 0.3;
+      }
+
+      100% {
+        transform: translateY(-10vh) translateX(-10px) rotate(360deg);
+        opacity: 0;
+      }
+    }
+
+    /* === BACKGROUND GLOW === */
+    .bg-glow {
+      position: fixed;
+      inset: 0;
+      background:
+        radial-gradient(ellipse 70% 50% at 50% 50%, rgba(200, 54, 94, 0.22) 0%, transparent 70%),
+        radial-gradient(circle at 30% 70%, rgba(139, 26, 53, 0.15) 0%, transparent 50%),
+        radial-gradient(circle at 70% 30%, rgba(242, 196, 206, 0.12) 0%, transparent 50%);
+      pointer-events: none;
+      z-index: 0;
+      animation: pulseGlow 8s ease-in-out infinite;
+    }
+
+    @keyframes pulseGlow {
+
+      0%,
+      100% {
+        opacity: 1;
+      }
+
+      50% {
+        opacity: 0.85;
+      }
+    }
+
+    /* === STAGE === */
+    .stage {
+      position: relative;
+      z-index: 10;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+
+    /* === ENVELOPE === */
+    .envelope-wrap {
+      position: relative;
+      cursor: pointer;
+      transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+
+    .envelope-wrap:hover {
+      transform: scale(1.05) translateY(-4px);
+    }
+
+    .envelope {
+      position: relative;
+      width: min(360px, 90vw);
+      height: 240px;
+      filter: drop-shadow(0 25px 70px rgba(200, 54, 94, 0.6)) drop-shadow(0 10px 30px rgba(0, 0, 0, 0.8));
+    }
+
+    .env-body {
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(165deg, #f8ebe0 0%, #f0ddd0 40%, #e6cdb8 100%);
+      border-radius: 6px 6px 8px 8px;
+      border: 2px solid rgba(201, 168, 138, 0.6);
+      overflow: hidden;
+      box-shadow: inset 0 2px 10px rgba(255, 255, 255, 0.3),
+        inset 0 -2px 8px rgba(100, 70, 50, 0.1);
+    }
+
+    /* Envelope fold lines */
+    .env-body::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background:
+        linear-gradient(135deg, transparent 49.3%, rgba(212, 176, 144, 0.4) 49.5%, rgba(212, 176, 144, 0.4) 50.5%, transparent 50.7%),
+        linear-gradient(225deg, transparent 49.3%, rgba(212, 176, 144, 0.4) 49.5%, rgba(212, 176, 144, 0.4) 50.5%, transparent 50.7%);
+      opacity: 0.6;
+    }
+
+    .env-seal {
+      position: absolute;
+      left: 50%;
+      top: 50%;
+      transform: translate(-50%, -50%);
+      width: 58px;
+      height: 58px;
+      background: radial-gradient(circle at 35% 35%, #d84060 0%, var(--rose) 40%, var(--deep-rose) 100%);
+      border-radius: 50%;
+      border: 3px solid var(--gold);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 26px;
+      box-shadow: 0 4px 16px rgba(139, 26, 53, 0.7),
+        0 0 30px rgba(200, 54, 94, 0.4),
+        inset 0 2px 6px rgba(255, 255, 255, 0.3);
+      z-index: 5;
+      transition: transform 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55),
+        opacity 0.4s ease;
+      animation: sealPulse 2.5s ease-in-out infinite;
+    }
+
+    @keyframes sealPulse {
+
+      0%,
+      100% {
+        box-shadow: 0 4px 16px rgba(139, 26, 53, 0.7), 0 0 30px rgba(200, 54, 94, 0.4), inset 0 2px 6px rgba(255, 255, 255, 0.3);
+      }
+
+      50% {
+        box-shadow: 0 4px 16px rgba(139, 26, 53, 0.9), 0 0 40px rgba(200, 54, 94, 0.6), inset 0 2px 6px rgba(255, 255, 255, 0.4);
+      }
+    }
+
+    .env-flap {
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 0;
+      border-left: 180px solid transparent;
+      border-right: 180px solid transparent;
+      border-top: 125px solid #e4cfc0;
+      transform-origin: top center;
+      transform: rotateX(0deg);
+      transition: transform 0.9s cubic-bezier(0.4, 0, 0.2, 1);
+      z-index: 6;
+      filter: drop-shadow(0 5px 8px rgba(0, 0, 0, 0.2));
+    }
+
+    .env-flap::after {
+      content: '';
+      position: absolute;
+      top: -125px;
+      left: -178px;
+      right: -178px;
+      border-left: 178px solid transparent;
+      border-right: 178px solid transparent;
+      border-top: 123px solid #dfc9b5;
+      opacity: 0.5;
+    }
+
+    .env-flap::before {
+      content: '';
+      position: absolute;
+      top: -110px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 250px;
+      height: 100px;
+      background: radial-gradient(ellipse, rgba(255, 255, 255, 0.15) 0%, transparent 70%);
+      pointer-events: none;
+    }
+
+    /* bottom flap shape */
+    .env-bottom {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      height: 0;
+      border-left: 180px solid transparent;
+      border-right: 180px solid transparent;
+      border-bottom: 110px solid #dfc9b5;
+      z-index: 2;
+    }
+
+    .env-left {
+      position: absolute;
+      top: 0;
+      bottom: 0;
+      left: 0;
+      height: 0;
+      border-top: 120px solid transparent;
+      border-bottom: 120px solid transparent;
+      border-left: 115px solid #d9c2ab;
+      z-index: 2;
+    }
+
+    .env-right {
+      position: absolute;
+      top: 0;
+      bottom: 0;
+      right: 0;
+      height: 0;
+      border-top: 120px solid transparent;
+      border-bottom: 120px solid transparent;
+      border-right: 115px solid #d1b9a0;
+      z-index: 2;
+    }
+
+    /* === CLICK HINT === */
+    .click-hint {
+      margin-top: 28px;
+      color: var(--blush);
+      font-family: 'Playfair Display', serif;
+      font-style: italic;
+      font-size: 16px;
+      opacity: 0.8;
+      letter-spacing: 1.5px;
+      animation: pulseHint 2.2s ease-in-out infinite;
+      text-shadow: 0 0 15px rgba(200, 54, 94, 0.4);
+    }
+
+    @keyframes pulseHint {
+
+      0%,
+      100% {
+        opacity: 0.6;
+        transform: translateY(0);
+      }
+
+      50% {
+        opacity: 1;
+        transform: translateY(-2px);
+      }
+    }
+
+    /* === OPEN ANIMATION === */
+    .envelope-wrap.opening .env-flap {
+      transform: rotateX(180deg);
+      transition: transform 1s cubic-bezier(0.34, 1.2, 0.64, 1);
+    }
+
+    .envelope-wrap.opening .env-seal {
+      transform: translate(-50%, -50%) scale(0) rotate(180deg);
+      opacity: 0;
+      transition: transform 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55),
+        opacity 0.4s ease;
+    }
+
+    .envelope-wrap.opening {
+      pointer-events: none;
+    }
+
+    /* === LETTER === */
+    .letter-container {
+      position: fixed;
+      inset: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 100;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.6s ease;
+      overflow: hidden;
+      padding: 20px;
+    }
+
+    .letter-container.show {
+      opacity: 1;
+      pointer-events: all;
+    }
+
+    .letter-backdrop {
+      position: absolute;
+      inset: 0;
+      background: rgba(10, 5, 8, 0.95);
+      backdrop-filter: blur(8px);
+    }
+
+    .letter-paper {
+      position: relative;
+      z-index: 10;
+      width: min(540px, 95vw);
+      max-height: 85vh;
+      background: linear-gradient(175deg, #fffefb 0%, #fdf7ee 30%, #faefd7 70%, #f5e8d0 100%);
+      border-radius: 4px;
+      padding: 52px 48px 120px;
+      box-shadow:
+        0 0 0 1px rgba(212, 196, 160, 0.3),
+        0 0 0 2px rgba(180, 160, 130, 0.15),
+        0 35px 90px rgba(0, 0, 0, 0.7),
+        0 15px 40px rgba(0, 0, 0, 0.5),
+        0 0 80px rgba(200, 54, 94, 0.2);
+      transform: translateY(80px) scale(0.85);
+      opacity: 0;
+      transition: transform 1s cubic-bezier(0.175, 0.885, 0.32, 1.1),
+        opacity 0.8s ease;
+      overflow-y: auto;
+      scrollbar-width: thin;
+      scrollbar-color: rgba(200, 54, 94, 0.3) transparent;
+    }
+
+    .letter-paper::-webkit-scrollbar {
+      width: 6px;
+    }
+
+    .letter-paper::-webkit-scrollbar-track {
+      background: transparent;
+    }
+
+    .letter-paper::-webkit-scrollbar-thumb {
+      background: rgba(200, 54, 94, 0.3);
+      border-radius: 3px;
+    }
+
+    .letter-paper::-webkit-scrollbar-thumb:hover {
+      background: rgba(200, 54, 94, 0.5);
+    }
+
+    .letter-paper.appear {
+      transform: translateY(0) scale(1);
+      opacity: 1;
+    }
+
+    /* Paper lines */
+    .letter-paper::before {
+      content: '';
+      position: absolute;
+      top: 76px;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: repeating-linear-gradient(to bottom,
+          transparent,
+          transparent 30px,
+          rgba(196, 170, 140, 0.15) 30px,
+          rgba(196, 170, 140, 0.15) 31px);
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    /* Left margin line */
+    .letter-paper::after {
+      content: '';
+      position: absolute;
+      top: 0;
+      bottom: 0;
+      left: 48px;
+      width: 1.5px;
+      background: linear-gradient(to bottom,
+          transparent 0%,
+          rgba(200, 100, 120, 0.15) 5%,
+          rgba(200, 100, 120, 0.2) 50%,
+          rgba(200, 100, 120, 0.15) 95%,
+          transparent 100%);
+      z-index: 0;
+    }
+
+    .letter-date {
+      font-family: 'Dancing Script', cursive;
+      font-size: 16px;
+      color: #b08870;
+      text-align: right;
+      margin-bottom: 22px;
+      font-weight: 500;
+      position: relative;
+      z-index: 1;
+    }
+
+    .letter-heading {
+      font-family: 'Alex Brush', cursive;
+      font-size: 38px;
+      color: var(--rose);
+      text-align: center;
+      margin-bottom: 28px;
+      line-height: 1.3;
+      text-shadow: 0 3px 12px rgba(200, 54, 94, 0.25);
+      opacity: 0;
+      transform: translateY(15px);
+      transition: opacity 0.8s ease 0.4s, transform 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.1) 0.4s;
+      position: relative;
+      z-index: 1;
+    }
+
+    .letter-paper.appear .letter-heading {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .letter-body {
+      font-family: 'Dancing Script', cursive;
+      font-size: 19px;
+      color: #4a2d20;
+      line-height: 2;
+      font-weight: 500;
+      position: relative;
+      z-index: 1;
+    }
+
+    .letter-body p {
+      margin-bottom: 18px;
+      opacity: 0;
+      transform: translateY(12px);
+      transition: opacity 0.7s ease, transform 0.7s cubic-bezier(0.175, 0.885, 0.32, 1.1);
+    }
+
+    .letter-body p:nth-child(1) {
+      transition-delay: 0.6s;
+    }
+
+    .letter-body p:nth-child(2) {
+      transition-delay: 0.85s;
+    }
+
+    .letter-body p:nth-child(3) {
+      transition-delay: 1.1s;
+    }
+
+    .letter-body p:nth-child(4) {
+      transition-delay: 1.35s;
+    }
+
+    .letter-paper.appear .letter-body p {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .letter-sign {
+      text-align: right;
+      margin-top: 28px;
+      opacity: 0;
+      transition: opacity 0.8s ease 1.8s;
+      position: relative;
+      z-index: 1;
+    }
+
+    .letter-paper.appear .letter-sign {
+      opacity: 1;
+    }
+
+    .letter-sign-name {
+      font-family: 'Alex Brush', cursive;
+      font-size: 32px;
+      color: var(--rose);
+      line-height: 1.2;
+    }
+
+    .letter-sign-forever {
+      font-family: 'Dancing Script', cursive;
+      font-size: 15px;
+      color: #c09878;
+      margin-top: 4px;
+      font-weight: 500;
+    }
+
+    .letter-deco {
+      text-align: center;
+      font-size: 22px;
+      margin: 16px 0;
+      letter-spacing: 10px;
+      opacity: 0;
+      transition: opacity 0.8s ease 2s;
+      color: var(--rose);
+      position: relative;
+      z-index: 1;
+    }
+
+    .letter-paper.appear .letter-deco {
+      opacity: 1;
+    }
+
+    /* === BOUQUET (UPDATED POSITIONING) === */
+    .bouquet-container {
+      position: fixed;
+      bottom: -550px;
+      /* MOVED: Right side positioning instead of center */
+      right: -30px;
+      left: auto;
+
+      z-index: 150;
+      /* Higher than letter-container (100) so it's visible on top */
+      pointer-events: none;
+      transition: bottom 1.8s cubic-bezier(0.16, 1, 0.3, 1);
+      filter: drop-shadow(0 -15px 40px rgba(200, 54, 94, 0.45)) drop-shadow(0 -5px 20px rgba(0, 0, 0, 0.3));
+      will-change: bottom;
+
+      /* SCALED & TILTED: To look more natural in the corner */
+      transform: rotate(-5deg) scale(0.85);
+      transform-origin: bottom right;
+    }
+
+    .bouquet-container.slide-up {
+      /* VISIBLE HEIGHT: Adjust this to peek higher or lower */
+      bottom: -130px;
+    }
+
+    .bouquet-svg {
+      width: min(320px, 90vw);
+      height: auto;
+      min-height: 450px;
+    }
+
+    /* === HEART BURST === */
+    .hearts-burst {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: 300;
+    }
+
+    .burst-heart {
+      position: absolute;
+      font-size: 24px;
+      opacity: 0;
+      animation: burstHeart 1.6s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
+      will-change: transform, opacity;
+    }
+
+    @keyframes burstHeart {
+      0% {
+        transform: translate(0, 0) scale(0) rotate(0deg);
+        opacity: 0;
+      }
+
+      10% {
+        opacity: 1;
+      }
+
+      50% {
+        opacity: 1;
+        transform: translate(calc(var(--tx) * 0.6), calc(var(--ty) * 0.6)) scale(1) rotate(180deg);
+      }
+
+      100% {
+        transform: translate(var(--tx), var(--ty)) scale(1.3) rotate(360deg);
+        opacity: 0;
+      }
+    }
+
+    /* === CLOSE BUTTON === */
+    .close-btn {
+      position: absolute;
+      top: 16px;
+      right: 20px;
+      font-family: 'Dancing Script', cursive;
+      font-size: 14px;
+      color: #a08870;
+      cursor: pointer;
+      opacity: 0.6;
+      transition: opacity 0.3s ease, transform 0.2s ease;
+      z-index: 20;
+      user-select: none;
+      padding: 4px 8px;
+    }
+
+    .close-btn:hover {
+      opacity: 1;
+      transform: scale(1.1);
+    }
+
+    /* === RIBBON ON ENVELOPE === */
+    .ribbon {
+      position: absolute;
+      top: -14px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 80px;
+      height: 28px;
+      z-index: 10;
+    }
+
+    /* === WAX STAMP MINI HEARTS === */
+    .wax-hearts {
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+    }
+
+    .mini-heart {
+      position: absolute;
+      color: rgba(200, 54, 94, 0.1);
+      font-size: 20px;
+      animation: floatMiniHeart 4s ease-in-out infinite;
+    }
+
+    @keyframes floatMiniHeart {
+
+      0%,
+      100% {
+        transform: translateY(0) rotate(0deg);
+      }
+
+      50% {
+        transform: translateY(-3px) rotate(10deg);
+      }
+    }
+
+    /* === TITLE ABOVE ENVELOPE === */
+    .title-above {
+      font-family: 'Alex Brush', cursive;
+      font-size: 34px;
+      color: var(--blush);
+      margin-bottom: 24px;
+      text-shadow: 0 0 25px rgba(200, 54, 94, 0.7),
+        0 2px 10px rgba(200, 54, 94, 0.5);
+      opacity: 0;
+      animation: fadeInTitle 1.4s cubic-bezier(0.175, 0.885, 0.32, 1.1) 0.4s forwards;
+      letter-spacing: 2px;
+    }
+
+    @keyframes fadeInTitle {
+      0% {
+        opacity: 0;
+        transform: translateY(-10px);
+      }
+
+      100% {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    /* == PETAL CONFETTI == */
+    .petal {
+      position: fixed;
+      pointer-events: none;
+      z-index: 1;
+      font-size: 16px;
+      opacity: 0;
+      animation: petalFall linear infinite;
+      will-change: transform, opacity;
+    }
+
+    @keyframes petalFall {
+      0% {
+        transform: translateY(-60px) rotate(0deg) translateX(0);
+        opacity: 0;
+      }
+
+      8% {
+        opacity: 0.8;
+      }
+
+      92% {
+        opacity: 0.6;
+      }
+
+      100% {
+        transform: translateY(110vh) rotate(720deg) translateX(60px);
+        opacity: 0;
+      }
+    }
+
+    /* === RESPONSIVE === */
+    @media (max-width: 600px) {
+      .envelope {
+        width: min(320px, 88vw);
+        height: 215px;
+      }
+
+      .env-flap {
+        border-left: 160px solid transparent;
+        border-right: 160px solid transparent;
+        border-top: 112px solid #e4cfc0;
+      }
+
+      .env-flap::after {
+        top: -112px;
+        left: -158px;
+        right: -158px;
+        border-left: 158px solid transparent;
+        border-right: 158px solid transparent;
+        border-top: 110px solid #dfc9b5;
+      }
+
+      .env-bottom {
+        border-left: 160px solid transparent;
+        border-right: 160px solid transparent;
+        border-bottom: 100px solid #dfc9b5;
+      }
+
+      .env-left {
+        border-top: 107px solid transparent;
+        border-bottom: 107px solid transparent;
+        border-left: 105px solid #d9c2ab;
+      }
+
+      .env-right {
+        border-top: 107px solid transparent;
+        border-bottom: 107px solid transparent;
+        border-right: 105px solid #d1b9a0;
+      }
+
+      .letter-paper {
+        padding: 40px 32px 100px;
+      }
+
+      .letter-heading {
+        font-size: 32px;
+      }
+
+      .letter-body {
+        font-size: 17px;
+      }
+
+      .title-above {
+        font-size: 28px;
+      }
+
+      /* Responsive Bouquet adjustments */
+      .bouquet-container.slide-up {
+        bottom: -150px;
+        right: -50px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <div class="bg-glow"></div>
+  <div class="particles" id="particles"></div>
+  <div class="hearts-burst" id="heartsBurst"></div>
+
+  <div class="bouquet-container" id="bouquet">
+    <svg class="bouquet-svg" viewBox="0 0 320 500" xmlns="http://www.w3.org/2000/svg">
+      <g stroke="#5a7a50" stroke-width="3" fill="none" stroke-linecap="round">
+        <path d="M160 460 Q157 410 148 370 Q140 335 130 295" opacity="0.9" />
+        <path d="M160 460 Q163 420 172 380 Q182 345 195 310" opacity="0.9" />
+        <path d="M160 460 Q153 415 142 380 Q134 350 122 315" opacity="0.85" />
+        <path d="M160 460 Q167 415 178 378 Q187 345 200 305" opacity="0.85" />
+        <path d="M160 460 Q155 420 148 385 Q140 355 130 325" opacity="0.8" />
+        <path d="M160 460 Q165 422 175 388 Q183 358 192 328" opacity="0.8" />
+        <path d="M160 460 Q158 425 150 395 Q143 365 135 335" opacity="0.75" />
+      </g>
+
+      <g fill="#7a9e6e" opacity="0.9">
+        <ellipse cx="138" cy="350" rx="16" ry="9" transform="rotate(-40 138 350)" />
+        <ellipse cx="182" cy="355" rx="16" ry="9" transform="rotate(40 182 355)" />
+        <ellipse cx="125" cy="320" rx="14" ry="8" transform="rotate(-50 125 320)" />
+        <ellipse cx="195" cy="325" rx="14" ry="8" transform="rotate(50 195 325)" />
+        <ellipse cx="145" cy="370" rx="13" ry="7" transform="rotate(-35 145 370)" />
+        <ellipse cx="175" cy="372" rx="13" ry="7" transform="rotate(35 175 372)" />
+      </g>
+
+      <g fill="#5a7a50" opacity="0.7">
+        <ellipse cx="142" cy="340" rx="10" ry="5" transform="rotate(-32 142 340)" />
+        <ellipse cx="178" cy="343" rx="10" ry="5" transform="rotate(32 178 343)" />
+        <ellipse cx="132" cy="310" rx="9" ry="4" transform="rotate(-45 132 310)" />
+        <ellipse cx="188" cy="312" rx="9" ry="4" transform="rotate(45 188 312)" />
+      </g>
+
+      <g fill="white" opacity="0.85">
+        <circle cx="118" cy="295" r="6" />
+        <circle cx="127" cy="285" r="5" />
+        <circle cx="136" cy="298" r="4" />
+        <circle cx="202" cy="300" r="6" />
+        <circle cx="193" cy="290" r="5" />
+        <circle cx="184" cy="302" r="4" />
+        <circle cx="155" cy="280" r="5" />
+        <circle cx="163" cy="288" r="4" />
+        <circle cx="148" cy="290" r="4" />
+        <circle cx="110" cy="308" r="4" />
+        <circle cx="210" cy="310" r="4" />
+        <circle cx="160" cy="295" r="3" />
+      </g>
+
+      <g transform="translate(160 250)">
+        <ellipse cx="0" cy="-26" rx="11" ry="15" fill="#a8223d" transform="rotate(0)" opacity="0.9" />
+        <ellipse cx="0" cy="-26" rx="11" ry="15" fill="#b02844" transform="rotate(51.4)" opacity="0.9" />
+        <ellipse cx="0" cy="-26" rx="11" ry="15" fill="#a8223d" transform="rotate(102.8)" opacity="0.9" />
+        <ellipse cx="0" cy="-26" rx="11" ry="15" fill="#b02844" transform="rotate(154.2)" opacity="0.9" />
+        <ellipse cx="0" cy="-26" rx="11" ry="15" fill="#a8223d" transform="rotate(205.7)" opacity="0.9" />
+        <ellipse cx="0" cy="-26" rx="11" ry="15" fill="#b02844" transform="rotate(257.1)" opacity="0.9" />
+        <ellipse cx="0" cy="-26" rx="11" ry="15" fill="#a8223d" transform="rotate(308.5)" opacity="0.9" />
+        <circle r="24" fill="#c0354e" opacity="0.95" />
+        <circle r="19" fill="#d03a57" />
+        <circle r="14" fill="#e04060" />
+        <circle r="9" fill="#ea4a6a" />
+        <circle r="5" fill="#f05878" />
+        <circle r="2" fill="#f56882" />
+        <ellipse cx="-6" cy="-8" rx="6" ry="4" fill="white" opacity="0.4" transform="rotate(-25)" />
+      </g>
+
+      <g transform="translate(125 285)">
+        <ellipse cx="0" cy="-21" rx="9" ry="12" fill="#751828" transform="rotate(0)" opacity="0.9" />
+        <ellipse cx="0" cy="-21" rx="9" ry="12" fill="#801c2e" transform="rotate(60)" opacity="0.9" />
+        <ellipse cx="0" cy="-21" rx="9" ry="12" fill="#751828" transform="rotate(120)" opacity="0.9" />
+        <ellipse cx="0" cy="-21" rx="9" ry="12" fill="#801c2e" transform="rotate(180)" opacity="0.9" />
+        <ellipse cx="0" cy="-21" rx="9" ry="12" fill="#751828" transform="rotate(240)" opacity="0.9" />
+        <ellipse cx="0" cy="-21" rx="9" ry="12" fill="#801c2e" transform="rotate(300)" opacity="0.9" />
+        <circle r="20" fill="#8b1a35" opacity="0.95" />
+        <circle r="16" fill="#a82040" />
+        <circle r="11" fill="#c02a50" />
+        <circle r="7" fill="#d03060" />
+        <circle r="3" fill="#d83868" />
+        <ellipse cx="-4" cy="-6" rx="5" ry="3" fill="white" opacity="0.35" transform="rotate(-20)" />
+      </g>
+
+      <g transform="translate(198 282)">
+        <ellipse cx="0" cy="-21" rx="9" ry="12" fill="#b82e50" transform="rotate(0)" opacity="0.9" />
+        <ellipse cx="0" cy="-21" rx="9" ry="12" fill="#c03458" transform="rotate(60)" opacity="0.9" />
+        <ellipse cx="0" cy="-21" rx="9" ry="12" fill="#b82e50" transform="rotate(120)" opacity="0.9" />
+        <ellipse cx="0" cy="-21" rx="9" ry="12" fill="#c03458" transform="rotate(180)" opacity="0.9" />
+        <ellipse cx="0" cy="-21" rx="9" ry="12" fill="#b82e50" transform="rotate(240)" opacity="0.9" />
+        <ellipse cx="0" cy="-21" rx="9" ry="12" fill="#c03458" transform="rotate(300)" opacity="0.9" />
+        <circle r="20" fill="#c8365e" opacity="0.95" />
+        <circle r="16" fill="#d84070" />
+        <circle r="11" fill="#e44a7a" />
+        <circle r="7" fill="#f05488" />
+        <circle r="3" fill="#f86094" />
+        <ellipse cx="-4" cy="-6" rx="5" ry="3" fill="white" opacity="0.35" transform="rotate(-20)" />
+      </g>
+
+      <g transform="translate(108 310)">
+        <ellipse cx="0" cy="-15" rx="7" ry="10" fill="#c83850" transform="rotate(0)" opacity="0.9" />
+        <ellipse cx="0" cy="-15" rx="7" ry="10" fill="#d04058" transform="rotate(72)" opacity="0.9" />
+        <ellipse cx="0" cy="-15" rx="7" ry="10" fill="#c83850" transform="rotate(144)" opacity="0.9" />
+        <ellipse cx="0" cy="-15" rx="7" ry="10" fill="#d04058" transform="rotate(216)" opacity="0.9" />
+        <ellipse cx="0" cy="-15" rx="7" ry="10" fill="#c83850" transform="rotate(288)" opacity="0.9" />
+        <circle r="15" fill="#d44060" opacity="0.95" />
+        <circle r="11" fill="#e04878" />
+        <circle r="7" fill="#ea5080" />
+        <circle r="3" fill="#f05888" />
+        <ellipse cx="-3" cy="-4" rx="4" ry="2.5" fill="white" opacity="0.3" transform="rotate(-15)" />
+      </g>
+
+      <g transform="translate(215 308)">
+        <ellipse cx="0" cy="-15" rx="7" ry="10" fill="#901c38" transform="rotate(0)" opacity="0.9" />
+        <ellipse cx="0" cy="-15" rx="7" ry="10" fill="#982240" transform="rotate(72)" opacity="0.9" />
+        <ellipse cx="0" cy="-15" rx="7" ry="10" fill="#901c38" transform="rotate(144)" opacity="0.9" />
+        <ellipse cx="0" cy="-15" rx="7" ry="10" fill="#982240" transform="rotate(216)" opacity="0.9" />
+        <ellipse cx="0" cy="-15" rx="7" ry="10" fill="#901c38" transform="rotate(288)" opacity="0.9" />
+        <circle r="15" fill="#a02040" opacity="0.95" />
+        <circle r="11" fill="#b82848" />
+        <circle r="7" fill="#c83050" />
+        <circle r="3" fill="#d03858" />
+        <ellipse cx="-3" cy="-4" rx="4" ry="2.5" fill="white" opacity="0.3" transform="rotate(-15)" />
+      </g>
+
+      <g transform="translate(140 268)">
+        <ellipse cx="0" cy="-18" rx="8" ry="11" fill="#eca0b8" transform="rotate(0)" opacity="0.75" />
+        <ellipse cx="0" cy="-18" rx="8" ry="11" fill="#f0a8c0" transform="rotate(40)" opacity="0.75" />
+        <ellipse cx="0" cy="-18" rx="8" ry="11" fill="#eca0b8" transform="rotate(80)" opacity="0.75" />
+        <ellipse cx="0" cy="-18" rx="8" ry="11" fill="#f0a8c0" transform="rotate(120)" opacity="0.75" />
+        <ellipse cx="0" cy="-18" rx="8" ry="11" fill="#eca0b8" transform="rotate(160)" opacity="0.75" />
+        <ellipse cx="0" cy="-18" rx="8" ry="11" fill="#f0a8c0" transform="rotate(200)" opacity="0.75" />
+        <ellipse cx="0" cy="-18" rx="8" ry="11" fill="#eca0b8" transform="rotate(240)" opacity="0.75" />
+        <ellipse cx="0" cy="-18" rx="8" ry="11" fill="#f0a8c0" transform="rotate(280)" opacity="0.75" />
+        <ellipse cx="0" cy="-18" rx="8" ry="11" fill="#eca0b8" transform="rotate(320)" opacity="0.75" />
+        <circle r="18" fill="#f2b8c8" opacity="0.85" />
+        <circle r="14" fill="#f5c4d0" />
+        <circle r="10" fill="#f8d0da" />
+        <circle r="6" fill="#fce0e8" />
+        <circle r="3" fill="#ffeef3" />
+        <ellipse cx="-4" cy="-5" rx="5" ry="3" fill="white" opacity="0.35" transform="rotate(-20)" />
+      </g>
+
+      <g transform="translate(182 265)">
+        <ellipse cx="0" cy="-16" rx="7" ry="9" fill="#f0b0c8" transform="rotate(0)" opacity="0.75" />
+        <ellipse cx="0" cy="-16" rx="7" ry="9" fill="#f4b8d0" transform="rotate(45)" opacity="0.75" />
+        <ellipse cx="0" cy="-16" rx="7" ry="9" fill="#f0b0c8" transform="rotate(90)" opacity="0.75" />
+        <ellipse cx="0" cy="-16" rx="7" ry="9" fill="#f4b8d0" transform="rotate(135)" opacity="0.75" />
+        <ellipse cx="0" cy="-16" rx="7" ry="9" fill="#f0b0c8" transform="rotate(180)" opacity="0.75" />
+        <ellipse cx="0" cy="-16" rx="7" ry="9" fill="#f4b8d0" transform="rotate(225)" opacity="0.75" />
+        <ellipse cx="0" cy="-16" rx="7" ry="9" fill="#f0b0c8" transform="rotate(270)" opacity="0.75" />
+        <ellipse cx="0" cy="-16" rx="7" ry="9" fill="#f4b8d0" transform="rotate(315)" opacity="0.75" />
+        <circle r="16" fill="#f8c8d8" opacity="0.85" />
+        <circle r="12" fill="#fad0de" />
+        <circle r="8" fill="#fcdce8" />
+        <circle r="4" fill="#feeaf0" />
+        <ellipse cx="-3" cy="-4" rx="4" ry="2.5" fill="white" opacity="0.3" transform="rotate(-15)" />
+      </g>
+
+      <g fill="#c9a0dc" opacity="0.85">
+        <ellipse cx="112" cy="280" rx="6" ry="9" transform="rotate(-22 112 280)" />
+        <ellipse cx="117" cy="270" rx="5" ry="7" transform="rotate(-18 117 270)" />
+        <ellipse cx="107" cy="272" rx="5" ry="7" transform="rotate(-28 107 272)" />
+        <ellipse cx="211" cy="278" rx="6" ry="9" transform="rotate(22 211 278)" />
+        <ellipse cx="206" cy="268" rx="5" ry="7" transform="rotate(18 206 268)" />
+        <ellipse cx="216" cy="270" rx="5" ry="7" transform="rotate(28 216 270)" />
+      </g>
+
+      <g fill="#8db08a" opacity="0.8">
+        <ellipse cx="120" cy="330" rx="6" ry="4" transform="rotate(-40 120 330)" />
+        <ellipse cx="115" cy="335" rx="5" ry="3.5" transform="rotate(-35 115 335)" />
+        <ellipse cx="202" cy="332" rx="6" ry="4" transform="rotate(40 202 332)" />
+        <ellipse cx="207" cy="337" rx="5" ry="3.5" transform="rotate(35 207 337)" />
+      </g>
+
+      <defs>
+        <linearGradient id="wrapGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+          <stop offset="0%" style="stop-color:#fff0f5;stop-opacity:1" />
+          <stop offset="50%" style="stop-color:#ffe4ec;stop-opacity:1" />
+          <stop offset="100%" style="stop-color:#ffd8e6;stop-opacity:1" />
+        </linearGradient>
+      </defs>
+
+      <path d="M115 390 Q160 370 205 390 L218 455 Q160 445 102 455 Z" fill="url(#wrapGrad)" opacity="0.95" />
+      <path d="M115 390 Q160 370 205 390" stroke="#f090a8" stroke-width="3" fill="none" />
+      <path d="M102 455 Q160 445 218 455" stroke="#f090a8" stroke-width="2.5" fill="none" opacity="0.6" />
+
+      <g transform="translate(160 360)">
+        <ellipse cx="-18" cy="0" rx="22" ry="14" fill="#f090a8" opacity="0.9" transform="rotate(-15)" />
+        <ellipse cx="18" cy="0" rx="22" ry="14" fill="#f090a8" opacity="0.9" transform="rotate(15)" />
+        <circle r="10" fill="#f590a8" />
+        <path d="M-3 -3 Q0 -8 3 -3 Q0 0 -3 -3" fill="#e87090" opacity="0.6" />
+        <ellipse cx="0" cy="0" rx="4" ry="4" fill="#ff98b0" opacity="0.5" />
+      </g>
+
+      <text x="130" y="415" font-size="14" fill="#f090a8" opacity="0.7">♥</text>
+      <text x="152" y="422" font-size="11" fill="#c8365e" opacity="0.6">♥</text>
+      <text x="170" y="417" font-size="14" fill="#f090a8" opacity="0.7">♥</text>
+      <text x="145" y="438" font-size="10" fill="#d84070" opacity="0.5">♥</text>
+      <text x="175" y="435" font-size="10" fill="#d84070" opacity="0.5">♥</text>
+
+      <g fill="white" opacity="0.6">
+        <circle cx="150" cy="255" r="2" />
+        <circle cx="170" cy="262" r="1.5" />
+        <circle cx="135" cy="275" r="1.5" />
+        <circle cx="190" cy="270" r="2" />
+      </g>
+    </svg>
+  </div>
+
+  <div class="stage">
+    <div class="title-above">A Little Something for You</div>
+
+    <div class="envelope-wrap" id="envelopeWrap" onclick="openEnvelope()">
+      <div class="envelope" id="envelope">
+        <div class="env-body">
+          <div class="wax-hearts">
+            <span class="mini-heart" style="top:40%;left:15%">♥</span>
+            <span class="mini-heart" style="top:55%;left:75%">♥</span>
+            <span class="mini-heart" style="top:30%;left:60%">♥</span>
+          </div>
+          <div class="env-left"></div>
+          <div class="env-right"></div>
+          <div class="env-bottom"></div>
+          <div class="env-seal" id="envSeal">💌</div>
+        </div>
+        <div class="env-flap" id="envFlap"></div>
+      </div>
+      <p class="click-hint">✦ Click to open ✦</p>
+    </div>
+  </div>
+
+  <div class="letter-container" id="letterContainer">
+    <div class="letter-backdrop" onclick="closeLetter()"></div>
+    <div class="letter-paper" id="letterPaper">
+      <span class="close-btn" onclick="closeLetter()">close ✕</span>
+      <div class="letter-date">February 14th, 2025</div>
+      <div class="letter-heading">My Dearest Valentine,</div>
+      <div class="letter-body">
+        <p>Every sunrise reminds me of you — warm, brilliant, and impossible to look away from. The world feels softer
+          simply knowing you are in it.</p>
+        <p>In every quiet moment, in every stolen glance, in every heartbeat that skips a little faster — that is where
+          I find you. That is where you live.</p>
+        <p>No words written by any poet, no song ever sung, could capture what it means to have you beside me. You are
+          the one I choose, endlessly and without hesitation.</p>
+        <p>So here — pressed into these pages — is everything my heart cannot say aloud: I love you, completely, wholly,
+          and forever. Happy Valentine's Day, my love. 🌹</p>
+      </div>
+      <div class="letter-deco">♥ ♥ ♥</div>
+      <div class="letter-sign">
+        <div class="letter-sign-name">Always Yours</div>
+        <div class="letter-sign-forever">forever & always ~</div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    let opened = false;
+
+    // === PARTICLES ===
+    const particleEl = document.getElementById('particles');
+    const symbols = ['❤', '♥', '✿', '✦', '❀', '🌸', '💕', '💗'];
+    for (let i = 0; i < 35; i++) {
+      const p = document.createElement('div');
+      p.className = 'particle';
+      p.textContent = symbols[Math.floor(Math.random() * symbols.length)];
+      p.style.left = Math.random() * 100 + 'vw';
+      p.style.fontSize = (12 + Math.random() * 18) + 'px';
+      p.style.animationDuration = (10 + Math.random() * 16) + 's';
+      p.style.animationDelay = -(Math.random() * 25) + 's';
+      p.style.color = ['#f08fa0', '#c8365e', '#f2c4ce', '#d4a847', '#e8a0b0', '#ff98b0'][Math.floor(Math.random() * 6)];
+      particleEl.appendChild(p);
+    }
+
+    // === PETALS ===
+    for (let i = 0; i < 20; i++) {
+      const petal = document.createElement('div');
+      petal.className = 'petal';
+      petal.textContent = ['🌸', '🌹', '✿', '❀', '🌺'][Math.floor(Math.random() * 5)];
+      petal.style.left = Math.random() * 100 + 'vw';
+      petal.style.animationDuration = (14 + Math.random() * 20) + 's';
+      petal.style.animationDelay = -(Math.random() * 30) + 's';
+      petal.style.fontSize = (14 + Math.random() * 14) + 'px';
+      document.body.appendChild(petal);
+    }
+
+    // === HEART BURST ===
+    function createHeartBurst(cx, cy) {
+      const burst = document.getElementById('heartsBurst');
+      const count = 18;
+      for (let i = 0; i < count; i++) {
+        const h = document.createElement('div');
+        h.className = 'burst-heart';
+        const angle = (i / count) * 360;
+        const dist = 100 + Math.random() * 140;
+        const rad = angle * Math.PI / 180;
+        h.style.setProperty('--tx', Math.cos(rad) * dist + 'px');
+        h.style.setProperty('--ty', Math.sin(rad) * dist + 'px');
+        h.style.left = cx + 'px';
+        h.style.top = cy + 'px';
+        h.style.fontSize = (16 + Math.random() * 20) + 'px';
+        h.style.animationDelay = (Math.random() * 0.4) + 's';
+        h.textContent = ['❤', '♥', '💕', '💗', '💖', '💝'][Math.floor(Math.random() * 6)];
+        h.style.color = ['#c8365e', '#f08fa0', '#d4a847', '#f2c4ce', '#ff6b88', '#ff98b0'][Math.floor(Math.random() * 6)];
+        burst.appendChild(h);
+        setTimeout(() => h.remove(), 2200);
+      }
+    }
+
+    // === OPEN ENVELOPE ===
+    function openEnvelope() {
+      if (opened) return;
+      opened = true;
+
+      const wrap = document.getElementById('envelopeWrap');
+      const rect = wrap.getBoundingClientRect();
+      const cx = rect.left + rect.width / 2;
+      const cy = rect.top + rect.height / 2;
+
+      wrap.classList.add('opening');
+      createHeartBurst(cx, cy);
+
+      // After flap opens, show letter
+      setTimeout(() => {
+        showLetter();
+      }, 1000);
+    }
+
+    function showLetter() {
+      const container = document.getElementById('letterContainer');
+      const paper = document.getElementById('letterPaper');
+
+      container.classList.add('show');
+      setTimeout(() => {
+        paper.classList.add('appear');
+      }, 150);
+
+      // Slide bouquet up after letter appears
+      setTimeout(() => {
+        slideBouquet();
+      }, 1200);
+    }
+
+    function slideBouquet() {
+      const bouquet = document.getElementById('bouquet');
+      bouquet.classList.add('slide-up');
+
+      // Burst hearts periodically from bouquet
+      setTimeout(() => {
+        const bRect = bouquet.getBoundingClientRect();
+        createHeartBurst(bRect.left + bRect.width / 2, bRect.top + 80);
+      }, 300);
+      setTimeout(() => {
+        const bRect = bouquet.getBoundingClientRect();
+        createHeartBurst(bRect.left + bRect.width / 2 - 40, bRect.top + 60);
+      }, 1000);
+      setTimeout(() => {
+        const bRect = bouquet.getBoundingClientRect();
+        createHeartBurst(bRect.left + bRect.width / 2 + 40, bRect.top + 60);
+      }, 1700);
+    }
+
+    function closeLetter() {
+      const container = document.getElementById('letterContainer');
+      const paper = document.getElementById('letterPaper');
+      const bouquet = document.getElementById('bouquet');
+      const wrap = document.getElementById('envelopeWrap');
+
+      paper.classList.remove('appear');
+      bouquet.classList.remove('slide-up');
+
+      setTimeout(() => {
+        container.classList.remove('show');
+        wrap.classList.remove('opening');
+        opened = false;
+      }, 600);
+    }
+
+    // === DYNAMIC CONTENT ===
+    window.addEventListener('DOMContentLoaded', () => {
+      const urlParams = new URLSearchParams(window.location.search);
+      const d = urlParams.get('d');
+
+      let to = 'My Love';
+      let from = 'Your Valentine';
+      let msg = 'Every sunrise reminds me of you...';
+
+      if (d) {
+        try {
+          const decoded = JSON.parse(decodeURIComponent(atob(d)));
+          if (decoded.t) to = decoded.t;
+          if (decoded.f) from = decoded.f;
+          if (decoded.m) msg = decoded.m;
+        } catch (e) { console.log('Error decoding params', e); }
+      } else {
+        if (urlParams.get('to')) to = decodeURIComponent(urlParams.get('to'));
+        if (urlParams.get('from')) from = decodeURIComponent(urlParams.get('from'));
+        if (urlParams.get('msg')) msg = decodeURIComponent(urlParams.get('msg'));
+      }
+
+      // Update DOM
+      document.querySelector('.letter-heading').textContent = `Dearest ${to},`;
+      document.querySelector('.letter-sign-name').textContent = from;
+
+      // Process message paragraphs
+      const bodyEl = document.querySelector('.letter-body');
+      bodyEl.innerHTML = ''; // Request clear
+
+      // Split by newlines and create paragraphs
+      const paragraphs = msg.split('\n').filter(p => p.trim() !== '');
+      if (paragraphs.length === 0) paragraphs.push('Happy Valentine\'s Day!');
+
+      paragraphs.forEach((graph, index) => {
+        const p = document.createElement('p');
+        p.textContent = graph;
+        // Stagger animation
+        p.style.transitionDelay = `${0.6 + (index * 0.25)}s`;
+        bodyEl.appendChild(p);
+      });
+    });
+  </script>
+</body>
+
+</html>

@@ -281,6 +281,18 @@ body {
     flex-shrink: 0;
 }
 
+.love-btn.surprise {
+    background: linear-gradient(135deg, #c8365e, #be123c); /* Matches valentine theme but vibrant */
+    box-shadow: 0 4px 15px rgba(200, 54, 94, 0.3);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.love-btn.surprise:hover {
+    background: linear-gradient(135deg, #d64570, #c81d45);
+    box-shadow: 0 6px 20px rgba(200, 54, 94, 0.4);
+    transform: translateY(-1px);
+}
+
 .love-btn:hover {
     background: var(--primary-light);
     box-shadow: 0 6px 20px rgba(225, 29, 72, 0.4);
