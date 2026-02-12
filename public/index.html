@@ -38,7 +38,7 @@
 
         <div class="action-area" id="action-area">
             <button id="generate-btn" class="love-btn" aria-label="Generate pickup line">
-                <span>Send Love</span>
+                <span>Rizz Me Up ✨</span>
                 <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="currentColor"
                     stroke="none" class="heart-icon" aria-hidden="true">
                     <path
@@ -68,6 +68,20 @@
                 <input type="text" id="receiver-name" placeholder="Their name" maxlength="50" required>
             </div>
             <div class="input-group">
+                <label>Visibility</label>
+                <div class="visibility-options">
+                    <label class="radio-label">
+                        <input type="radio" name="visibility" value="private" checked>
+                        <span class="radio-text">🔒 Private (Code Only)</span>
+                    </label>
+                    <label class="radio-label">
+                        <input type="radio" name="visibility" value="public">
+                        <span class="radio-text">🌍 Public (Everyone)</span>
+                    </label>
+                </div>
+            </div>
+
+            <div class="input-group">
                 <label for="letter-message">Your Message</label>
                 <textarea id="letter-message" placeholder="Pour your heart out..." rows="5" maxlength="500"
                     required></textarea>
@@ -88,20 +102,41 @@
         <!-- Read Letter Form -->
         <div id="read-letter-form" class="letter-form hidden">
             <h2 class="form-title">🔍 Read a Letter</h2>
-            <p class="form-instruction">Enter the magic code to see your message.</p>
-            <div class="input-group">
-                <label for="letter-code">Letter Code</label>
-                <input type="text" id="letter-code" placeholder="e.g. LOVE123" maxlength="10" required
-                    style="text-transform: uppercase;">
+
+            <div class="read-tabs">
+                <button id="tab-private" class="tab-btn active">🔑 Private Code</button>
+                <button id="tab-public" class="tab-btn">🌍 Public Wall</button>
             </div>
-            <button id="open-letter-btn" class="love-btn full-width">
-                <span>Open Letter</span>
-                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none"
-                    stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                    <circle cx="11" cy="11" r="8"></circle>
-                    <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
-                </svg>
-            </button>
+
+            <!-- Private Section -->
+            <div id="private-section" class="read-section">
+                <p class="form-instruction">Enter the magic code to see your message.</p>
+                <div class="input-group">
+                    <label for="letter-code">Letter Code</label>
+                    <input type="text" id="letter-code" placeholder="e.g. LOVE123" maxlength="10"
+                        style="text-transform: uppercase;">
+                </div>
+                <button id="open-letter-btn" class="love-btn full-width">
+                    <span>Open Letter</span>
+                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none"
+                        stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <circle cx="11" cy="11" r="8"></circle>
+                        <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                    </svg>
+                </button>
+            </div>
+
+            <!-- Public Section -->
+            <div id="public-section" class="read-section hidden">
+                <div id="public-letters-list" class="public-list">
+                    <!-- Cards will be injected here -->
+                    <div class="loading-spinner">Loading love notes...</div>
+                </div>
+                <button id="refresh-public-btn" class="secondary-btn small full-width" style="margin-top:10px">
+                    🔄 Refresh Wall
+                </button>
+            </div>
+
             <button id="cancel-read-btn" class="text-btn">← Back</button>
         </div>
 

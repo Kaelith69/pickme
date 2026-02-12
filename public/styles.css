@@ -282,7 +282,8 @@ body {
 }
 
 .love-btn.surprise {
-    background: linear-gradient(135deg, #c8365e, #be123c); /* Matches valentine theme but vibrant */
+    background: linear-gradient(135deg, #c8365e, #be123c);
+    /* Matches valentine theme but vibrant */
     box-shadow: 0 4px 15px rgba(200, 54, 94, 0.3);
     border: 1px solid rgba(255, 255, 255, 0.2);
 }
@@ -690,6 +691,22 @@ textarea:focus {
     .paper-content {
         font-size: 1.1rem;
     }
+
+    /* Mobile Alignment Fixes */
+    .visibility-options {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 8px;
+    }
+
+    .radio-label {
+        width: 100%;
+        padding: 10px;
+    }
+
+    .public-list {
+        max-height: 250px;
+    }
 }
 
 /* Reduce motion for accessibility */
@@ -893,9 +910,172 @@ textarea:focus {
     text-transform: uppercase;
 }
 
-#letter-code::placeholder {
-    font-size: 1rem;
-    letter-spacing: 1px;
-    font-weight: 400;
-    text-transform: none;
+
+/* === VISIBILITY OPTIONS === */
+.visibility-options {
+    display: flex;
+    gap: 12px;
+    margin-top: 8px;
+}
+
+.radio-label {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    cursor: pointer;
+    font-size: 14px;
+    color: var(--text-secondary);
+    background: rgba(255, 255, 255, 0.03);
+    padding: 8px 12px;
+    border-radius: 8px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    transition: all 0.2s ease;
+}
+
+.radio-label:hover {
+    background: rgba(255, 255, 255, 0.08);
+    border-color: rgba(255, 255, 255, 0.2);
+}
+
+.radio-label input[type="radio"] {
+    accent-color: var(--primary);
+    width: 16px;
+    height: 16px;
+}
+
+.radio-label:has(input:checked) {
+    background: rgba(244, 63, 94, 0.1);
+    border-color: var(--primary);
+    color: var(--text-primary);
+}
+
+/* === READ TABS === */
+.read-tabs {
+    display: flex;
+    gap: 4px;
+    margin-bottom: 20px;
+    background: rgba(0, 0, 0, 0.2);
+    padding: 4px;
+    border-radius: 12px;
+}
+
+.tab-btn {
+    flex: 1;
+    background: transparent;
+    border: none;
+    padding: 8px;
+    border-radius: 8px;
+    color: var(--text-secondary);
+    font-size: 14px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.tab-btn.active {
+    background: rgba(255, 255, 255, 0.1);
+    color: var(--text-primary);
+    font-weight: 500;
+}
+
+/* === PUBLIC LIST === */
+.public-list {
+    max-height: 300px;
+    /* Scrollable area */
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    padding-right: 4px;
+}
+
+.public-list::-webkit-scrollbar {
+    width: 4px;
+}
+
+.public-list::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+.public-list::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 2px;
+}
+
+.public-card {
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 10px;
+    padding: 12px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.public-card:hover {
+    background: rgba(255, 255, 255, 0.06);
+    border-color: rgba(244, 63, 94, 0.3);
+    transform: translateY(-2px);
+}
+
+.public-card-header {
+    display: flex;
+    justify-content: space-between;
+    font-size: 12px;
+    color: var(--text-secondary);
+    margin-bottom: 6px;
+}
+
+.card-to {
+    color: var(--primary);
+    font-weight: 600;
+    font-size: 14px;
+}
+
+.card-msg {
+    font-size: 13px;
+    color: var(--text-primary);
+    opacity: 0.8;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    line-clamp: 2;
+    /* Standard property */
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    line-height: 1.4;
+}
+
+@keyframes fadeInCard {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.public-card {
+    animation: fadeInCard 0.4s ease forwards;
+}
+
+.loading-spinner {
+    text-align: center;
+    color: var(--text-secondary);
+    font-size: 14px;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+}
+
+.loading-spinner::before {
+    content: '';
+    width: 24px;
+    height: 24px;
+    border: 2px solid rgba(255, 255, 255, 0.1);
+    border-top-color: var(--primary);
+    border-radius: 50%;
+    animation: btnSpin 0.8s linear infinite;
 }
