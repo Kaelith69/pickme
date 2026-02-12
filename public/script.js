@@ -474,7 +474,8 @@ if (openLetterBtn) {
 
             if (letter) {
                 window.currentReadLetter = letter; // Store for surprise view
-                showLetterMode(letter.to, letter.from, letter.message);
+                // DIRECT REDIRECT: Bypass the text view and go straight to the surprise
+                openSurprisePage(letter);
             } else {
                 showToast("Letter not found 💔 Maybe write one?");
                 // Optional: Shake animation or visual feedback
@@ -526,7 +527,8 @@ function openSurprisePage(letter) {
     };
 
     const encoded = btoa(encodeURIComponent(JSON.stringify(data)));
-    window.open(`valentine.html?d=${encoded}`, '_blank');
+    // Open in same tab for seamless experience
+    window.location.href = `valentine.html?d=${encoded}`;
 }
 
 if (viewSurpriseBtn) {
@@ -539,9 +541,10 @@ if (viewSurpriseBtn) {
 
 if (viewSurpriseReaderBtn) {
     viewSurpriseReaderBtn.addEventListener('click', () => {
-        // We need to store the current letter when reading too
-        if (window.currentReadLetter) {
-            openSurprisePage(window.currentReadLetter);
+        // Use read letter (reader mode) or created letter (creator mode)
+        const letterToUse = window.currentReadLetter || window.currentLetter;
+        if (letterToUse) {
+            openSurprisePage(letterToUse);
         }
     });
 }
