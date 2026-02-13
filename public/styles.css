@@ -325,7 +325,7 @@ body {
 /* Secondary Button */
 .secondary-btn {
     background: transparent;
-    border: 2px solid rgba(225, 29, 72, 0.25);
+    border: 1.5px solid rgba(225, 29, 72, 0.2);
     color: var(--primary);
     padding: 0.8rem 1.8rem;
     border-radius: var(--radius-full);
@@ -335,11 +335,20 @@ body {
     cursor: pointer;
     transition: all 0.3s ease;
     white-space: nowrap;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
 }
 
 .secondary-btn:hover {
     background: var(--primary-glow);
     border-color: var(--primary-light);
+    transform: translateY(-1px);
+}
+
+.secondary-btn:active {
+    transform: translateY(0);
 }
 
 .secondary-btn:focus-visible {
@@ -357,13 +366,29 @@ body {
     cursor: pointer;
     margin-top: 1.2rem;
     padding: 0.5rem;
-    transition: color 0.2s ease;
-    display: block;
+    transition: all 0.2s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
     width: 100%;
 }
 
 .text-btn:hover {
     color: var(--primary);
+}
+
+/* ==========================================
+   INLINE SVG ICON HELPERS
+   ========================================== */
+.btn-icon,
+.tab-icon,
+.radio-icon,
+.back-icon {
+    flex-shrink: 0;
+    vertical-align: middle;
+    position: relative;
+    top: -0.5px;
 }
 
 /* ==========================================
@@ -385,10 +410,11 @@ body {
 .form-title {
     font-family: var(--font-heading);
     color: var(--text-dark);
-    font-size: 1.6rem;
+    font-size: 1.5rem;
     font-weight: 600;
     margin-bottom: 1.8rem;
     text-align: center;
+    letter-spacing: -0.01em;
 }
 
 .input-group {
@@ -574,17 +600,17 @@ textarea:focus {
     transform: translateX(-50%);
     background: var(--text-dark);
     color: var(--white);
-    padding: 0.9rem 1.5rem;
-    border-radius: var(--radius-sm);
+    padding: 0.8rem 1.4rem;
+    border-radius: var(--radius-full);
     font-family: var(--font-body);
-    font-size: 0.95rem;
+    font-size: 0.9rem;
     font-weight: 500;
     display: flex;
     align-items: center;
     gap: 8px;
     z-index: 9999;
     transition: bottom 0.4s cubic-bezier(0.16, 1, 0.3, 1);
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
     white-space: nowrap;
 }
 
@@ -593,7 +619,9 @@ textarea:focus {
 }
 
 .toast-icon {
-    font-size: 1.1rem;
+    display: flex;
+    align-items: center;
+    color: #4ade80;
 }
 
 /* ==========================================
@@ -911,70 +939,103 @@ textarea:focus {
 }
 
 
-/* === VISIBILITY OPTIONS === */
+/* === VISIBILITY OPTIONS (Segmented Control) === */
 .visibility-options {
     display: flex;
-    gap: 12px;
-    margin-top: 8px;
+    background: rgba(255, 255, 255, 0.5);
+    padding: 4px;
+    border-radius: 12px;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    gap: 0;
+    /* Remove gap for continuous feel */
+    position: relative;
+    overflow: hidden;
 }
 
 .radio-label {
+    flex: 1;
     display: flex;
     align-items: center;
-    gap: 8px;
+    justify-content: center;
+    gap: 6px;
     cursor: pointer;
-    font-size: 14px;
-    color: var(--text-secondary);
-    background: rgba(255, 255, 255, 0.03);
-    padding: 8px 12px;
+    font-size: 0.85rem;
+    color: var(--text-muted);
+    padding: 10px 14px;
     border-radius: 8px;
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    transition: all 0.2s ease;
+    transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+    border: 1px solid transparent;
+    font-weight: 500;
+    text-align: center;
+    position: relative;
+    z-index: 1;
 }
 
 .radio-label:hover {
-    background: rgba(255, 255, 255, 0.08);
-    border-color: rgba(255, 255, 255, 0.2);
+    color: var(--primary);
+    background: rgba(255, 255, 255, 0.3);
 }
 
+/* Hide default radio */
 .radio-label input[type="radio"] {
-    accent-color: var(--primary);
-    width: 16px;
-    height: 16px;
+    display: none;
 }
 
+/* Active State */
 .radio-label:has(input:checked) {
-    background: rgba(244, 63, 94, 0.1);
-    border-color: var(--primary);
-    color: var(--text-primary);
+    background: var(--white);
+    color: var(--primary);
+    border-color: rgba(225, 29, 72, 0.1);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+    font-weight: 600;
 }
 
-/* === READ TABS === */
+.radio-text {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    position: relative;
+    z-index: 2;
+}
+
+/* === READ TABS (Segmented Control) === */
 .read-tabs {
     display: flex;
-    gap: 4px;
-    margin-bottom: 20px;
-    background: rgba(0, 0, 0, 0.2);
+    background: rgba(255, 255, 255, 0.5);
     padding: 4px;
     border-radius: 12px;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    margin-bottom: 24px;
 }
 
 .tab-btn {
     flex: 1;
     background: transparent;
     border: none;
-    padding: 8px;
+    padding: 10px;
     border-radius: 8px;
-    color: var(--text-secondary);
-    font-size: 14px;
+    color: var(--text-muted);
+    font-family: var(--font-body);
+    font-size: 0.9rem;
+    font-weight: 500;
     cursor: pointer;
-    transition: all 0.2s ease;
+    transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+}
+
+.tab-btn:hover {
+    color: var(--primary);
+    background: rgba(255, 255, 255, 0.3);
 }
 
 .tab-btn.active {
-    background: rgba(255, 255, 255, 0.1);
-    color: var(--text-primary);
-    font-weight: 500;
+    background: var(--white);
+    color: var(--primary);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+    font-weight: 600;
 }
 
 /* === PUBLIC LIST === */
@@ -997,50 +1058,51 @@ textarea:focus {
 }
 
 .public-list::-webkit-scrollbar-thumb {
-    background: rgba(255, 255, 255, 0.1);
+    background: rgba(0, 0, 0, 0.08);
     border-radius: 2px;
 }
 
 .public-card {
-    background: rgba(255, 255, 255, 0.03);
-    border: 1px solid rgba(255, 255, 255, 0.08);
-    border-radius: 10px;
-    padding: 12px;
+    background: rgba(255, 255, 255, 0.6);
+    border: 1px solid rgba(0, 0, 0, 0.06);
+    border-radius: var(--radius-sm);
+    padding: 14px 16px;
     cursor: pointer;
-    transition: all 0.2s ease;
+    transition: all 0.25s ease;
 }
 
 .public-card:hover {
-    background: rgba(255, 255, 255, 0.06);
-    border-color: rgba(244, 63, 94, 0.3);
+    background: var(--white);
+    border-color: rgba(225, 29, 72, 0.15);
+    box-shadow: 0 4px 12px rgba(225, 29, 72, 0.08);
     transform: translateY(-2px);
 }
 
 .public-card-header {
     display: flex;
     justify-content: space-between;
-    font-size: 12px;
-    color: var(--text-secondary);
+    align-items: center;
+    font-size: 0.75rem;
+    color: var(--text-muted);
     margin-bottom: 6px;
 }
 
 .card-to {
     color: var(--primary);
     font-weight: 600;
-    font-size: 14px;
+    font-size: 0.85rem;
 }
 
 .card-msg {
-    font-size: 13px;
-    color: var(--text-primary);
-    opacity: 0.8;
+    font-size: 0.8rem;
+    color: var(--text-body);
     display: -webkit-box;
     -webkit-line-clamp: 2;
     line-clamp: 2;
-    /* Standard property */
     -webkit-box-orient: vertical;
     overflow: hidden;
-    line-height: 1.4;
+    line-height: 1.5;
+    font-style: italic;
 }
 
 @keyframes fadeInCard {
@@ -1061,9 +1123,9 @@ textarea:focus {
 
 .loading-spinner {
     text-align: center;
-    color: var(--text-secondary);
-    font-size: 14px;
-    padding: 20px;
+    color: var(--text-muted);
+    font-size: 0.85rem;
+    padding: 24px;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -1072,9 +1134,9 @@ textarea:focus {
 
 .loading-spinner::before {
     content: '';
-    width: 24px;
-    height: 24px;
-    border: 2px solid rgba(255, 255, 255, 0.1);
+    width: 20px;
+    height: 20px;
+    border: 2px solid rgba(0, 0, 0, 0.06);
     border-top-color: var(--primary);
     border-radius: 50%;
     animation: btnSpin 0.8s linear infinite;

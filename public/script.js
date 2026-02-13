@@ -820,12 +820,12 @@ if (refreshPublicBtn) {
 }
 
 async function loadPublicLetters() {
-    publicListEl.innerHTML = '<div class="loading-spinner">Loading love notes...</div>';
+    publicListEl.innerHTML = '<div class="loading-spinner">Loading letters...</div>';
 
     const letters = await fetchPublicLetters();
 
     if (letters.length === 0) {
-        publicListEl.innerHTML = '<div style="text-align:center; opacity:0.6; padding:20px;">No public letters yet 🍂</div>';
+        publicListEl.innerHTML = '<div style="text-align:center; opacity:0.6; padding:20px;">No public letters yet.</div>';
         return;
     }
 
