@@ -739,18 +739,12 @@ textarea:focus {
     gap: 0;
     position: relative;
     overflow: hidden;
-    /* Samsung Internet Fallback */
-    background: #fce7f3;
-    background: rgba(255, 255, 255, 0.65);
     backdrop-filter: blur(4px);
     -webkit-backdrop-filter: blur(4px);
 }
 
 .radio-label {
     flex: 1;
-    /* Prevent collapse on Samsung Internet */
-    min-width: 0;
-    flex-shrink: 0;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -798,8 +792,6 @@ textarea:focus {
 /* === READ TABS (Segmented Control) === */
 .read-tabs {
     display: flex;
-    /* Samsung Internet Fallback */
-    background: #fce7f3;
     background: rgba(255, 255, 255, 0.65);
     padding: 4px;
     border-radius: 12px;
@@ -811,9 +803,6 @@ textarea:focus {
 
 .tab-btn {
     flex: 1;
-    /* Prevent collapse on Samsung Internet */
-    min-width: 0;
-    flex-shrink: 0;
     background: transparent;
     border: none;
     padding: 10px;
@@ -1068,12 +1057,27 @@ textarea:focus {
 /* --- Mobile Phones --- */
 @media (max-width: 480px) {
     body {
-        padding: 1rem 0.5rem;
+        padding: 0;
+        align-items: flex-start;
+        /* Align top for long content */
+        background: var(--bg-1);
+        /* Solid bg fallback or keep gradient */
     }
 
     .card-container {
-        padding: 2rem 1.2rem;
-        border-radius: 16px;
+        width: 100%;
+        min-height: 100vh;
+        min-height: 100dvh;
+        border-radius: 0;
+        border: none;
+        box-shadow: none;
+        background: rgba(255, 255, 255, 0.85);
+        /* Slightly more opaque */
+        padding: max(2rem, env(safe-area-inset-top)) 1.2rem max(2rem, env(safe-area-inset-bottom));
+        display: flex;
+        flex-direction: column;
+        justify-content: flex-start;
+        /* Start from top */
     }
 
     .card-header {
@@ -1194,14 +1198,19 @@ textarea:focus {
         height: 16px;
     }
 
-    /* Paper */
     .paper {
         padding: 1.2rem 1.2rem 1.2rem 1.8rem;
         margin: 0.75rem auto;
+        transform: none !important;
+        /* Disable rotation on mobile */
+    }
+
+    .paper:hover {
+        transform: none !important;
     }
 
     .paper::before {
-        left: 1rem;
+        left: 0.8rem;
     }
 
     .paper-content {
@@ -1262,49 +1271,56 @@ textarea:focus {
 /* --- Very Small Phones (SE, Mini) --- */
 @media (max-width: 360px) {
     body {
-        padding: 0.75rem 0.4rem;
+        padding: 0;
     }
 
     .card-container {
-        padding: 1.75rem 1rem;
-        border-radius: 14px;
+        padding: max(1.5rem, env(safe-area-inset-top)) 0.8rem max(1.5rem, env(safe-area-inset-bottom));
+        border-radius: 0;
     }
 
     .title {
-        font-size: 1.75rem;
+        font-size: 1.6rem;
     }
 
     .love-btn {
-        padding: 0.75rem 1.4rem;
+        padding: 0.8rem 1.2rem;
         font-size: 0.9rem;
     }
 
     .secondary-btn {
-        padding: 0.65rem 1.2rem;
+        padding: 0.7rem 1rem;
         font-size: 0.85rem;
     }
 
+    /* Keep horizontal but compact */
     .visibility-options {
-        flex-direction: column;
-        gap: 4px;
+        flex-direction: row;
+        gap: 0;
     }
 
     .radio-label {
-        width: 100%;
-        padding: 10px;
-        justify-content: center;
+        padding: 8px 6px;
+        font-size: 0.75rem;
+        white-space: nowrap;
+    }
+
+    .radio-text svg {
+        width: 12px;
+        height: 12px;
     }
 
     .paper-content {
-        font-size: 1.05rem;
+        font-size: 1rem;
+        line-height: 1.6;
     }
 
     .generated-code {
-        font-size: 1.3rem;
+        font-size: 1.2rem;
     }
 
     .public-list {
-        max-height: 220px;
+        max-height: 200px;
     }
 }
 
