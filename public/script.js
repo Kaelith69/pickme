@@ -513,6 +513,16 @@ if (createAnotherBtn) createAnotherBtn.addEventListener('click', () => {
     showCreateMode();
 });
 
+// WhatsApp Share Button
+const shareWhatsAppBtn = $('#share-whatsapp-btn');
+if (shareWhatsAppBtn) {
+    shareWhatsAppBtn.addEventListener('click', () => {
+        if (window.currentLetter && window.currentLetter.code) {
+            shareViaWhatsApp(window.currentLetter.code);
+        }
+    });
+}
+
 // ==========================================
 // SURPRISE PAGE HANDLERS
 // ==========================================
@@ -852,8 +862,11 @@ async function loadPublicLetters() {
         return;
     }
 
+    const liked = getLikedLetters();
     publicListEl.innerHTML = '';
     letters.forEach(letter => {
+        const isLiked = liked.includes(letter.id);
+        const likeCount = letter.likes || 0;
         const card = document.createElement('div');
         card.className = 'public-card';
         card.innerHTML = `
@@ -862,25 +875,149 @@ async function loadPublicLetters() {
                 <span>${new Date(letter.timestamp).toLocaleDateString()}</span>
             </div>
             <div class="card-msg">"${letter.message}"</div>
+            <div class="card-footer">
+                <button class="like-btn ${isLiked ? 'liked' : ''}" data-id="${letter.id}" aria-label="Like this letter">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" 
+                        fill="${isLiked ? 'currentColor' : 'none'}" stroke="currentColor" stroke-width="2">
+                        <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path>
+                    </svg>
+                    <span class="like-count">${likeCount}</span>
+                </button>
+                <span class="card-from">— ${letter.from}</span>
+            </div>
         `;
 
-        card.addEventListener('click', () => {
+        // Card click opens surprise
+        card.addEventListener('click', (e) => {
+            if (e.target.closest('.like-btn')) return; // Don't open on like click
             openSurprisePage(letter);
+        });
+
+        // Like button handler
+        const likeBtn = card.querySelector('.like-btn');
+        likeBtn.addEventListener('click', async (e) => {
+            e.stopPropagation();
+            if (likeBtn.classList.contains('liked')) {
+                showToast("Already liked 💕");
+                return;
+            }
+            const success = await likeLetter(letter.id);
+            if (success) {
+                likeBtn.classList.add('liked');
+                likeBtn.querySelector('svg').setAttribute('fill', 'currentColor');
+                const countEl = likeBtn.querySelector('.like-count');
+                countEl.textContent = parseInt(countEl.textContent) + 1;
+                showToast("Liked! 💗");
+            }
         });
 
         publicListEl.appendChild(card);
     });
 }
 
-// Override the previous inline saveLetter if necessary, but actually we need to REPLACE the old saveLetter definition earlier in the file to avoid duplicates/conflicts?
-// No, I'll allow this new definition to supersede if I place it correctly, OR better yet, I will update the "saveLetterLink" logic to use the updated saveLetter function
-// since I'm appending this code. Wait, I should probably replace the OLD saveLetter function instead of appending a new one to avoid re-declaration errors if it was var/function hoisted.
-// However, since it's `async function saveLetter`, re-declaring it in the same scope might cause syntax error.
-// The `saveLetter` was defined around line 640. I should actually replace THAT one.
-// BUT the prompt is to "Add visibility handling...".
-// I will target the *existing* saveLetter function for replacement in a separate tool call to be safe,
-// and use this tool call primarily for the new UI logic and Initialization.
+// ==========================================
+// THEME TOGGLE
+// ==========================================
+(function initTheme() {
+    const themeToggle = document.getElementById('theme-toggle');
+    const saved = localStorage.getItem('pickme-theme');
 
-// Actually, I am REPLACING the end of the file, starting from line 728 (Init).
-// I will inject the NEW `loadPublicLetters` and tab handlers here.
-// I WILL NOT re-define `saveLetter` here to avoid conflicts. I will update `saveLetter` in a separate call.
+    // Apply saved theme or detect system preference
+    if (saved) {
+        document.documentElement.setAttribute('data-theme', saved);
+    } else if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+        document.documentElement.setAttribute('data-theme', 'dark');
+    }
+
+    if (themeToggle) {
+        themeToggle.addEventListener('click', () => {
+            const current = document.documentElement.getAttribute('data-theme');
+            const next = current === 'dark' ? 'light' : 'dark';
+
+            if (next === 'light') {
+                document.documentElement.removeAttribute('data-theme');
+            } else {
+                document.documentElement.setAttribute('data-theme', 'dark');
+            }
+
+            localStorage.setItem('pickme-theme', next);
+        });
+    }
+})();
+
+// ==========================================
+// LIKE BUTTON ON PUBLIC LETTERS
+// ==========================================
+function getLikedLetters() {
+    try {
+        return JSON.parse(localStorage.getItem('pickme-liked') || '[]');
+    } catch { return []; }
+}
+
+function setLikedLetters(arr) {
+    localStorage.setItem('pickme-liked', JSON.stringify(arr));
+}
+
+async function likeLetter(letterId) {
+    if (!db) return false;
+
+    const liked = getLikedLetters();
+    if (liked.includes(letterId)) return false; // Already liked
+
+    try {
+        const { updateDoc, increment } = await import("https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js");
+        const q = query(collection(db, "letters"), where("id", "==", letterId), limit(1));
+        const snap = await getDocs(q);
+
+        if (!snap.empty) {
+            await updateDoc(snap.docs[0].ref, { likes: increment(1) });
+            liked.push(letterId);
+            setLikedLetters(liked);
+            return true;
+        }
+    } catch (e) {
+        console.error("Error liking letter:", e);
+    }
+    return false;
+}
+
+// ==========================================
+// WHATSAPP SHARE
+// ==========================================
+function shareViaWhatsApp(code) {
+    const url = `${window.location.origin}${window.location.pathname}?code=${code}`;
+    const text = `💌 Someone sent you a Valentine! Open it here:\n${url}`;
+    window.open(`https://wa.me/?text=${encodeURIComponent(text)}`, '_blank');
+}
+
+// ==========================================
+// ?code= URL PARAMETER AUTO-OPEN
+// ==========================================
+(function handleCodeParam() {
+    const urlParams = new URLSearchParams(window.location.search);
+    const code = urlParams.get('code');
+
+    if (code && code.trim()) {
+        // Auto-open the letter
+        (async () => {
+            const loader = document.getElementById('loader');
+            if (loader) loader.classList.add('show');
+
+            try {
+                const letter = await fetchLetterByCode(code.trim().toUpperCase());
+                await sleep(500);
+
+                if (letter) {
+                    window.currentReadLetter = letter;
+                    openSurprisePage(letter);
+                } else {
+                    if (loader) loader.classList.remove('show');
+                    showToast("Letter not found 💔");
+                }
+            } catch (e) {
+                if (loader) loader.classList.remove('show');
+                showToast("Error loading letter ❌");
+            }
+        })();
+    }
+})();

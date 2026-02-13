@@ -2,7 +2,7 @@
    DESIGN SYSTEM & VARIABLES
    ========================================== */
 :root {
-    /* Refined Valentine Palette */
+    /* Sweet Pink (Default) */
     --bg-1: #fdf2f4;
     --bg-2: #fce7f3;
     --bg-3: #fbcfe8;
@@ -21,6 +21,13 @@
     --white: #ffffff;
     --paper: #fffbeb;
 
+    --card-bg: rgba(255, 255, 255, 0.75);
+    --card-border: rgba(255, 255, 255, 0.6);
+    --input-bg: rgba(255, 255, 255, 0.7);
+    --input-border: rgba(0, 0, 0, 0.08);
+    --seg-bg: rgba(255, 255, 255, 0.65);
+    --seg-border: rgba(255, 255, 255, 0.4);
+
     /* Shadows */
     --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.04);
     --shadow-md: 0 8px 30px rgba(225, 29, 72, 0.08);
@@ -37,6 +44,41 @@
     --radius-md: 20px;
     --radius-lg: 32px;
     --radius-full: 50px;
+}
+
+/* ==========================================
+   DARK ROMANCE THEME
+   ========================================== */
+[data-theme="dark"] {
+    --bg-1: #0f0a14;
+    --bg-2: #1a0a1e;
+    --bg-3: #2d0a2e;
+    --mesh-1: rgba(225, 29, 72, 0.25);
+    --mesh-2: rgba(190, 18, 60, 0.2);
+
+    --primary: #ff4d6d;
+    --primary-light: #ff758f;
+    --primary-dark: #e11d48;
+    --primary-glow: rgba(255, 77, 109, 0.2);
+    --primary-gradient: linear-gradient(135deg, #ff4d6d, #e11d48);
+
+    --text-dark: #f5f0f0;
+    --text-body: #d4c8d0;
+    --text-muted: #8a7e86;
+    --white: #1e1726;
+    --paper: #1a1520;
+
+    --card-bg: rgba(30, 23, 38, 0.85);
+    --card-border: rgba(255, 77, 109, 0.12);
+    --input-bg: rgba(255, 255, 255, 0.06);
+    --input-border: rgba(255, 255, 255, 0.1);
+    --seg-bg: rgba(255, 255, 255, 0.08);
+    --seg-border: rgba(255, 255, 255, 0.06);
+
+    --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.2);
+    --shadow-md: 0 8px 30px rgba(0, 0, 0, 0.3);
+    --shadow-lg: 0 20px 60px rgba(0, 0, 0, 0.4);
+    --shadow-glow: 0 0 40px rgba(255, 77, 109, 0.1);
 }
 
 /* ==========================================
@@ -69,6 +111,7 @@ body {
     overflow-y: auto;
     position: relative;
     padding: 2rem 1rem;
+    transition: background 0.4s ease, color 0.4s ease;
 }
 
 /* ==========================================
@@ -128,13 +171,60 @@ body {
 }
 
 /* ==========================================
+   THEME TOGGLE
+   ========================================== */
+.theme-toggle {
+    position: absolute;
+    top: 1.2rem;
+    right: 1.2rem;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    border: 1px solid var(--input-border);
+    background: var(--seg-bg);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    color: var(--text-body);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s ease;
+    z-index: 10;
+    padding: 0;
+}
+
+.theme-toggle:hover {
+    background: var(--primary-glow);
+    color: var(--primary);
+    transform: scale(1.08);
+}
+
+/* Show moon by default, sun when dark */
+.theme-icon.sun {
+    display: none;
+}
+
+.theme-icon.moon {
+    display: block;
+}
+
+[data-theme="dark"] .theme-icon.sun {
+    display: block;
+}
+
+[data-theme="dark"] .theme-icon.moon {
+    display: none;
+}
+
+/* ==========================================
    CARD CONTAINER
    ========================================== */
 .card-container {
-    background: rgba(255, 255, 255, 0.75);
+    background: var(--card-bg);
     backdrop-filter: blur(24px);
     -webkit-backdrop-filter: blur(24px);
-    border: 1px solid rgba(255, 255, 255, 0.6);
+    border: 1px solid var(--card-border);
     border-radius: var(--radius-lg);
     padding: 3.5rem 3rem;
     width: 100%;
@@ -144,6 +234,7 @@ body {
     position: relative;
     z-index: 1;
     animation: cardEntrance 0.8s cubic-bezier(0.16, 1, 0.3, 1) both;
+    transition: background 0.4s ease, border-color 0.4s ease, box-shadow 0.4s ease;
 }
 
 @keyframes cardEntrance {
@@ -436,9 +527,9 @@ input,
 textarea {
     width: 100%;
     padding: 0.9rem 1rem;
-    border: 1.5px solid rgba(0, 0, 0, 0.08);
+    border: 1.5px solid var(--input-border);
     border-radius: var(--radius-sm);
-    background: rgba(255, 255, 255, 0.9);
+    background: var(--input-bg);
     font-family: var(--font-body);
     font-size: 1rem;
     color: var(--text-dark);
@@ -732,10 +823,10 @@ textarea:focus {
 /* === VISIBILITY OPTIONS (Segmented Control) === */
 .visibility-options {
     display: flex;
-    background: rgba(255, 255, 255, 0.65);
+    background: var(--seg-bg);
     padding: 4px;
     border-radius: 12px;
-    border: 1px solid rgba(255, 255, 255, 0.4);
+    border: 1px solid var(--seg-border);
     gap: 0;
     position: relative;
     overflow: hidden;
@@ -792,10 +883,10 @@ textarea:focus {
 /* === READ TABS (Segmented Control) === */
 .read-tabs {
     display: flex;
-    background: rgba(255, 255, 255, 0.65);
+    background: var(--seg-bg);
     padding: 4px;
     border-radius: 12px;
-    border: 1px solid rgba(255, 255, 255, 0.4);
+    border: 1px solid var(--seg-border);
     margin-bottom: 24px;
     backdrop-filter: blur(4px);
     -webkit-backdrop-filter: blur(4px);
@@ -855,8 +946,8 @@ textarea:focus {
 }
 
 .public-card {
-    background: rgba(255, 255, 255, 0.6);
-    border: 1px solid rgba(0, 0, 0, 0.06);
+    background: var(--input-bg);
+    border: 1px solid var(--input-border);
     border-radius: var(--radius-sm);
     padding: 14px 16px;
     cursor: pointer;
@@ -896,6 +987,49 @@ textarea:focus {
     overflow: hidden;
     line-height: 1.5;
     font-style: italic;
+}
+
+.card-footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-top: 8px;
+    padding-top: 8px;
+    border-top: 1px solid var(--input-border);
+}
+
+.card-from {
+    font-size: 0.72rem;
+    color: var(--text-muted);
+    font-style: italic;
+}
+
+.like-btn {
+    background: none;
+    border: none;
+    color: var(--text-muted);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    font-family: var(--font-body);
+    font-size: 0.78rem;
+    padding: 4px 8px;
+    border-radius: 20px;
+    transition: all 0.25s ease;
+}
+
+.like-btn:hover {
+    color: var(--primary);
+    background: var(--primary-glow);
+}
+
+.like-btn.liked {
+    color: var(--primary);
+}
+
+.like-count {
+    font-weight: 600;
 }
 
 @keyframes fadeInCard {
@@ -938,14 +1072,19 @@ textarea:focus {
 /* --- Tablet & Small Laptops --- */
 @media (max-width: 768px) {
     body {
-        padding: 1.5rem 0.75rem;
+        padding: 0;
         align-items: flex-start;
     }
 
     .card-container {
-        padding: 2.5rem 1.5rem;
-        border-radius: var(--radius-md);
+        width: 100%;
         max-width: 100%;
+        min-height: 100vh;
+        min-height: 100dvh;
+        padding: 2.5rem 1.5rem;
+        border-radius: 0;
+        border: none;
+        box-shadow: none;
     }
 
     .card-header {
@@ -1071,7 +1210,7 @@ textarea:focus {
         border-radius: 0;
         border: none;
         box-shadow: none;
-        background: rgba(255, 255, 255, 0.85);
+        background: var(--card-bg);
         /* Slightly more opaque */
         padding: max(2rem, env(safe-area-inset-top)) 1.2rem max(2rem, env(safe-area-inset-bottom));
         display: flex;
