@@ -654,14 +654,22 @@ textarea:focus {
 /* ==========================================
    RESPONSIVE
    ========================================== */
+
+/* --- Tablet & Small Laptops --- */
 @media (max-width: 768px) {
     body {
         padding: 1.5rem 0.75rem;
+        align-items: flex-start;
     }
 
     .card-container {
         padding: 2.5rem 1.5rem;
         border-radius: var(--radius-md);
+        max-width: 100%;
+    }
+
+    .card-header {
+        margin-bottom: 2rem;
     }
 
     .title {
@@ -677,16 +685,30 @@ textarea:focus {
         font-size: 1.15rem;
     }
 
+    .content-area {
+        min-height: 80px;
+        margin-bottom: 2rem;
+    }
+
     .action-area {
         flex-direction: column;
+    }
+
+    .love-btn {
+        width: 100%;
     }
 
     .secondary-btn {
         width: 100%;
     }
 
+    .secondary-actions {
+        gap: 10px;
+    }
+
     .paper {
         padding: 1.5rem 1.5rem 1.5rem 2rem;
+        margin: 1rem auto;
     }
 
     .paper::before {
@@ -700,40 +722,340 @@ textarea:focus {
     .greeting {
         font-size: 1.4rem;
     }
+
+    .from-name {
+        font-size: 1.5rem;
+    }
+
+    .form-title {
+        font-size: 1.35rem;
+        margin-bottom: 1.5rem;
+    }
+
+    .form-instruction {
+        font-size: 0.9rem;
+        margin-bottom: 1.2rem;
+    }
+
+    .generated-code {
+        font-size: 1.7rem;
+        letter-spacing: 3px;
+    }
+
+    .code-display-container {
+        padding: 0.85rem;
+    }
+
+    .success-hint {
+        font-size: 0.85rem;
+        margin-bottom: 1.5rem;
+    }
+
+    .toast {
+        left: 1rem;
+        right: 1rem;
+        transform: none;
+        font-size: 0.85rem;
+        padding: 0.75rem 1.2rem;
+        border-radius: var(--radius-sm);
+    }
+
+    .toast.show {
+        bottom: 1.5rem;
+    }
+
+    #letter-code {
+        font-size: 1.3rem;
+        letter-spacing: 3px;
+    }
+
+    .letter-actions {
+        margin-top: 1rem;
+    }
 }
 
-@media (max-width: 380px) {
+/* --- Mobile Phones --- */
+@media (max-width: 480px) {
+    body {
+        padding: 1rem 0.5rem;
+    }
+
     .card-container {
         padding: 2rem 1.2rem;
+        border-radius: 16px;
+    }
+
+    .card-header {
+        margin-bottom: 1.5rem;
     }
 
     .title {
         font-size: 2rem;
     }
 
-    .love-btn {
-        padding: 0.85rem 1.8rem;
+    .subtitle {
+        font-size: 0.65rem;
+        letter-spacing: 2.5px;
+        margin-bottom: 0.5rem;
+    }
+
+    .pickup-line {
+        font-size: 1.05rem;
+        line-height: 1.6;
+    }
+
+    .content-area {
+        min-height: 70px;
+        margin-bottom: 1.5rem;
+    }
+
+    .placeholder {
         font-size: 0.95rem;
     }
 
-    .paper-content {
-        font-size: 1.1rem;
+    .love-btn {
+        padding: 0.85rem 1.6rem;
+        font-size: 0.95rem;
+        gap: 8px;
     }
 
-    /* Mobile Alignment Fixes */
+    .secondary-btn {
+        padding: 0.7rem 1.4rem;
+        font-size: 0.88rem;
+    }
+
+    .text-btn {
+        font-size: 0.85rem;
+        margin-top: 1rem;
+    }
+
+    /* Form elements */
+    .letter-form {
+        margin-top: 1rem;
+    }
+
+    .form-title {
+        font-size: 1.25rem;
+        margin-bottom: 1.2rem;
+    }
+
+    .input-group {
+        margin-bottom: 1rem;
+    }
+
+    .input-group label {
+        font-size: 0.72rem;
+        letter-spacing: 1.2px;
+        margin-bottom: 0.35rem;
+    }
+
+    input,
+    textarea {
+        padding: 0.8rem 0.9rem;
+        font-size: 0.95rem;
+        border-radius: 10px;
+    }
+
+    textarea {
+        min-height: 90px;
+    }
+
+    /* Segmented controls */
+    .visibility-options {
+        border-radius: 10px;
+    }
+
+    .radio-label {
+        padding: 9px 10px;
+        font-size: 0.8rem;
+    }
+
+    .read-tabs {
+        border-radius: 10px;
+        margin-bottom: 18px;
+    }
+
+    .tab-btn {
+        padding: 9px 8px;
+        font-size: 0.82rem;
+        gap: 5px;
+    }
+
+    .tab-icon,
+    .radio-icon {
+        width: 12px;
+        height: 12px;
+    }
+
+    /* Code display */
+    .generated-code {
+        font-size: 1.5rem;
+        letter-spacing: 2px;
+    }
+
+    .copy-btn {
+        width: 36px;
+        height: 36px;
+    }
+
+    .copy-btn svg {
+        width: 16px;
+        height: 16px;
+    }
+
+    /* Paper */
+    .paper {
+        padding: 1.2rem 1.2rem 1.2rem 1.8rem;
+        margin: 0.75rem auto;
+    }
+
+    .paper::before {
+        left: 1rem;
+    }
+
+    .paper-content {
+        font-size: 1.15rem;
+        line-height: 1.9;
+    }
+
+    .greeting {
+        font-size: 1.3rem;
+    }
+
+    .from-name {
+        font-size: 1.4rem;
+    }
+
+    .heart-doodle {
+        font-size: 1rem;
+    }
+
+    /* Public list */
+    .public-list {
+        max-height: 260px;
+        gap: 10px;
+    }
+
+    .public-card {
+        padding: 12px 14px;
+    }
+
+    .card-to {
+        font-size: 0.8rem;
+    }
+
+    .card-msg {
+        font-size: 0.78rem;
+    }
+
+    .public-card-header {
+        font-size: 0.7rem;
+    }
+
+    /* Success view */
+    .success-hint {
+        font-size: 0.82rem;
+    }
+
+    .form-instruction {
+        font-size: 0.85rem;
+        margin-top: -0.5rem;
+    }
+
+    #letter-code {
+        font-size: 1.2rem;
+        letter-spacing: 3px;
+    }
+}
+
+/* --- Very Small Phones (SE, Mini) --- */
+@media (max-width: 360px) {
+    body {
+        padding: 0.75rem 0.4rem;
+    }
+
+    .card-container {
+        padding: 1.75rem 1rem;
+        border-radius: 14px;
+    }
+
+    .title {
+        font-size: 1.75rem;
+    }
+
+    .love-btn {
+        padding: 0.75rem 1.4rem;
+        font-size: 0.9rem;
+    }
+
+    .secondary-btn {
+        padding: 0.65rem 1.2rem;
+        font-size: 0.85rem;
+    }
+
     .visibility-options {
         flex-direction: column;
-        align-items: flex-start;
-        gap: 8px;
+        gap: 4px;
     }
 
     .radio-label {
         width: 100%;
         padding: 10px;
+        justify-content: center;
+    }
+
+    .paper-content {
+        font-size: 1.05rem;
+    }
+
+    .generated-code {
+        font-size: 1.3rem;
     }
 
     .public-list {
-        max-height: 250px;
+        max-height: 220px;
+    }
+}
+
+/* --- Safe area for notched phones (iPhone etc) --- */
+@supports (padding: max(0px)) {
+    body {
+        padding-left: max(0.5rem, env(safe-area-inset-left));
+        padding-right: max(0.5rem, env(safe-area-inset-right));
+        padding-bottom: max(1rem, env(safe-area-inset-bottom));
+    }
+
+    .toast {
+        bottom: max(-80px, calc(-80px - env(safe-area-inset-bottom)));
+    }
+
+    .toast.show {
+        bottom: max(1.5rem, env(safe-area-inset-bottom));
+    }
+}
+
+/* --- Landscape on small screens --- */
+@media (max-height: 500px) and (orientation: landscape) {
+    body {
+        align-items: flex-start;
+        padding: 0.75rem;
+    }
+
+    .card-container {
+        padding: 1.5rem 1.2rem;
+    }
+
+    .card-header {
+        margin-bottom: 1rem;
+    }
+
+    .title {
+        font-size: 1.8rem;
+    }
+
+    .content-area {
+        min-height: 60px;
+        margin-bottom: 1rem;
     }
 }
 
