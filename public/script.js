@@ -811,6 +811,29 @@ if (tabPrivate && tabPublic) {
             loadPublicLetters();
         }
     });
+
+    // Fallback for :has() support on older mobile browsers
+    const visibilityRadios = document.querySelectorAll('input[name="visibility"]');
+
+    function updateRadioClasses() {
+        visibilityRadios.forEach(radio => {
+            const label = radio.closest('.radio-label');
+            if (label) {
+                if (radio.checked) {
+                    label.classList.add('active');
+                } else {
+                    label.classList.remove('active');
+                }
+            }
+        });
+    }
+
+    visibilityRadios.forEach(radio => {
+        radio.addEventListener('change', updateRadioClasses);
+    });
+
+    // Initial call
+    updateRadioClasses();
 }
 
 if (refreshPublicBtn) {

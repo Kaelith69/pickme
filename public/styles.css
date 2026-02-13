@@ -732,13 +732,15 @@ textarea:focus {
 /* === VISIBILITY OPTIONS (Segmented Control) === */
 .visibility-options {
     display: flex;
-    background: rgba(255, 255, 255, 0.5);
+    background: rgba(255, 255, 255, 0.65);
     padding: 4px;
     border-radius: 12px;
-    border: 1px solid rgba(255, 255, 255, 0.2);
+    border: 1px solid rgba(255, 255, 255, 0.4);
     gap: 0;
     position: relative;
     overflow: hidden;
+    backdrop-filter: blur(4px);
+    -webkit-backdrop-filter: blur(4px);
 }
 
 .radio-label {
@@ -769,11 +771,13 @@ textarea:focus {
     display: none;
 }
 
-.radio-label:has(input:checked) {
+/* Active State (supports both modern :has and JS fallback .active) */
+.radio-label:has(input:checked),
+.radio-label.active {
     background: var(--white);
     color: var(--primary);
-    border-color: rgba(225, 29, 72, 0.1);
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+    border-color: rgba(225, 29, 72, 0.15);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
     font-weight: 600;
 }
 
@@ -788,11 +792,13 @@ textarea:focus {
 /* === READ TABS (Segmented Control) === */
 .read-tabs {
     display: flex;
-    background: rgba(255, 255, 255, 0.5);
+    background: rgba(255, 255, 255, 0.65);
     padding: 4px;
     border-radius: 12px;
-    border: 1px solid rgba(255, 255, 255, 0.2);
+    border: 1px solid rgba(255, 255, 255, 0.4);
     margin-bottom: 24px;
+    backdrop-filter: blur(4px);
+    -webkit-backdrop-filter: blur(4px);
 }
 
 .tab-btn {
