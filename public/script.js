@@ -275,7 +275,7 @@ if (messageInput && charCount) {
 // ==========================================
 // VIEW SWITCHING
 // ==========================================
-function showLetterMode(to, from, msg) {
+function showLetterMode(to, from, msg, isPublic = false) {
     if (actionArea) actionArea.classList.add('hidden');
     if (contentArea) contentArea.classList.add('hidden');
     if (letterForm) letterForm.classList.add('hidden');
@@ -291,6 +291,15 @@ function showLetterMode(to, from, msg) {
     if (letterTo) letterTo.textContent = to;
     if (letterFrom) letterFrom.textContent = from;
     if (letterBody) letterBody.textContent = msg;
+
+    // Handle Surprise Button Visibility
+    if (viewSurpriseReaderBtn) {
+        if (isPublic) {
+            viewSurpriseReaderBtn.classList.add('hidden');
+        } else {
+            viewSurpriseReaderBtn.classList.remove('hidden');
+        }
+    }
 
     if (letterView) letterView.classList.remove('hidden');
 }
@@ -526,7 +535,23 @@ if (shareWhatsAppBtn) {
 // ==========================================
 // SURPRISE PAGE HANDLERS
 // ==========================================
-function openSurprisePage(letter) {
+function openSurprisePage(letter, skipAnimation = false) {
+    if (!letter) return;
+
+    // Encode data to be URL safe
+    const data = {
+        t: letter.to,
+        f: letter.from,
+        m: letter.message,
+        s: skipAnimation ? 1 : 0 // s = skip parameter
+    };
+
+    const encoded = btoa(encodeURIComponent(JSON.stringify(data)));
+    // Open in same tab for seamless experience
+    window.location.href = `valentine.html?d=${encoded}`;
+}
+
+function openPublicLetter(letter) {
     if (!letter) return;
 
     // Encode data to be URL safe
@@ -537,8 +562,8 @@ function openSurprisePage(letter) {
     };
 
     const encoded = btoa(encodeURIComponent(JSON.stringify(data)));
-    // Open in same tab for seamless experience
-    window.location.href = `valentine.html?d=${encoded}`;
+    // Open in new public_letter.html template
+    window.location.href = `public_letter.html?d=${encoded}`;
 }
 
 if (viewSurpriseBtn) {
@@ -929,10 +954,12 @@ function renderPublicCards(letters) {
             </div>
         `;
 
-        // Card click opens surprise
+        // Card click opens surprise (Instant Mode for Public)
         card.addEventListener('click', (e) => {
             if (e.target.closest('.like-btn')) return; // Don't open on like click
-            openSurprisePage(letter);
+
+            // Open in Public Letter Template (Ink Love)
+            openPublicLetter(letter);
         });
 
         // Like button handler

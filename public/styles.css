@@ -50,11 +50,13 @@
    DARK ROMANCE THEME
    ========================================== */
 [data-theme="dark"] {
-    --bg-1: #0f0a14;
-    --bg-2: #1a0a1e;
-    --bg-3: #2d0a2e;
-    --mesh-1: rgba(225, 29, 72, 0.25);
-    --mesh-2: rgba(190, 18, 60, 0.2);
+    /* Unified Dark Theme (Ink Base) */
+    --bg-1: #1a1218;
+    --bg-2: #2d1f27;
+    --bg-3: #1f1620;
+    --mesh-1: rgba(225, 29, 72, 0.2);
+    --mesh-2: rgba(139, 58, 98, 0.25);
+    /* Plum hint */
 
     --primary: #ff4d6d;
     --primary-light: #ff758f;
@@ -64,16 +66,22 @@
 
     --text-dark: #f5f0f0;
     --text-body: #d4c8d0;
-    --text-muted: #8a7e86;
-    --white: #1e1726;
-    --paper: #1a1520;
+    /* Warmer grey */
+    --text-muted: #9b8fa8;
+    /* Silver/Purple tint */
+    --white: #25191e;
+    /* Warmer dark for cards */
+    /* --paper: #1a1520; Keep paper light even in dark mode */
+    --paper: #f0ead6;
+    /* Eggshell/Vintage White for dark mode context */
 
-    --card-bg: rgba(30, 23, 38, 0.85);
+
+    --card-bg: rgba(37, 25, 30, 0.85);
     --card-border: rgba(255, 77, 109, 0.12);
-    --input-bg: rgba(255, 255, 255, 0.06);
-    --input-border: rgba(255, 255, 255, 0.1);
-    --seg-bg: rgba(255, 255, 255, 0.08);
-    --seg-border: rgba(255, 255, 255, 0.06);
+    --input-bg: rgba(255, 255, 255, 0.05);
+    --input-border: rgba(255, 255, 255, 0.08);
+    --seg-bg: rgba(255, 255, 255, 0.06);
+    --seg-border: rgba(255, 255, 255, 0.05);
 
     --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.2);
     --shadow-md: 0 8px 30px rgba(0, 0, 0, 0.3);
@@ -1139,443 +1147,364 @@ textarea:focus {
    RESPONSIVE
    ========================================== */
 
-/* --- Tablet & Small Laptops --- */
+/* ==========================================
+   RESPONSIVE & LAYOUTS
+   ========================================== */
+
+/* --- Desktop Logic (Split View) --- */
+@media (min-width: 1024px) {
+    body {
+        padding: 0;
+        height: 100vh;
+        overflow: hidden;
+        /* Prevent body scroll, handle in card */
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .card-container {
+        max-width: 100%;
+        width: 100%;
+        height: 100vh;
+        /* Full viewport height */
+        max-height: none;
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        /* Equal split */
+        grid-template-rows: auto 1fr;
+        gap: 0;
+        /* No gap, use padding */
+        padding: 4rem 6rem;
+        /* Generous padding for content */
+        text-align: left;
+        border-radius: 0;
+        /* No corners */
+        background: rgba(255, 255, 255, 0.4);
+        /* Lighter glass for full screen */
+        backdrop-filter: blur(20px);
+        -webkit-backdrop-filter: blur(20px);
+        box-shadow: none;
+        /* Remove drop shadow for full bleed */
+    }
+
+    /* Dark mode adjustment */
+    [data-theme="dark"] .card-container {
+        background: rgba(20, 15, 30, 0.75);
+    }
+
+    /* --- Left Column (Header & Content) --- */
+    .card-header {
+        grid-column: 1;
+        grid-row: 1;
+        margin-bottom: 2rem;
+        z-index: 2;
+    }
+
+    .title {
+        font-size: 3.5rem;
+        line-height: 1.1;
+    }
+
+    .subtitle {
+        font-size: 0.9rem;
+        margin-left: 4px;
+    }
+
+    /* Force Content Area to stay visible on Desktop even if "hidden" class is added */
+    .content-area,
+    .content-area.hidden {
+        display: flex !important;
+        grid-column: 1;
+        grid-row: 2;
+        align-items: center;
+        /* Center vertically */
+        justify-content: center;
+        /* Center horizontally */
+        padding-top: 0;
+        padding-right: 4rem;
+        opacity: 1 !important;
+        pointer-events: none;
+        /* Let clicks pass through if needed, but text selectable */
+        z-index: 1;
+    }
+
+    .pickup-line {
+        font-size: 2rem;
+        /* Larger for full screen */
+        line-height: 1.4;
+        padding: 0;
+        text-align: left;
+        max-width: 600px;
+        /* Prevent too long lines */
+    }
+
+    /* --- Right Column (Actions & Forms) --- */
+    .action-area,
+    .letter-form,
+    .read-letter-form,
+    .letter-view,
+    .success-view {
+        grid-column: 2;
+        grid-row: 1 / span 2;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        height: 100%;
+        padding-left: 2rem;
+        border-left: 1px solid rgba(0, 0, 0, 0.06);
+        /* Subtle divider */
+    }
+
+    [data-theme="dark"] .action-area,
+    [data-theme="dark"] .letter-form,
+    [data-theme="dark"] .read-letter-form,
+    [data-theme="dark"] .letter-view,
+    [data-theme="dark"] .success-view {
+        border-left-color: rgba(255, 255, 255, 0.08);
+    }
+
+    /* Center the initial action inputs */
+    .action-area {
+        align-items: center;
+        /* Center buttons horizontally */
+        justify-content: center;
+        max-width: 500px;
+        margin: 0 auto;
+        width: 100%;
+    }
+
+    /* Forms should take full width of their column */
+    .letter-form,
+    .read-letter-form,
+    .success-view {
+        max-width: 480px;
+        margin: 0 auto;
+        width: 100%;
+    }
+
+    /* Paper view in desktop split */
+    .letter-view {
+        justify-content: flex-start;
+        /* Align to top */
+        overflow-y: auto;
+        /* Scroll if letter is long */
+        padding-right: 1rem;
+    }
+
+    .paper {
+        margin-top: 0;
+        transform: rotate(-1deg);
+    }
+
+    .paper:hover {
+        transform: rotate(0deg);
+    }
+
+    /* Hide separate title in form since main title is always visible on left */
+    .form-title {
+        display: none;
+    }
+
+    /* Theme Toggle Position */
+    .theme-toggle {
+        top: 2rem;
+        right: 2rem;
+    }
+
+    /* Scrollbar for right pane */
+    .letter-view::-webkit-scrollbar {
+        width: 6px;
+    }
+
+    .letter-view::-webkit-scrollbar-thumb {
+        background: rgba(0, 0, 0, 0.1);
+        border-radius: 4px;
+    }
+}
+
+/* --- Tablet & Small Laptops (Portrait/Stack) --- */
+@media (max-width: 1023px) {
+    body {
+        padding: 2rem 1rem;
+        min-height: 100vh;
+        overflow-y: auto;
+    }
+
+    .card-container {
+        max-width: 600px;
+        min-height: auto;
+        padding: 3rem 2rem;
+    }
+
+    .content-area.hidden {
+        display: none !important;
+    }
+}
+
+/* --- Mobile Phones (Full Height App Feel) --- */
 @media (max-width: 768px) {
     body {
         padding: 0;
-        align-items: flex-start;
+        margin: 0;
+        background: var(--bg-1);
+        /* Solid bg for performance/safari bars */
     }
 
     .card-container {
         width: 100%;
         max-width: 100%;
+
+        /* Full Viewport Height with Safe Areas */
         min-height: 100vh;
         min-height: 100dvh;
-        padding: 2.5rem 1.5rem;
-        border-radius: 0;
-        border: none;
-        box-shadow: none;
-    }
+        /* Dynamic viewport height */
 
-    .card-header {
-        margin-bottom: 2rem;
-    }
+        padding:
+            max(1.5rem, env(safe-area-inset-top)) 1.5rem max(2rem, env(safe-area-inset-bottom));
 
-    .title {
-        font-size: 2.4rem;
-    }
-
-    .subtitle {
-        font-size: 0.7rem;
-        letter-spacing: 3px;
-    }
-
-    .pickup-line {
-        font-size: 1.15rem;
-    }
-
-    .content-area {
-        min-height: 80px;
-        margin-bottom: 2rem;
-    }
-
-    .action-area {
-        flex-direction: column;
-    }
-
-    .love-btn {
-        width: 100%;
-    }
-
-    .secondary-btn {
-        width: 100%;
-    }
-
-    .secondary-actions {
-        gap: 10px;
-    }
-
-    .paper {
-        padding: 1.5rem 1.5rem 1.5rem 2rem;
-        margin: 1rem auto;
-    }
-
-    .paper::before {
-        left: 1.2rem;
-    }
-
-    .paper-content {
-        font-size: 1.25rem;
-    }
-
-    .greeting {
-        font-size: 1.4rem;
-    }
-
-    .from-name {
-        font-size: 1.5rem;
-    }
-
-    .form-title {
-        font-size: 1.35rem;
-        margin-bottom: 1.5rem;
-    }
-
-    .form-instruction {
-        font-size: 0.9rem;
-        margin-bottom: 1.2rem;
-    }
-
-    .generated-code {
-        font-size: 1.7rem;
-        letter-spacing: 3px;
-    }
-
-    .code-display-container {
-        padding: 0.85rem;
-    }
-
-    .success-hint {
-        font-size: 0.85rem;
-        margin-bottom: 1.5rem;
-    }
-
-    .toast {
-        left: 1rem;
-        right: 1rem;
-        transform: none;
-        font-size: 0.85rem;
-        padding: 0.75rem 1.2rem;
-        border-radius: var(--radius-sm);
-    }
-
-    .toast.show {
-        bottom: 1.5rem;
-    }
-
-    #letter-code {
-        font-size: 1.3rem;
-        letter-spacing: 3px;
-    }
-
-    .letter-actions {
-        margin-top: 1rem;
-    }
-}
-
-/* --- Mobile Phones --- */
-@media (max-width: 480px) {
-    body {
-        padding: 0;
-        align-items: flex-start;
-        /* Align top for long content */
-        background: var(--bg-1);
-        /* Solid bg fallback or keep gradient */
-    }
-
-    .card-container {
-        width: 100%;
-        min-height: 100vh;
-        min-height: 100dvh;
         border-radius: 0;
         border: none;
         box-shadow: none;
         background: var(--card-bg);
-        /* Slightly more opaque */
-        padding: max(2rem, env(safe-area-inset-top)) 1.2rem max(2rem, env(safe-area-inset-bottom));
+
+        /* Flex Layout to fill space */
         display: flex;
         flex-direction: column;
-        justify-content: flex-start;
-        /* Start from top */
+        align-items: center;
+        justify-content: space-between;
+        /* Header Top, Buttons Bottom */
     }
 
+    /* SECTION 1: Header (Top) */
     .card-header {
-        margin-bottom: 1.5rem;
+        margin-bottom: 1rem;
+        flex-shrink: 0;
+        width: 100%;
+        text-align: center;
     }
 
     .title {
-        font-size: 2rem;
+        font-size: 2.5rem;
     }
 
-    .subtitle {
-        font-size: 0.65rem;
-        letter-spacing: 2.5px;
-        margin-bottom: 0.5rem;
+    .theme-toggle {
+        top: max(1rem, env(safe-area-inset-top));
+        right: 1rem;
+    }
+
+    /* SECTION 2: Content (Middle - Grows) */
+    .content-area {
+        flex-grow: 1;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0;
+        padding: 1rem 0;
+        width: 100%;
     }
 
     .pickup-line {
-        font-size: 1.05rem;
-        line-height: 1.6;
+        font-size: 1.35rem;
+        /* Larger on mobile for impact */
+        padding: 0 1rem;
     }
 
-    .content-area {
-        min-height: 70px;
-        margin-bottom: 1.5rem;
+    /* When content is hidden (forms open), simple hide */
+    .content-area.hidden {
+        display: none;
     }
 
-    .placeholder {
-        font-size: 0.95rem;
+    /* SECTION 3: Actions (Bottom) */
+    .action-area,
+    .letter-form,
+    .read-letter-form,
+    .letter-view,
+    .success-view {
+        width: 100%;
+        flex-shrink: 0;
+        margin-bottom: env(safe-area-inset-bottom);
     }
 
-    .love-btn {
-        padding: 0.85rem 1.6rem;
-        font-size: 0.95rem;
-        gap: 8px;
+    /* Ensure forms take available space if needed, but prioritize bottom alignment */
+    .letter-form,
+    .read-letter-form,
+    .success-view,
+    .letter-view {
+        display: flex;
+        flex-direction: column;
+        justify-content: flex-end;
+        /* Align inputs to bottom for easy reach */
+        animation: fadeInUp 0.4s ease-out;
+        flex-grow: 1;
+        /* Allow growing to fill middle if content hidden */
+        justify-content: center;
+        /* Actually center forms visually looks better */
     }
 
-    .secondary-btn {
-        padding: 0.7rem 1.4rem;
-        font-size: 0.88rem;
-    }
-
-    .text-btn {
-        font-size: 0.85rem;
-        margin-top: 1rem;
-    }
-
-    /* Form elements */
-    .letter-form {
-        margin-top: 1rem;
-    }
-
+    /* Mobile Form Tweaks */
     .form-title {
-        font-size: 1.25rem;
-        margin-bottom: 1.2rem;
-    }
-
-    .input-group {
-        margin-bottom: 1rem;
+        font-size: 1.5rem;
+        margin-bottom: 2rem;
     }
 
     .input-group label {
-        font-size: 0.72rem;
-        letter-spacing: 1.2px;
-        margin-bottom: 0.35rem;
+        font-size: 0.8rem;
     }
 
     input,
     textarea {
-        padding: 0.8rem 0.9rem;
-        font-size: 0.95rem;
-        border-radius: 10px;
-    }
-
-    textarea {
-        min-height: 90px;
-    }
-
-    /* Segmented controls */
-    .visibility-options {
-        border-radius: 10px;
-    }
-
-    .radio-label {
-        padding: 9px 10px;
-        font-size: 0.8rem;
-    }
-
-    .read-tabs {
-        border-radius: 10px;
-        margin-bottom: 18px;
-    }
-
-    .tab-btn {
-        padding: 9px 8px;
-        font-size: 0.82rem;
-        gap: 5px;
-    }
-
-    .tab-icon,
-    .radio-icon {
-        width: 12px;
-        height: 12px;
-    }
-
-    /* Code display */
-    .generated-code {
-        font-size: 1.5rem;
-        letter-spacing: 2px;
-    }
-
-    .copy-btn {
-        width: 36px;
-        height: 36px;
-    }
-
-    .copy-btn svg {
-        width: 16px;
-        height: 16px;
-    }
-
-    .paper {
-        padding: 1.2rem 1.2rem 1.2rem 1.8rem;
-        margin: 0.75rem auto;
-        transform: none !important;
-        /* Disable rotation on mobile */
-    }
-
-    .paper:hover {
-        transform: none !important;
-    }
-
-    .paper::before {
-        left: 0.8rem;
-    }
-
-    .paper-content {
-        font-size: 1.15rem;
-        line-height: 1.9;
-    }
-
-    .greeting {
-        font-size: 1.3rem;
-    }
-
-    .from-name {
-        font-size: 1.4rem;
-    }
-
-    .heart-doodle {
-        font-size: 1rem;
-    }
-
-    /* Public list */
-    .public-list {
-        max-height: 260px;
-        gap: 10px;
-    }
-
-    .public-card {
-        padding: 12px 14px;
-    }
-
-    .card-to {
-        font-size: 0.8rem;
-    }
-
-    .card-msg {
-        font-size: 0.78rem;
-    }
-
-    .public-card-header {
-        font-size: 0.7rem;
-    }
-
-    /* Success view */
-    .success-hint {
-        font-size: 0.82rem;
-    }
-
-    .form-instruction {
-        font-size: 0.85rem;
-        margin-top: -0.5rem;
-    }
-
-    #letter-code {
-        font-size: 1.2rem;
-        letter-spacing: 3px;
-    }
-}
-
-/* --- Very Small Phones (SE, Mini) --- */
-@media (max-width: 360px) {
-    body {
-        padding: 0;
-    }
-
-    .card-container {
-        padding: max(1.5rem, env(safe-area-inset-top)) 0.8rem max(1.5rem, env(safe-area-inset-bottom));
-        border-radius: 0;
-    }
-
-    .title {
-        font-size: 1.6rem;
+        font-size: 16px;
+        /* Prevent iOS zoom */
+        padding: 12px;
     }
 
     .love-btn {
-        padding: 0.8rem 1.2rem;
-        font-size: 0.9rem;
+        width: 100%;
+        padding: 1.1rem;
+        /* Fatter buttons for touch */
     }
 
     .secondary-btn {
-        padding: 0.7rem 1rem;
-        font-size: 0.85rem;
+        width: 100%;
+        padding: 1rem;
     }
 
-    /* Keep horizontal but compact */
-    .visibility-options {
-        flex-direction: row;
-        gap: 0;
+    .secondary-actions {
+        flex-direction: column;
+        gap: 12px;
     }
 
-    .radio-label {
-        padding: 8px 6px;
-        font-size: 0.75rem;
-        white-space: nowrap;
+    /* Adjust Paper View for Mobile */
+    .letter-view {
+        justify-content: flex-start;
+        padding-top: 1rem;
     }
 
-    .radio-text svg {
-        width: 12px;
-        height: 12px;
-    }
-
-    .paper-content {
-        font-size: 1rem;
-        line-height: 1.6;
-    }
-
-    .generated-code {
-        font-size: 1.2rem;
-    }
-
-    .public-list {
-        max-height: 200px;
+    .paper {
+        margin: 0 auto 1.5rem;
+        padding: 1.5rem;
+        width: 100%;
     }
 }
 
-/* --- Safe area for notched phones (iPhone etc) --- */
-@supports (padding: max(0px)) {
-    body {
-        padding-left: max(0.5rem, env(safe-area-inset-left));
-        padding-right: max(0.5rem, env(safe-area-inset-right));
-        padding-bottom: max(1rem, env(safe-area-inset-bottom));
+/* --- Very Small Phones (SE/Mini) --- */
+@media (max-width: 375px) {
+    .title {
+        font-size: 2rem;
     }
 
-    .toast {
-        bottom: max(-80px, calc(-80px - env(safe-area-inset-bottom)));
-    }
-
-    .toast.show {
-        bottom: max(1.5rem, env(safe-area-inset-bottom));
-    }
-}
-
-/* --- Landscape on small screens --- */
-@media (max-height: 500px) and (orientation: landscape) {
-    body {
-        align-items: flex-start;
-        padding: 0.75rem;
+    .pickup-line {
+        font-size: 1.15rem;
     }
 
     .card-container {
-        padding: 1.5rem 1.2rem;
-    }
-
-    .card-header {
-        margin-bottom: 1rem;
-    }
-
-    .title {
-        font-size: 1.8rem;
-    }
-
-    .content-area {
-        min-height: 60px;
-        margin-bottom: 1rem;
+        padding-left: 1.2rem;
+        padding-right: 1.2rem;
     }
 }
 
-/* Reduce motion for accessibility */
+/* --- Privacy / Reduced Motion --- */
 @media (prefers-reduced-motion: reduce) {
 
     *,
@@ -1587,9 +1516,7 @@ textarea:focus {
     }
 }
 
-/* ==========================================
-   BUTTON SPINNER (inline loading indicator)
-   ========================================== */
+/* --- Utilities --- */
 .btn-spinner {
     display: inline-block;
     width: 16px;
@@ -1597,9 +1524,9 @@ textarea:focus {
     border: 2px solid rgba(255, 255, 255, 0.3);
     border-top-color: white;
     border-radius: 50%;
-    animation: btnSpin 0.6s linear infinite;
+    animation: btnSpin 1s infinite linear;
     vertical-align: middle;
-    margin-right: 4px;
+    margin-right: 6px;
 }
 
 @keyframes btnSpin {
@@ -1609,7 +1536,7 @@ textarea:focus {
 }
 
 /* ==========================================
-   BUFFERING ANIMATION
+   BUFFERING ANIMATION (Restored)
    ========================================== */
 .loader-overlay {
     position: fixed;

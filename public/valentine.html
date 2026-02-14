@@ -29,7 +29,7 @@
     }
 
     body {
-      background: linear-gradient(135deg, #0f0508 0%, #1a0a10 50%, #120610 100%);
+      background: linear-gradient(135deg, #1a1218 0%, #0f0a0d 50%, #1a0f1a 100%);
       min-height: 100vh;
       display: flex;
       align-items: center;
@@ -892,10 +892,55 @@
       color: #fff;
       transform: translateY(-2px);
     }
+
+    /* === NAVIGATION === */
+    .nav-back-btn {
+      position: fixed;
+      top: 24px;
+      left: 24px;
+      width: 44px;
+      height: 44px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.1);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      color: var(--blush);
+      transition: all 0.3s ease;
+      z-index: 1000;
+      cursor: pointer;
+      text-decoration: none;
+    }
+
+    .nav-back-btn:hover {
+      background: rgba(255, 255, 255, 0.2);
+      transform: translateX(-2px);
+      color: var(--rose);
+    }
+
+    @media (max-width: 768px) {
+      .nav-back-btn {
+        top: 16px;
+        left: 16px;
+        width: 40px;
+        height: 40px;
+      }
+    }
   </style>
 </head>
 
 <body>
+  <!-- Back Navigation -->
+  <a href="index.html" class="nav-back-btn" aria-label="Back to Home">
+    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+      stroke-linecap="round" stroke-linejoin="round">
+      <path d="M19 12H5"></path>
+      <path d="M12 19l-7-7 7-7"></path>
+    </svg>
+  </a>
 
   <!-- LOADING SCREEN -->
   <div class="loader-overlay" id="pageLoader">
@@ -1283,12 +1328,7 @@
 
     // === DYNAMIC CONTENT ===
     window.addEventListener('DOMContentLoaded', () => {
-      const urlParams = new URLSearchParams(window.location.search);
-      const d = urlParams.get('d');
-
-      let to = 'My Love';
-      let from = 'Your Valentine';
-      let msg = 'Every sunrise reminds me of you...';
+      let skipAnimation = false;
 
       if (d) {
         try {
@@ -1296,6 +1336,7 @@
           if (decoded.t) to = decoded.t;
           if (decoded.f) from = decoded.f;
           if (decoded.m) msg = decoded.m;
+          if (decoded.s === 1) skipAnimation = true;
         } catch (e) { console.log('Error decoding params', e); }
       } else {
         if (urlParams.get('to')) to = decodeURIComponent(urlParams.get('to'));
@@ -1324,9 +1365,27 @@
       });
 
       // Hide loader
-      setTimeout(() => {
+      if (skipAnimation) {
+        // INSTANT MODE
         document.getElementById('pageLoader').classList.add('hidden');
-      }, 1500); // Minimum 1.5s display time for smooth experience
+        document.querySelector('.stage').style.display = 'none'; // Hide envelope
+
+        // Show letter immediately
+        const container = document.getElementById('letterContainer');
+        const paper = document.getElementById('letterPaper');
+        container.classList.add('show');
+        paper.classList.add('appear');
+
+        // Trigger bouquet immediately
+        const bouquet = document.getElementById('bouquet');
+        bouquet.classList.add('slide-up');
+
+      } else {
+        // NORMAL MODE
+        setTimeout(() => {
+          document.getElementById('pageLoader').classList.add('hidden');
+        }, 1500);
+      }
     });
   </script>
 </body>
