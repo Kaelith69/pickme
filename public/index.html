@@ -225,6 +225,24 @@
 
             <!-- Public Section -->
             <div id="public-section" class="read-section hidden">
+                <div class="sort-bar">
+                    <label for="sort-select" class="sort-label">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none"
+                            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <line x1="4" y1="6" x2="20" y2="6"></line>
+                            <line x1="4" y1="12" x2="16" y2="12"></line>
+                            <line x1="4" y1="18" x2="12" y2="18"></line>
+                        </svg>
+                        Sort
+                    </label>
+                    <select id="sort-select" class="sort-select">
+                        <option value="newest">Newest First</option>
+                        <option value="oldest">Oldest First</option>
+                        <option value="most-liked">Most Liked</option>
+                        <option value="sender-az">Sender A–Z</option>
+                        <option value="recipient-az">Recipient A–Z</option>
+                    </select>
+                </div>
                 <div id="public-letters-list" class="public-list">
                     <!-- Cards will be injected here -->
                     <div class="loading-spinner">Loading love notes...</div>

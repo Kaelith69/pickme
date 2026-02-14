@@ -801,6 +801,9 @@ const sectionPrivate = $('#private-section');
 const sectionPublic = $('#public-section');
 const publicListEl = $('#public-letters-list');
 const refreshPublicBtn = $('#refresh-public-btn');
+const sortSelect = $('#sort-select');
+
+let cachedPublicLetters = [];
 
 if (tabPrivate && tabPublic) {
     tabPrivate.addEventListener('click', () => {
@@ -852,16 +855,55 @@ if (refreshPublicBtn) {
     });
 }
 
+// Sort dropdown handler
+if (sortSelect) {
+    sortSelect.addEventListener('change', () => {
+        if (cachedPublicLetters.length > 0) {
+            const sorted = sortLetters(cachedPublicLetters, sortSelect.value);
+            renderPublicCards(sorted);
+        }
+    });
+}
+
+function sortLetters(letters, sortBy) {
+    const sorted = [...letters];
+    switch (sortBy) {
+        case 'newest':
+            sorted.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
+            break;
+        case 'oldest':
+            sorted.sort((a, b) => new Date(a.timestamp) - new Date(b.timestamp));
+            break;
+        case 'most-liked':
+            sorted.sort((a, b) => (b.likes || 0) - (a.likes || 0));
+            break;
+        case 'sender-az':
+            sorted.sort((a, b) => (a.from || '').localeCompare(b.from || ''));
+            break;
+        case 'recipient-az':
+            sorted.sort((a, b) => (a.to || '').localeCompare(b.to || ''));
+            break;
+    }
+    return sorted;
+}
+
 async function loadPublicLetters() {
     publicListEl.innerHTML = '<div class="loading-spinner">Loading letters...</div>';
 
     const letters = await fetchPublicLetters();
+    cachedPublicLetters = letters;
 
     if (letters.length === 0) {
         publicListEl.innerHTML = '<div style="text-align:center; opacity:0.6; padding:20px;">No public letters yet.</div>';
         return;
     }
 
+    const currentSort = sortSelect ? sortSelect.value : 'newest';
+    const sorted = sortLetters(letters, currentSort);
+    renderPublicCards(sorted);
+}
+
+function renderPublicCards(letters) {
     const liked = getLikedLetters();
     publicListEl.innerHTML = '';
     letters.forEach(letter => {
