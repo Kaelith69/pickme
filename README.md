@@ -8,14 +8,6 @@
 
 > *"They say love is in the air. We said — nah, let's put it in a Firestore document."*
 
-[![Live Demo](https://img.shields.io/badge/🚀_Live_Demo-Click_Here-ff69b4?style=for-the-badge)](https://sayanth-t-m.github.io/pickme/)
-[![Made with Love](https://img.shields.io/badge/Made_with-❤️_Love-red?style=for-the-badge)](https://github.com/Kaelith69/pickme)
-[![Firebase](https://img.shields.io/badge/Powered_by-🔥_Firebase-orange?style=for-the-badge)](https://firebase.google.com/)
-[![MIT License](https://img.shields.io/badge/License-MIT-green?style=for-the-badge)](LICENSE)
-[![PWA Ready](https://img.shields.io/badge/PWA-Ready-10B981?style=for-the-badge)](https://web.dev/progressive-web-apps/)
-[![Zero Dependencies](https://img.shields.io/badge/npm_deps-0-F59E0B?style=for-the-badge)]()
-
-</div>
 
 ---
 
