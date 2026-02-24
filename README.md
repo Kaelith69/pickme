@@ -30,15 +30,7 @@ Built with Vanilla JS, Firebase Firestore, and the power of caffeine. No React. 
 
 ---
 
-## 🎬 Live Demo / In Action
 
-> **Place demo GIF here:** `assets/demo.gif`
-
-![Demo](assets/demo.gif)
-
-*The GIF above should show: app opening → pickup line spinning → typing a letter → secret code generation → animated surprise page reveal. Keep it under 5 MB please, we're not animals.*
-
----
 
 ## 🗺️ System Overview
 
