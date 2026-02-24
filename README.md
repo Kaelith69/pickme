@@ -1,14 +1,19 @@
-# 💘 PickMe - The Ultimate Valentine's Wingman 💘
+<div align="center">
+  <img src="assets/banner.svg" alt="PickMe — The Ultimate Valentine's Wingman" width="100%"/>
+</div>
+
+---
 
 <div align="center">
 
-![Love is in the Air](https://media.giphy.com/media/26u4cqiYI30juCOGY/giphy.gif)
-
-### *Because sliding into DMs is so 2023* 🙄
+> *"They say love is in the air. We said — nah, let's put it in a Firestore document."*
 
 [![Live Demo](https://img.shields.io/badge/🚀_Live_Demo-Click_Here-ff69b4?style=for-the-badge)](https://sayanth-t-m.github.io/pickme/)
 [![Made with Love](https://img.shields.io/badge/Made_with-❤️_Love-red?style=for-the-badge)](https://github.com/Kaelith69/pickme)
 [![Firebase](https://img.shields.io/badge/Powered_by-🔥_Firebase-orange?style=for-the-badge)](https://firebase.google.com/)
+[![MIT License](https://img.shields.io/badge/License-MIT-green?style=for-the-badge)](LICENSE)
+[![PWA Ready](https://img.shields.io/badge/PWA-Ready-10B981?style=for-the-badge)](https://web.dev/progressive-web-apps/)
+[![Zero Dependencies](https://img.shields.io/badge/npm_deps-0-F59E0B?style=for-the-badge)]()
 
 </div>
 
@@ -16,252 +21,265 @@
 
 ## 🎯 What Even Is This?
 
-Ever wanted to confess your feelings but chickened out? 🐔 Too shy to say "I like you"? 😳 Can't come up with a decent pickup line to save your life? 💀
+It's 2026. Everyone's sliding into DMs with *"hey."* One. Word. No punctuation. No effort. The romance is dead.
 
-**Fear not, fellow romantic disasters!** PickMe is here to save your love life (and your dignity). It's basically Cupid's arrow, but in JavaScript form. 💘
+PickMe is the defibrillator. ❤️‍🔥
 
-This web app lets you:
-- 🎲 Generate hilariously cheesy pickup lines (we're talking "Are you made of copper and tellurium?" level cheese 🧀)
-- ✍️ Write heartfelt Valentine's letters (without the hand cramps)
-- 🔐 Share them via secret codes (Mission: Impossible vibes 🕵️)
-- 💌 View romantic surprise pages (with floating hearts and everything!)
+It's a **romantic web app** (PWA-enabled, zero npm dependencies, pure vanilla everything) that lets you:
+
+- 🎲 Generate 40+ certified-organic, grass-fed, artisanal pickup lines
+- ✍️ Write personalized love letters up to 1,000 characters
+- 🔐 Share letters via secret 6-character codes (2,176,782,336 combinations — you're unique, we promise)
+- 💌 Send crushes a full animated surprise page with floating hearts, rose petals, and typewriter magic
+- 🌍 Browse a public wall of love letters (sorted by newest, oldest, most liked, or sender A–Z)
+- ❤️ Like letters, share via WhatsApp, track public confessions
+
+Built with Vanilla JS, Firebase Firestore, and the power of caffeine. No React. No webpack. Just vibes and `document.getElementById`. 
 
 ---
 
-## ✨ Features That'll Make You Go "Aww"
+## 🎬 Live Demo / In Action
 
-### 🎭 Pickup Line Generator
-Get ready for some **grade-A, certified organic, free-range pickup lines** that range from adorably nerdy to "did you really just say that?" 
+> **Place demo GIF here:** `assets/demo.gif`
+
+![Demo](assets/demo.gif)
+
+*The GIF above should show: app opening → pickup line spinning → typing a letter → secret code generation → animated surprise page reveal. Keep it under 5 MB please, we're not animals.*
+
+---
+
+## 🗺️ System Overview
+
+PickMe is a **client-heavy, serverless PWA**. There's no backend code you write — Firebase handles the database. The app runs entirely in the browser, caches with a Service Worker, and gracefully degrades when offline.
+
+| Layer | What it does |
+|-------|-------------|
+| **Frontend** | Pure HTML5/CSS/JS — all the UI, animations, forms, modals |
+| **PWA Layer** | `sw.js` + `manifest.json` — offline caching, installable on home screen |
+| **Firebase Firestore** | Cloud NoSQL database — stores letters, public wall, like counters |
+| **Firebase Hosting** | Serves the static files to the world |
+| **External APIs** | `ipapi.co` for IP geolocation, Google Fonts CDN, Firebase JS SDK (CDN) |
+
+No Docker. No CI pipeline. No microservices. Just a single `public/` folder that contains the entire universe of the app.
+
+---
+
+## ✨ Features
+
+### 🎲 Pickup Line Generator
+40+ cheesy, nerdy, self-aware pickup lines. Press **Space** or **Enter** to spin the wheel. Each one appears with a typewriter animation because everything is more dramatic that way.
 
 > *"Are you a Wi-Fi signal? Because I'm really feeling a connection."* 📶
 
-Yeah, it's that good (or bad, depending on your perspective 😅).
-
-### 💌 Love Letter Creator
-Write personalized Valentine's letters without:
-- ❌ Messy handwriting
-- ❌ Paper cuts
-- ❌ Ink smudges
-- ❌ Your dog eating the letter
-
-Just pure digital romance! ✨
+### ✍️ Love Letter Creator
+Write personalized Valentine's messages (up to 1,000 characters — be concise, Shakespeare). Add sender and receiver names. Choose public or private visibility. Hit send and watch the magic happen.
 
 ### 🔑 Secret Code System
-Each letter gets a unique 6-character code. Share it with your crush and watch the magic happen! It's like a password to your heart. 🗝️💖
+Each letter gets a **unique 6-character alphanumeric code** (alphanumeric, excludes 0/O/I/L to avoid confusion — details matter). Share it. They enter it. Surprise.
 
-### 🎨 Beautiful Valentine's Surprise Page
-An animated page with:
-- 🌹 Floating rose petals
-- 💕 Beating hearts
-- ✨ Sparkly animations
-- 🎭 Smooth typewriter effects
+2,176,782,336 possible combinations. You're statistically special.
 
-It's so romantic, even your houseplant might shed a tear. 🌱😢
+### 🎉 Animated Surprise Page
+`valentine.html` is the payoff. Floating rose petals. Beating hearts. Smooth typewriter reveal. It's so over-the-top romantic that even your pet might look uncomfortable.
+
+### 🌍 Public Wall
+`public_letter.html` + `fetchPublicLetters()` pulls all public letters from Firestore and renders them in a sorted, searchable wall. Sort by newest, oldest, most liked, sender A–Z, or recipient A–Z.
+
+### ❤️ Like System
+Tap the heart button. `localStorage` tracks what you've liked (no double-voting, we're not animals). Counter lives in Firestore. Atomic-ish.
+
+### 📤 WhatsApp Share
+One-click share button generates a pre-formatted WhatsApp message with the secret code. Because everyone uses WhatsApp and this isn't 2010.
+
+### 🌙 Dark Mode
+`localStorage`-persisted theme toggle. Light mode for optimists. Dark mode for realists. Both look good.
+
+### 🔒 Password-Protected Admin
+`godview.html` is a password-protected analytics dashboard. It shows all letters, locations, metadata. Useful for the developer. Not for your average user.
+
+### 📍 Location Tracking
+Letters capture IP address, city, country, timezone, and optionally GPS coordinates (if permission granted). Analytics purposes only. See the [Privacy](#-privacy) section.
+
+### 📦 PWA / Offline Support
+`sw.js` implements network-first for API calls, cache-first for static assets. The app works without a network connection (minus the Firebase-dependent features, obviously).
 
 ---
 
-## 🛠️ Tech Stack (AKA The Love Potion Ingredients)
+## 🧠 Capability Visualization
 
 <div align="center">
-
-| Technology | Why We Chose It |
-|------------|-----------------|
-| 🔥 **Firebase** | For storing love letters in the cloud (because love should float) |
-| 🎨 **Vanilla CSS** | Hand-crafted styles, no frameworks needed (we're old school romantics) |
-| ⚡ **Vanilla JavaScript** | Pure, unfiltered, organic JS (no framework drama here) |
-| 🌐 **HTML5** | The foundation of our digital love story |
-| 🎭 **CSS Animations** | For those smooth, swoony effects |
-| 📍 **Geolocation API** | Tracks where the love is spreading (totally not creepy) |
-| 🗺️ **IP Geolocation** | Because geography is romantic? |
-
+  <img src="assets/capabilities.svg" alt="Feature Capability Matrix" width="100%"/>
 </div>
 
 ---
 
-## 🚀 Getting Started (Let's Get This Love Train Rolling!)
+## 🏗️ Architecture Diagram
+
+<div align="center">
+  <img src="assets/architecture.svg" alt="Architecture Overview" width="100%"/>
+</div>
+
+---
+
+## 🔄 Data Flow
+
+<div align="center">
+  <img src="assets/dataflow.svg" alt="Data Flow Diagram" width="100%"/>
+</div>
+
+---
+
+## 🚀 Installation
 
 ### Prerequisites
-- A computer 💻 (or phone 📱, we don't judge)
-- Internet connection 🌐 (no carrier pigeons, sorry)
-- A heart full of love ❤️ (or at least curiosity)
-- Basic understanding that pickup lines are mostly jokes 😅
+- Git
+- A browser (Chrome, Firefox, Edge — any modern one)
+- Python 3 or Node.js for local serving (or just open the file directly, no judgment)
+- A Firebase project **(optional — the app works without it, just no cloud persistence)**
 
-### Installation
+### Steps
 
-1. **Clone this baby** 👶
 ```bash
+# 1. Clone this repo
 git clone https://github.com/Kaelith69/pickme.git
 cd pickme
-```
 
-2. **Open it up** 🚪
-```bash
-# Just open public/index.html in your browser
-# Or use a local server (fancy!)
-python -m http.server 8000
+# 2. Serve locally (pick your poison)
+python -m http.server 8000 --directory public
 # or
 npx serve public
+
+# 3. Open http://localhost:8000 in your browser
 ```
 
-3. **Configure Firebase** 🔥 (Optional, for cloud storage)
-- Create a Firebase project
-- Update `current-config.txt` with your Firebase config
-- Update the config in `public/script.js`
+That's it. No `npm install`. No `build` step. No waiting 4 minutes for webpack. It just works. ✨
 
-4. **Spread the love!** 💕
+### Firebase Setup (Optional)
 
----
+If you want actual cloud persistence:
 
-## 📖 How to Use (Love 101)
+1. Go to [Firebase Console](https://console.firebase.google.com/) and create a project
+2. Enable **Firestore Database** in test mode
+3. Replace the Firebase config object at the top of `public/script.js` with your own config
+4. Deploy to Firebase Hosting: `firebase deploy`
 
-### For the Sender 💝
-
-1. **Visit the app** 🌐
-2. **Generate pickup lines** (or skip if you're too cool for them 😎)
-3. **Click "Write a Letter"** ✍️
-4. **Pour your heart out** (500 characters max - be concise, Shakespeare!)
-5. **Get your secret code** 🔐
-6. **Share it with your crush** (via text, carrier pigeon, smoke signals, whatever works!)
-7. **Wait for the magic** ✨
-
-### For the Receiver 💖
-
-1. **Visit the app** 🌐
-2. **Click "Read a Letter"** 👀
-3. **Enter the secret code** 🔑
-4. **Witness the romantic surprise** 🎭
-5. **Try not to cry** 😭 (happy tears only!)
-6. **Create your own letter** (if you want to respond!)
+The app already includes Firestore security rules in `firestore.rules`.
 
 ---
 
-## 🎪 The Experience
+## 📖 Usage
+
+### Sender Flow
+
+1. Open the app at `public/index.html`
+2. Click through the pickup line generator (Space/Enter to cycle — keyboard shortcut included, you're welcome)
+3. Click **Write a Letter**
+4. Fill in your name, their name, your message (1,000 chars max)
+5. Choose Public or Private
+6. Click Send → you get a **6-character secret code**
+7. Share that code (WhatsApp button included, or copy-paste it like a caveman, your choice)
+
+### Receiver Flow
+
+1. Open the app
+2. Click **Read a Letter**
+3. Enter the secret code
+4. Watch the animated surprise page load
+5. Try not to cry (we can't help you with this part)
+
+### URL Parameter
+
+Letters can be opened directly via:
+```
+https://yourapp.com/?code=ABCDE1
+```
+
+Great for links in DMs, texts, or QR codes if you're extra.
+
+---
+
+## 📁 Project Structure
+
+```
+pickme/
+├── public/
+│   ├── index.html          # Main app UI
+│   ├── valentine.html      # Animated surprise page (the money shot)
+│   ├── public_letter.html  # Public letter wall template
+│   ├── godview.html        # Admin analytics dashboard
+│   ├── script.js           # All the logic (1,092 lines of love)
+│   ├── styles.css          # Design system (1,000+ lines, hand-crafted)
+│   ├── sw.js               # Service Worker (offline magic)
+│   └── manifest.json       # PWA manifest
+├── assets/                 # Docs SVGs and demo GIF (add your demo.gif here)
+├── wiki/                   # GitHub Wiki source files
+├── firebase.json           # Firebase Hosting config
+├── firestore.rules         # Firestore security rules
+├── firestore.indexes.json  # Firestore composite indexes
+├── .firebaserc             # Firebase project binding
+├── current-config.txt      # Reference Firebase config (do not commit real credentials)
+├── README.md
+├── LICENSE
+├── CONTRIBUTING.md
+├── CHANGELOG.md
+└── SECURITY.md
+```
+
+---
+
+## 📊 Performance Stats
 
 <div align="center">
-
-### When you first open the app:
-![First Impression](https://media.giphy.com/media/l0HlBO7eyXzSZkJri/giphy.gif)
-
-### When you read a sweet letter:
-![Heart Melting](https://media.giphy.com/media/xT77XWum9yH7zNkFW0/giphy.gif)
-
-### When you try to use our pickup lines IRL:
-![Awkward](https://media.giphy.com/media/3o7TKnO6Ty5yQ1cFxK/giphy.gif)
-
-*Results may vary. PickMe is not responsible for any pickup line-related embarrassment.* 😅
-
+  <img src="assets/stats.svg" alt="Project Stats" width="100%"/>
 </div>
 
 ---
 
-## 🎮 Easter Eggs & Hidden Features
+## 🔏 Privacy
 
-- 🎹 Press **Space** or **Enter** to generate a new pickup line (keyboard warriors, rejoice!)
-- 🖱️ The background mesh follows your mouse (trippy, right?)
-- 📍 Letters secretly track location data (for analytics, not stalking!)
-- 🎨 Smooth typewriter effect makes everything feel more dramatic
-- 💾 Works offline-ish (letters saved locally if Firebase is down)
+PickMe collects location data when you submit a letter. Specifically:
 
----
+- **IP address** — from the `ipapi.co` API call
+- **City, country, timezone** — inferred from IP
+- **GPS coordinates** — only if you grant browser geolocation permission
 
-## 🤝 Contributing (Spread the Love!)
+This data is stored in Firestore alongside your letter and is **visible to the admin panel** (`godview.html`). It is **not shown publicly** to other users.
 
-Want to make PickMe even better? We'd love that! ❤️
+If you're running your own instance: you can remove the `getIPAndLocation()` call from `script.js` to disable tracking entirely.
 
-### Ways to Contribute:
-1. 🐛 Report bugs (be gentle, our feelings are fragile)
-2. 💡 Suggest features (more love = more better)
-3. 📝 Add more pickup lines (the cheesier, the better 🧀)
-4. 🎨 Improve designs (make it prettier!)
-5. 🌍 Add translations (love is universal!)
-
-```bash
-# The usual drill
-1. Fork it 🍴
-2. Create your feature branch (git checkout -b feature/more-cheese)
-3. Commit your changes (git commit -am 'Add more cheesy lines')
-4. Push to the branch (git push origin feature/more-cheese)
-5. Create a Pull Request 🎉
-```
+For the full privacy breakdown, see the [Wiki: Privacy page](wiki/Privacy.md).
 
 ---
 
-## 📊 Fun Stats & Facts
+## 🗺️ Future Roadmap
 
-- 💌 **40+ pickup lines** in our arsenal
-- 🌍 **Tracks IP & geolocation** (we're watching... with love 👀)
-- 🔐 **6-character codes** = 2,176,782,336 possible combinations
-- ⚡ **0 dependencies** (besides Firebase, fonts, and our sanity)
-- 🎨 **100% hand-coded** with love and caffeine ☕
-- 🚀 **Loading animations** that are smoother than your best pickup line
+- [ ] 🎨 Custom letter themes / sticker packs
+- [ ] 📧 Email delivery option
+- [ ] 🔒 End-to-end encrypted letters
+- [ ] 🌐 i18n / translation support (love is universal)
+- [ ] 📱 Dedicated mobile app (Capacitor/PWA wrapper)
+- [ ] 🤖 AI-generated pickup lines via API
+- [ ] 🔔 Push notifications ("someone liked your letter!")
+- [ ] 🎵 Background music option for the surprise page
 
----
-
-## ⚠️ Disclaimer
-
-> **Warning:** Use of pickup lines from this app may result in:
-> - 😂 Uncontrollable laughter
-> - 🙄 Eye rolling
-> - 🤦 Facepalms
-> - 💕 Actual romantic success (we take no responsibility for this)
-> - 🏃 Running away in embarrassment
-
-PickMe is not liable for any cringe-related injuries. Use responsibly. 😅
-
----
-
-## 🎭 The Team (Solo Developer Alert!)
-
-Made with 💖, ☕, and probably too much 🍕 by developers who believe that:
-- Love should be accessible
-- Romance should be fun
-- Pickup lines should be cheesy
-- Code should be clean-ish
+PRs welcome. See [CONTRIBUTING.md](CONTRIBUTING.md).
 
 ---
 
 ## 📜 License
 
-This project is licensed under the "Spread Love, Not Code" License - which is just MIT in disguise. ❤️
-
-See [LICENSE](LICENSE) file for details.
-
----
-
-## 🌟 Final Words
-
-> *"They say love is in the air, but we put it on the internet."* - Ancient Dev Proverb
-
-Whether you're looking to:
-- 💘 Confess your feelings
-- 🎭 Prank your friends
-- 🧪 Test your cringe tolerance
-- 📚 Learn some web dev basics
-
-PickMe has got your back! 
-
-Remember: **Love is temporary, but Git commits are forever.** 💝
+MIT — see [LICENSE](LICENSE). Do whatever you want with it, just don't blame us if your pickup line fails IRL. 💔
 
 ---
 
 <div align="center">
 
-### ⭐ Star this repo if you found love (or at least a good laugh)!
+### ⭐ Star this repo if you found love (or at least a good laugh)
 
-![Thank You](https://media.giphy.com/media/3o6ZtpxSZbQRRnwCKQ/giphy.gif)
+[Report Bug](https://github.com/Kaelith69/pickme/issues) · [Request Feature](https://github.com/Kaelith69/pickme/issues) · [CONTRIBUTING](CONTRIBUTING.md) · [Wiki](wiki/Home.md)
 
-**Now go forth and spread the love!** 💌🚀
+*Made with 💝 by someone who probably needs to touch grass*
 
-[Report Bug](https://github.com/Kaelith69/pickme/issues) • [Request Feature](https://github.com/Kaelith69/pickme/issues) • [Share Your Success Story](https://github.com/Kaelith69/pickme/discussions)
-
-</div>
-
----
-
-<div align="center">
-  
-*Made with* 💝 *by developers who probably need to touch grass*
-
-*Last Updated: February 2026* 📅
+*Last Updated: February 2026*
 
 </div>

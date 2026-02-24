@@ -1,0 +1,80 @@
+<svg width="900" height="250" viewBox="0 0 900 250" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#1a0533;stop-opacity:1" />
+      <stop offset="50%" style="stop-color:#3d0a6e;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#1a0533;stop-opacity:1" />
+    </linearGradient>
+    <linearGradient id="titleGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" style="stop-color:#F59E0B" />
+      <stop offset="50%" style="stop-color:#EC4899" />
+      <stop offset="100%" style="stop-color:#F59E0B" />
+    </linearGradient>
+    <filter id="glow">
+      <feGaussianBlur stdDeviation="3" result="coloredBlur"/>
+      <feMerge>
+        <feMergeNode in="coloredBlur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+    <filter id="softglow">
+      <feGaussianBlur stdDeviation="6" result="coloredBlur"/>
+      <feMerge>
+        <feMergeNode in="coloredBlur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+  </defs>
+
+  <!-- Background -->
+  <rect width="900" height="250" fill="url(#bg)" rx="16"/>
+
+  <!-- Decorative circles -->
+  <circle cx="80" cy="50" r="60" fill="#EC4899" opacity="0.08"/>
+  <circle cx="820" cy="200" r="80" fill="#F59E0B" opacity="0.08"/>
+  <circle cx="450" cy="125" r="140" fill="#7C3AED" opacity="0.05"/>
+
+  <!-- Floating hearts -->
+  <text x="55" y="90" font-size="22" opacity="0.35" fill="#EC4899" filter="url(#glow)">💘</text>
+  <text x="810" y="70" font-size="18" opacity="0.35" fill="#EC4899" filter="url(#glow)">💌</text>
+  <text x="130" y="200" font-size="14" opacity="0.25" fill="#F59E0B">✨</text>
+  <text x="750" y="185" font-size="14" opacity="0.25" fill="#F59E0B">✨</text>
+  <text x="860" y="130" font-size="20" opacity="0.3" fill="#EC4899">💕</text>
+  <text x="30" y="165" font-size="16" opacity="0.3" fill="#EC4899">💖</text>
+  <text x="200" y="30" font-size="12" opacity="0.2" fill="#F59E0B">★</text>
+  <text x="690" y="230" font-size="12" opacity="0.2" fill="#F59E0B">★</text>
+
+  <!-- Main title -->
+  <text x="450" y="105" font-family="Georgia, serif" font-size="64" font-weight="bold"
+        fill="url(#titleGrad)" text-anchor="middle" filter="url(#softglow)">
+    💘 PickMe
+  </text>
+
+  <!-- Subtitle -->
+  <text x="450" y="145" font-family="Arial, sans-serif" font-size="18"
+        fill="#c084fc" text-anchor="middle" opacity="0.9">
+    The Ultimate Valentine's Wingman
+  </text>
+
+  <!-- Tagline -->
+  <text x="450" y="178" font-family="Arial, sans-serif" font-size="13"
+        fill="#a78bfa" text-anchor="middle" font-style="italic" opacity="0.75">
+    Because sliding into DMs is so 2023 — powered by Firebase &amp; pure JavaScript wizardry
+  </text>
+
+  <!-- Bottom decoration line -->
+  <line x1="200" y1="205" x2="700" y2="205" stroke="url(#titleGrad)" stroke-width="1.5" opacity="0.4"/>
+
+  <!-- Tech pills -->
+  <rect x="248" y="218" width="90" height="20" rx="10" fill="#F59E0B" opacity="0.2"/>
+  <text x="293" y="232" font-family="Arial, sans-serif" font-size="11" fill="#F59E0B" text-anchor="middle">Vanilla JS</text>
+
+  <rect x="348" y="218" width="90" height="20" rx="10" fill="#EC4899" opacity="0.2"/>
+  <text x="393" y="232" font-family="Arial, sans-serif" font-size="11" fill="#EC4899" text-anchor="middle">Firebase</text>
+
+  <rect x="448" y="218" width="90" height="20" rx="10" fill="#10B981" opacity="0.2"/>
+  <text x="493" y="232" font-family="Arial, sans-serif" font-size="11" fill="#10B981" text-anchor="middle">PWA</text>
+
+  <rect x="548" y="218" width="90" height="20" rx="10" fill="#2563EB" opacity="0.2"/>
+  <text x="593" y="232" font-family="Arial, sans-serif" font-size="11" fill="#60a5fa" text-anchor="middle">0 deps</text>
+</svg>

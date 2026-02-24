@@ -1,0 +1,105 @@
+<svg width="860" height="380" viewBox="0 0 860 380" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="capBg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#0f0721" />
+      <stop offset="100%" style="stop-color:#1a0a3d" />
+    </linearGradient>
+  </defs>
+
+  <rect width="860" height="380" fill="url(#capBg)" rx="14"/>
+
+  <!-- Title -->
+  <text x="430" y="36" font-family="Arial, sans-serif" font-size="20" font-weight="bold"
+        fill="#c084fc" text-anchor="middle">✨  Feature Capability Matrix</text>
+  <line x1="80" y1="48" x2="780" y2="48" stroke="#7C3AED" stroke-width="1" opacity="0.4"/>
+
+  <!-- Y-axis label -->
+  <text x="22" y="210" font-family="Arial, sans-serif" font-size="11" fill="#9ca3af"
+        text-anchor="middle" transform="rotate(-90,22,210)">Completeness (%)</text>
+
+  <!-- Grid lines -->
+  <line x1="80" y1="70" x2="840" y2="70" stroke="#ffffff" stroke-width="0.3" opacity="0.1"/>
+  <line x1="80" y1="105" x2="840" y2="105" stroke="#ffffff" stroke-width="0.3" opacity="0.1"/>
+  <line x1="80" y1="140" x2="840" y2="140" stroke="#ffffff" stroke-width="0.3" opacity="0.1"/>
+  <line x1="80" y1="175" x2="840" y2="175" stroke="#ffffff" stroke-width="0.3" opacity="0.1"/>
+  <line x1="80" y1="210" x2="840" y2="210" stroke="#ffffff" stroke-width="0.3" opacity="0.1"/>
+  <line x1="80" y1="245" x2="840" y2="245" stroke="#ffffff" stroke-width="0.3" opacity="0.1"/>
+  <line x1="80" y1="280" x2="840" y2="280" stroke="#ffffff" stroke-width="0.3" opacity="0.1"/>
+
+  <!-- Y-axis tick labels -->
+  <text x="72" y="74" font-family="Arial, sans-serif" font-size="10" fill="#6b7280" text-anchor="end">100%</text>
+  <text x="72" y="109" font-family="Arial, sans-serif" font-size="10" fill="#6b7280" text-anchor="end">85%</text>
+  <text x="72" y="144" font-family="Arial, sans-serif" font-size="10" fill="#6b7280" text-anchor="end">70%</text>
+  <text x="72" y="179" font-family="Arial, sans-serif" font-size="10" fill="#6b7280" text-anchor="end">55%</text>
+  <text x="72" y="214" font-family="Arial, sans-serif" font-size="10" fill="#6b7280" text-anchor="end">40%</text>
+  <text x="72" y="249" font-family="Arial, sans-serif" font-size="10" fill="#6b7280" text-anchor="end">25%</text>
+  <text x="72" y="284" font-family="Arial, sans-serif" font-size="10" fill="#6b7280" text-anchor="end">10%</text>
+
+  <!-- BARS (bottom=280, each 100% = 210px height, bar width=62) -->
+
+  <!-- 1: Pickup Lines Gen — 100% -->
+  <rect x="92" y="70" width="62" height="210" rx="6" fill="#EC4899" opacity="0.8"/>
+  <text x="123" y="63" font-family="Arial, sans-serif" font-size="11" fill="#f9a8d4" text-anchor="middle" font-weight="bold">100%</text>
+
+  <!-- 2: Love Letter — 100% -->
+  <rect x="184" y="70" width="62" height="210" rx="6" fill="#EC4899" opacity="0.7"/>
+  <text x="215" y="63" font-family="Arial, sans-serif" font-size="11" fill="#f9a8d4" text-anchor="middle" font-weight="bold">100%</text>
+
+  <!-- 3: Secret Codes — 100% -->
+  <rect x="276" y="70" width="62" height="210" rx="6" fill="#F59E0B" opacity="0.8"/>
+  <text x="307" y="63" font-family="Arial, sans-serif" font-size="11" fill="#fcd34d" text-anchor="middle" font-weight="bold">100%</text>
+
+  <!-- 4: Animations — 95% → height=200 -->
+  <rect x="368" y="80" width="62" height="200" rx="6" fill="#7C3AED" opacity="0.8"/>
+  <text x="399" y="73" font-family="Arial, sans-serif" font-size="11" fill="#c4b5fd" text-anchor="middle" font-weight="bold">95%</text>
+
+  <!-- 5: Public Wall — 100% -->
+  <rect x="460" y="70" width="62" height="210" rx="6" fill="#10B981" opacity="0.8"/>
+  <text x="491" y="63" font-family="Arial, sans-serif" font-size="11" fill="#6ee7b7" text-anchor="middle" font-weight="bold">100%</text>
+
+  <!-- 6: Dark Mode — 100% -->
+  <rect x="552" y="70" width="62" height="210" rx="6" fill="#2563EB" opacity="0.8"/>
+  <text x="583" y="63" font-family="Arial, sans-serif" font-size="11" fill="#93c5fd" text-anchor="middle" font-weight="bold">100%</text>
+
+  <!-- 7: PWA/Offline — 90% → height=189 -->
+  <rect x="644" y="91" width="62" height="189" rx="6" fill="#10B981" opacity="0.65"/>
+  <text x="675" y="84" font-family="Arial, sans-serif" font-size="11" fill="#6ee7b7" text-anchor="middle" font-weight="bold">90%</text>
+
+  <!-- 8: Admin Panel — 80% → height=168 -->
+  <rect x="736" y="112" width="62" height="168" rx="6" fill="#F59E0B" opacity="0.6"/>
+  <text x="767" y="105" font-family="Arial, sans-serif" font-size="11" fill="#fcd34d" text-anchor="middle" font-weight="bold">80%</text>
+
+  <!-- Baseline -->
+  <line x1="80" y1="280" x2="840" y2="280" stroke="#a78bfa" stroke-width="1.5" opacity="0.5"/>
+
+  <!-- X-axis labels -->
+  <text x="123" y="300" font-family="Arial, sans-serif" font-size="10" fill="#d1d5db" text-anchor="middle">🎲 Pickup</text>
+  <text x="123" y="313" font-family="Arial, sans-serif" font-size="10" fill="#d1d5db" text-anchor="middle">Lines</text>
+
+  <text x="215" y="300" font-family="Arial, sans-serif" font-size="10" fill="#d1d5db" text-anchor="middle">✍️ Love</text>
+  <text x="215" y="313" font-family="Arial, sans-serif" font-size="10" fill="#d1d5db" text-anchor="middle">Letters</text>
+
+  <text x="307" y="300" font-family="Arial, sans-serif" font-size="10" fill="#d1d5db" text-anchor="middle">🔑 Secret</text>
+  <text x="307" y="313" font-family="Arial, sans-serif" font-size="10" fill="#d1d5db" text-anchor="middle">Codes</text>
+
+  <text x="399" y="300" font-family="Arial, sans-serif" font-size="10" fill="#d1d5db" text-anchor="middle">🎭 Surprise</text>
+  <text x="399" y="313" font-family="Arial, sans-serif" font-size="10" fill="#d1d5db" text-anchor="middle">Animations</text>
+
+  <text x="491" y="300" font-family="Arial, sans-serif" font-size="10" fill="#d1d5db" text-anchor="middle">🌍 Public</text>
+  <text x="491" y="313" font-family="Arial, sans-serif" font-size="10" fill="#d1d5db" text-anchor="middle">Wall</text>
+
+  <text x="583" y="300" font-family="Arial, sans-serif" font-size="10" fill="#d1d5db" text-anchor="middle">🌙 Dark</text>
+  <text x="583" y="313" font-family="Arial, sans-serif" font-size="10" fill="#d1d5db" text-anchor="middle">Mode</text>
+
+  <text x="675" y="300" font-family="Arial, sans-serif" font-size="10" fill="#d1d5db" text-anchor="middle">📦 PWA</text>
+  <text x="675" y="313" font-family="Arial, sans-serif" font-size="10" fill="#d1d5db" text-anchor="middle">Offline</text>
+
+  <text x="767" y="300" font-family="Arial, sans-serif" font-size="10" fill="#d1d5db" text-anchor="middle">🔒 Admin</text>
+  <text x="767" y="313" font-family="Arial, sans-serif" font-size="10" fill="#d1d5db" text-anchor="middle">Panel</text>
+
+  <!-- Footer note -->
+  <text x="430" y="355" font-family="Arial, sans-serif" font-size="11" fill="#6b7280"
+        text-anchor="middle" font-style="italic">
+    Feature completeness assessed against project goals — 0 dependencies, all vanilla
+  </text>
+</svg>
