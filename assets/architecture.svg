@@ -1,0 +1,101 @@
+<svg width="860" height="420" viewBox="0 0 860 420" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="bgArch" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#0f0721;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#1a0a3d;stop-opacity:1" />
+    </linearGradient>
+    <linearGradient id="boxFront" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#EC4899;stop-opacity:0.25" />
+      <stop offset="100%" style="stop-color:#EC4899;stop-opacity:0.10" />
+    </linearGradient>
+    <linearGradient id="boxFire" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#F59E0B;stop-opacity:0.25" />
+      <stop offset="100%" style="stop-color:#F59E0B;stop-opacity:0.10" />
+    </linearGradient>
+    <linearGradient id="boxPWA" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#10B981;stop-opacity:0.25" />
+      <stop offset="100%" style="stop-color:#10B981;stop-opacity:0.10" />
+    </linearGradient>
+    <linearGradient id="boxExt" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#2563EB;stop-opacity:0.25" />
+      <stop offset="100%" style="stop-color:#2563EB;stop-opacity:0.10" />
+    </linearGradient>
+    <marker id="arrow" markerWidth="10" markerHeight="7" refX="10" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#a78bfa" opacity="0.7"/>
+    </marker>
+  </defs>
+
+  <!-- Background -->
+  <rect width="860" height="420" fill="url(#bgArch)" rx="14"/>
+
+  <!-- Title -->
+  <text x="430" y="38" font-family="Arial, sans-serif" font-size="20" font-weight="bold"
+        fill="#c084fc" text-anchor="middle">🏗️  Architecture Overview</text>
+  <line x1="140" y1="50" x2="720" y2="50" stroke="#7C3AED" stroke-width="1" opacity="0.4"/>
+
+  <!-- ─── FRONTEND BOX ─── -->
+  <rect x="30" y="70" width="240" height="290" rx="12" fill="url(#boxFront)" stroke="#EC4899" stroke-width="1.5" opacity="0.9"/>
+  <text x="150" y="96" font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="#f9a8d4" text-anchor="middle">🎨  Frontend</text>
+  <line x1="50" y1="104" x2="250" y2="104" stroke="#EC4899" stroke-width="0.8" opacity="0.5"/>
+  <rect x="50" y="114" width="200" height="28" rx="6" fill="#EC4899" opacity="0.15"/>
+  <text x="150" y="133" font-family="Arial, sans-serif" font-size="12" fill="#fce7f3" text-anchor="middle">index.html</text>
+  <rect x="50" y="150" width="200" height="28" rx="6" fill="#EC4899" opacity="0.15"/>
+  <text x="150" y="169" font-family="Arial, sans-serif" font-size="12" fill="#fce7f3" text-anchor="middle">script.js (1 092 lines)</text>
+  <rect x="50" y="186" width="200" height="28" rx="6" fill="#EC4899" opacity="0.15"/>
+  <text x="150" y="205" font-family="Arial, sans-serif" font-size="12" fill="#fce7f3" text-anchor="middle">styles.css (1 000+ lines)</text>
+  <rect x="50" y="222" width="200" height="28" rx="6" fill="#EC4899" opacity="0.12"/>
+  <text x="150" y="241" font-family="Arial, sans-serif" font-size="12" fill="#fce7f3" text-anchor="middle">valentine.html</text>
+  <rect x="50" y="258" width="200" height="28" rx="6" fill="#EC4899" opacity="0.12"/>
+  <text x="150" y="277" font-family="Arial, sans-serif" font-size="12" fill="#fce7f3" text-anchor="middle">public_letter.html</text>
+  <rect x="50" y="294" width="200" height="28" rx="6" fill="#EC4899" opacity="0.12"/>
+  <text x="150" y="313" font-family="Arial, sans-serif" font-size="12" fill="#fce7f3" text-anchor="middle">godview.html (Admin)</text>
+
+  <!-- ─── PWA BOX ─── -->
+  <rect x="310" y="70" width="240" height="140" rx="12" fill="url(#boxPWA)" stroke="#10B981" stroke-width="1.5" opacity="0.9"/>
+  <text x="430" y="96" font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="#6ee7b7" text-anchor="middle">📦  PWA Layer</text>
+  <line x1="330" y1="104" x2="530" y2="104" stroke="#10B981" stroke-width="0.8" opacity="0.5"/>
+  <rect x="330" y="114" width="200" height="28" rx="6" fill="#10B981" opacity="0.15"/>
+  <text x="430" y="133" font-family="Arial, sans-serif" font-size="12" fill="#d1fae5" text-anchor="middle">sw.js (Service Worker)</text>
+  <rect x="330" y="150" width="200" height="28" rx="6" fill="#10B981" opacity="0.15"/>
+  <text x="430" y="169" font-family="Arial, sans-serif" font-size="12" fill="#d1fae5" text-anchor="middle">manifest.json</text>
+
+  <!-- ─── FIREBASE BOX ─── -->
+  <rect x="310" y="240" width="240" height="120" rx="12" fill="url(#boxFire)" stroke="#F59E0B" stroke-width="1.5" opacity="0.9"/>
+  <text x="430" y="266" font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="#fcd34d" text-anchor="middle">🔥  Firebase Backend</text>
+  <line x1="330" y1="274" x2="530" y2="274" stroke="#F59E0B" stroke-width="0.8" opacity="0.5"/>
+  <rect x="330" y="284" width="200" height="28" rx="6" fill="#F59E0B" opacity="0.15"/>
+  <text x="430" y="303" font-family="Arial, sans-serif" font-size="12" fill="#fef3c7" text-anchor="middle">Firestore Database</text>
+  <rect x="330" y="320" width="200" height="28" rx="6" fill="#F59E0B" opacity="0.15"/>
+  <text x="430" y="339" font-family="Arial, sans-serif" font-size="12" fill="#fef3c7" text-anchor="middle">Firebase Hosting</text>
+
+  <!-- ─── EXTERNAL APIs BOX ─── -->
+  <rect x="590" y="70" width="240" height="200" rx="12" fill="url(#boxExt)" stroke="#2563EB" stroke-width="1.5" opacity="0.9"/>
+  <text x="710" y="96" font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="#93c5fd" text-anchor="middle">🌐  External Services</text>
+  <line x1="610" y1="104" x2="810" y2="104" stroke="#2563EB" stroke-width="0.8" opacity="0.5"/>
+  <rect x="610" y="114" width="200" height="28" rx="6" fill="#2563EB" opacity="0.15"/>
+  <text x="710" y="133" font-family="Arial, sans-serif" font-size="12" fill="#dbeafe" text-anchor="middle">ipapi.co (IP Geolocation)</text>
+  <rect x="610" y="150" width="200" height="28" rx="6" fill="#2563EB" opacity="0.15"/>
+  <text x="710" y="169" font-family="Arial, sans-serif" font-size="12" fill="#dbeafe" text-anchor="middle">Google Fonts CDN</text>
+  <rect x="610" y="186" width="200" height="28" rx="6" fill="#2563EB" opacity="0.15"/>
+  <text x="710" y="205" font-family="Arial, sans-serif" font-size="12" fill="#dbeafe" text-anchor="middle">Firebase SDK (CDN)</text>
+  <rect x="610" y="222" width="200" height="28" rx="6" fill="#2563EB" opacity="0.15"/>
+  <text x="710" y="241" font-family="Arial, sans-serif" font-size="12" fill="#dbeafe" text-anchor="middle">Geolocation Browser API</text>
+
+  <!-- Arrows: Frontend → Firebase -->
+  <line x1="270" y1="300" x2="310" y2="300" stroke="#a78bfa" stroke-width="1.5" stroke-dasharray="4,3" marker-end="url(#arrow)" opacity="0.8"/>
+  <!-- Arrows: Frontend → PWA -->
+  <line x1="270" y1="140" x2="310" y2="140" stroke="#a78bfa" stroke-width="1.5" stroke-dasharray="4,3" marker-end="url(#arrow)" opacity="0.8"/>
+  <!-- Arrows: Frontend → External -->
+  <line x1="270" y1="180" x2="590" y2="180" stroke="#a78bfa" stroke-width="1.5" stroke-dasharray="4,3" marker-end="url(#arrow)" opacity="0.5"/>
+
+  <!-- Legend -->
+  <rect x="30" y="378" width="12" height="12" rx="3" fill="#EC4899" opacity="0.5"/>
+  <text x="48" y="389" font-family="Arial, sans-serif" font-size="11" fill="#d1d5db">Frontend Pages</text>
+  <rect x="165" y="378" width="12" height="12" rx="3" fill="#10B981" opacity="0.5"/>
+  <text x="183" y="389" font-family="Arial, sans-serif" font-size="11" fill="#d1d5db">PWA / Offline</text>
+  <rect x="300" y="378" width="12" height="12" rx="3" fill="#F59E0B" opacity="0.5"/>
+  <text x="318" y="389" font-family="Arial, sans-serif" font-size="11" fill="#d1d5db">Firebase Cloud</text>
+  <rect x="430" y="378" width="12" height="12" rx="3" fill="#2563EB" opacity="0.5"/>
+  <text x="448" y="389" font-family="Arial, sans-serif" font-size="11" fill="#d1d5db">External APIs</text>
+  <text x="600" y="389" font-family="Arial, sans-serif" font-size="11" fill="#6b7280" font-style="italic">dashed = data flow</text>
+</svg>
