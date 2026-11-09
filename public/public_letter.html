@@ -99,7 +99,7 @@ body{margin:0;width:100%;height:100%;overflow:hidden;background:
 .s-unfold .p1 .f{box-shadow:0 0 0 rgba(0,0,0,0)}
 .to{font:700 calc(var(--P) * .17)/1 "DM Serif Display",serif;color:var(--rose)}
 .body{
- box-sizing:border-box;width:var(--W);height:var(--H);padding:calc(var(--fs) * 1.1) calc(var(--fs) * 1.2);
+ box-sizing:border-box;width:var(--W);height:var(--H);padding:max(calc(var(--fs) * 1.1),68px) calc(var(--fs) * 1.2);
  font:500 var(--fs)/var(--lh) "Caveat",cursive;color:var(--ink);background-color:var(--paper);
  background-image:linear-gradient(transparent calc(var(--lh) - 1px),rgba(168,61,92,.16) 0),
  linear-gradient(transparent 33.2%,rgba(60,25,40,.07) 33.33%,transparent 33.7%,transparent 66.3%,rgba(60,25,40,.07) 66.67%,transparent 67%);
@@ -116,6 +116,7 @@ body{margin:0;width:100%;height:100%;overflow:hidden;background:
 .sheet{z-index:10;margin:calc(var(--H) / -2) 0 0 calc(var(--W) / -2);overflow-y:auto;overflow-x:hidden;overscroll-behavior:contain;-webkit-overflow-scrolling:touch;opacity:0;visibility:hidden;outline:none;box-shadow:0 10px 36px rgba(0,0,0,.3);transition:opacity calc(.4s * var(--k));scrollbar-width:thin;scrollbar-color:#BE5678 transparent}
 .sheet::after{content:"";display:block;height:calc(var(--fs) * 3.5)}
 .s-done .sheet{opacity:1;visibility:visible}
+.s-done .page-title{opacity:0;visibility:hidden;transition:opacity .25s ease,visibility 0s .25s}
 .s-done .lt{visibility:hidden;transition:visibility 0s calc(.45s * var(--k))}
 .replay{
  position:absolute;z-index:28;left:50%;bottom:max(14px,env(safe-area-inset-bottom));transform:translate(-50%,10px);opacity:0;visibility:hidden;
@@ -170,6 +171,7 @@ body{margin:0;width:100%;height:100%;overflow:hidden;background:
  var reduced=window.matchMedia('(prefers-reduced-motion: reduce)').matches;
  var K=reduced?0.001:1;
  var busy=false;
+ var panelHeight=0;
  var timers=[];
  var params=new URLSearchParams(window.location.search);
  var to='',from='',message='';
@@ -213,6 +215,7 @@ body{margin:0;width:100%;height:100%;overflow:hidden;background:
   var W=Math.max(240,Math.min(vw-24,560));
   var H=Math.max(220,vh-20);
   var P=H/3;
+  panelHeight=P;
   var E=Math.min(vw*.82,360);
   var EH=E*.68;
   var s0=Math.min(.84*E/W,.78*EH/P);
@@ -238,7 +241,7 @@ body{margin:0;width:100%;height:100%;overflow:hidden;background:
    front.className='f';
    var copy=document.createElement('div');
    copy.className='body';
-   copy.style.top='calc(var(--P) * -'+i+')';
+   copy.style.top=(-i*panelHeight)+'px';
    Array.prototype.forEach.call(sheet.childNodes,function(node){copy.appendChild(node.cloneNode(true))});
    front.appendChild(copy);
    panel.appendChild(front);
@@ -295,14 +298,14 @@ body{margin:0;width:100%;height:100%;overflow:hidden;background:
  }
  decodeLetter();
  buildLetter();
- buildFoldedLetter();
  layout();
+ buildFoldedLetter();
  if(document.fonts&&document.fonts.ready)document.fonts.ready.then(layout);
  window.addEventListener('resize',layout,{passive:true});
  window.addEventListener('orientationchange',function(){window.setTimeout(layout,80)},{passive:true});
  seal.addEventListener('click',play);
- seal.addEventListener('keydown',function(event){if(event.key==='Enter'||event.key===' '){event.preventDefault();play()}});
  replay.addEventListener('click',function(event){event.stopPropagation();reset();seal.focus({preventScroll:true})});
+ document.addEventListener('keydown',function(event){if(event.key==='Escape'&&busy){event.preventDefault();reset();seal.focus({preventScroll:true})}});
  window.setTimeout(function(){scene.classList.remove('intro')},900);
 })();
 </script>
