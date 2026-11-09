@@ -1,5 +1,5 @@
 // PickMe service worker. All paths are scoped to the GitHub Pages project URL.
-const CACHE_NAME = 'pickme-v2';
+const CACHE_NAME = 'pickme-v3';
 const BASE_URL = new URL(self.registration.scope);
 const STATIC_ASSETS = [
     './',
