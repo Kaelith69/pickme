@@ -669,153 +669,37 @@
         }
     </style>
 
-<style>
-:root {
- --ink-dark:#211A29; --ink-brown:#292433; --paper-white:#17151F; --paper-cream:#302B3B;
- --ink-blue:#211C2B; --accent-plum:#A78BFA; --accent-deep-red:#7554C7; --accent-silver:#D8CDDF;
- --romance-gold:#F2CE78; --romance-coral:#F28AA0;
-}
-body {
- min-width:320px; min-height:100svh; min-height:100dvh; overflow-x:hidden; overflow-y:auto;
- padding:clamp(64px,10vh,100px) 16px 28px;
- background:
- radial-gradient(ellipse 65% 42% at 10% 8%,rgba(135,88,217,.24),transparent 72%),
- radial-gradient(ellipse 55% 45% at 90% 92%,rgba(233,110,136,.17),transparent 72%),
- radial-gradient(circle,rgba(196,181,253,.11) 1px,transparent 1.5px) 0 0/24px 24px,
- linear-gradient(145deg,#17151F,#211C2B 55%,#2B1E2A);
-}
-body::before { opacity:.36; }
-body::after { opacity:.55; }
-.container { width:min(600px,100%); margin:auto; }
-.title { color:#F8F3FA; font-size:clamp(2.5rem,9vw,3.5rem); margin:0 0 clamp(24px,5vh,44px); }
-.envelope { max-width:min(340px,82vw); }
-.letter-modal {
- padding:max(12px,env(safe-area-inset-top)) 12px max(12px,env(safe-area-inset-bottom));
- overflow-y:auto; overscroll-behavior:contain;
-}
-.letter-paper {
- width:min(520px,100%); max-width:520px;
- max-height:calc(100dvh - max(24px,env(safe-area-inset-top)) - max(24px,env(safe-area-inset-bottom)));
- padding:clamp(28px,5vw,48px) clamp(20px,5vw,40px);
- border:2px solid #51485D; border-radius:16px;
- background:linear-gradient(145deg,#302B3B,#252330);
- color:#F8F3FA; box-shadow:5px 6px 0 #0E0C14,0 24px 70px rgba(0,0,0,.55);
- transform:translateY(18px); opacity:0;
- transition:transform .42s cubic-bezier(.22,1,.36,1),opacity .3s ease;
-}
-.letter-paper.appear { transform:translateY(0); opacity:1; }
-.letter-paper::before { opacity:.12; }
-.letter-paper::after { background:radial-gradient(ellipse at 50% 0%,transparent,rgba(167,139,250,.10)); }
-.letter-content { font-size:16px; line-height:1.75; overflow-wrap:anywhere; }
-.letter-date { color:#F2CE78; font-size:18px; margin-bottom:22px; }
-.letter-greeting { color:#F28AA0; font-size:clamp(28px,7vw,38px); margin-bottom:20px; }
-.letter-body { color:#E7DFEA; font-size:clamp(17px,4.5vw,19px); line-height:1.8; overflow-wrap:anywhere; }
-.sign-name { color:#F28AA0; font-size:clamp(28px,7vw,36px); }
-.sign-extra { color:#C4B5FD; }
-.letter-deco { color:#F2CE78; }
-.close-btn { top:12px; right:14px; color:#F2CE78; min-height:40px; padding:8px 12px; }
-.nav-back-btn { top:max(14px,env(safe-area-inset-top)); left:16px; width:42px; height:42px; border:2px solid #51485D; border-radius:12px; background:#302B3B; color:#F8F3FA; box-shadow:3px 3px 0 #0E0C14; }
-@media(max-width:650px) {
- body { display:block; padding:76px 16px 28px; }
- .container { width:100%; max-width:480px; margin:0 auto; }
- .title { font-size:clamp(2.35rem,10vw,3rem); margin-bottom:28px; }
- .envelope-container { margin-bottom:28px; }
- .envelope { width:min(300px,82vw); height:190px; }
- .envelope-flap { border-left:150px solid transparent; border-right:150px solid transparent; border-top:95px solid var(--paper-cream); }
- .envelope-flap::after { top:-93px; left:-148px; right:-148px; border-left:148px solid transparent; border-right:148px solid transparent; border-top:93px solid #252330; }
- .envelope-bottom { border-left:150px solid transparent; border-right:150px solid transparent; border-bottom:85px solid #252330; }
- .envelope-left { border-top:95px solid transparent; border-bottom:95px solid transparent; border-left:95px solid #302B3B; }
- .envelope-right { border-top:95px solid transparent; border-bottom:95px solid transparent; border-right:95px solid #292433; }
- .letter-paper { width:100%; max-height:calc(100dvh - 28px); padding:54px 20px 26px; transform:translateY(14px); }
- .letter-paper.appear { transform:translateY(0); }
- .letter-greeting { font-size:clamp(27px,8vw,34px); }
- .letter-content { font-size:15px; line-height:1.7; }
- .letter-body { font-size:17px; line-height:1.75; }
- .sign-name { font-size:30px; }
-}
-@media(prefers-reduced-motion:reduce) {
- *,*::before,*::after { animation-duration:.01ms !important; transition-duration:.01ms !important; }
-}
-</style>
-
-<style>
-/* PickMe responsive letter reader correction */
-:root { --ink-dark:#211C2A; --ink-brown:#292635; --paper-white:#171621; --paper-cream:#302C3B; --ink-blue:#211E2D; --accent-plum:#A995F2; --accent-deep-red:#6650B4; --accent-silver:#DDD5E4; --romance-gold:#F0D17D; --romance-coral:#F095AA; }
-html { min-width:320px; min-height:100%; overflow-x:clip; }
-body {
- min-width:320px; min-height:100svh; min-height:100dvh; overflow-x:hidden; overflow-y:auto;
- background:radial-gradient(ellipse 60% 44% at 10% 8%,rgba(126,99,213,.23),transparent 72%),radial-gradient(ellipse 55% 45% at 92% 92%,rgba(225,125,153,.18),transparent 72%),radial-gradient(circle,rgba(210,199,241,.1) 1px,transparent 1.5px) 0 0/24px 24px,linear-gradient(145deg,#171621,#211E2D 55%,#302332);
-}
-.container { width:min(600px,calc(100% - 32px)); }
-.letter-modal {
- position:fixed; inset:0; display:none; align-items:center; justify-content:center;
- padding:max(12px,env(safe-area-inset-top)) 12px max(12px,env(safe-area-inset-bottom));
- overflow-x:hidden; overflow-y:auto; overscroll-behavior:contain;
-}
-.letter-modal.show { display:flex; }
-.letter-paper {
- box-sizing:border-box; width:min(520px,100%); min-width:0;
- max-height:calc(100dvh - max(24px,env(safe-area-inset-top)) - max(24px,env(safe-area-inset-bottom)));
- margin:auto; padding:clamp(42px,6vh,58px) clamp(18px,5vw,40px) 28px;
- overflow-x:hidden; overflow-y:auto; overscroll-behavior:contain;
- border:2px solid #514B61; border-radius:16px;
- background:linear-gradient(145deg,#302C3B,#252330); color:#F7F3FA;
- box-shadow:5px 6px 0 #0D0B13,0 24px 70px rgba(0,0,0,.55);
- transform:translateY(14px) !important; opacity:0;
- transition:transform .4s cubic-bezier(.22,1,.36,1),opacity .28s ease;
- scrollbar-width:thin; scrollbar-color:#8D7AC0 transparent;
-}
-.letter-paper.appear { transform:translateY(0) !important; opacity:1; }
-.letter-content { min-width:0; font-size:clamp(15px,3.8vw,17px); line-height:1.75; overflow-wrap:anywhere; }
-.letter-greeting { color:#F095AA; font-size:clamp(28px,7vw,38px); line-height:1.2; overflow-wrap:anywhere; }
-.letter-date { color:#F0D17D; }
-.letter-body { color:#E5DDEB; font-size:clamp(16px,4vw,18px); line-height:1.8; overflow-wrap:anywhere; }
-.sign-name { color:#F095AA; font-size:clamp(26px,7vw,34px); overflow-wrap:anywhere; }
-.sign-extra { color:#C2B4FA; }
-.close-btn { position:sticky; top:0; float:right; z-index:5; min-height:40px; margin:-34px -12px 12px 12px; }
-@media(max-width:650px) {
- body { display:block; padding:76px 0 24px; }
- .container { width:calc(100% - 32px); max-width:480px; margin:0 auto; }
- .title { font-size:clamp(2.25rem,10vw,3rem); }
- .letter-modal { align-items:flex-start; padding:max(12px,env(safe-area-inset-top)) 12px max(12px,env(safe-area-inset-bottom)); }
- .letter-paper {
-  width:100%; max-width:480px; max-height:calc(100dvh - max(24px,env(safe-area-inset-top)) - max(24px,env(safe-area-inset-bottom)));
-  padding:52px 18px 24px; border-radius:14px; transform:translateY(12px) !important;
- }
- .letter-paper.appear { transform:translateY(0) !important; }
- .letter-content { font-size:15px; line-height:1.7; }
- .letter-greeting { font-size:clamp(27px,8vw,34px); margin-bottom:18px; }
- .letter-body { font-size:16px; line-height:1.75; }
- .letter-paper::after { left:18px; }
-}
-@media(prefers-reduced-motion:reduce) { .letter-paper,.letter-paper.appear { transition:none !important; transform:none !important; } }
-</style>
 
 
-<style id="pickme-letter-redesign">
-:root{--reader-bg:#171621;--reader-panel:#292635;--reader-line:#514B61;--reader-ink:#F7F3FA;--reader-soft:#DDD5E4;--reader-violet:#B09BF2;--reader-coral:#F095AA;--reader-gold:#F0D17D}
+
+
+
+
+<style id="pickme-reader-final">
+:root{--reader-ink:#F7F3FA;--reader-soft:#DDD5E4;--reader-violet:#B09BF2;--reader-coral:#F095AA;--reader-gold:#F0D17D}
 html{min-width:320px;min-height:100%;overflow-x:clip}
 body{min-width:320px;min-height:100svh;min-height:100dvh;overflow-x:hidden;overflow-y:auto;display:grid;place-items:center;padding:max(76px,calc(env(safe-area-inset-top) + 60px)) 16px max(24px,env(safe-area-inset-bottom));background:radial-gradient(ellipse 62% 46% at 9% 8%,rgba(126,99,213,.25),transparent 72%),radial-gradient(ellipse 56% 46% at 94% 92%,rgba(225,125,153,.2),transparent 72%),radial-gradient(circle,rgba(210,199,241,.1) 1px,transparent 1.5px) 0 0/24px 24px,linear-gradient(145deg,#171621,#211E2D 55%,#302332);color:var(--reader-ink);font-family:"Manrope",sans-serif}
-.container{width:min(620px,100%);margin:auto}
-.title{font-family:"DM Serif Display",serif;font-size:clamp(42px,9vw,66px);line-height:1.02;letter-spacing:-.04em;color:#F7F3FA}
+body.modal-open{overflow:hidden}.container{position:relative;z-index:10;width:min(620px,100%);margin:auto}
+.title{font-family:"DM Serif Display",serif;font-size:clamp(42px,9vw,66px);line-height:1.02;letter-spacing:-.04em;color:var(--reader-ink);text-wrap:balance}
 .click-text{font-family:"Caveat",cursive;font-size:23px;color:var(--reader-coral)}
+.envelope-container{cursor:pointer}.envelope-container:focus-visible{outline:3px solid var(--reader-gold);outline-offset:8px;border-radius:16px}
 .envelope{max-width:min(340px,82vw);border:2px solid #514B61;border-radius:14px;background:linear-gradient(145deg,#3B354A,#292635);box-shadow:5px 6px 0 #0D0B13,0 22px 60px rgba(0,0,0,.32)}
-.letter-modal{position:fixed;inset:0;display:none;align-items:center;justify-content:center;padding:max(12px,env(safe-area-inset-top)) 14px max(12px,env(safe-area-inset-bottom));overflow-x:hidden;overflow-y:auto;overscroll-behavior:contain;background:rgba(13,11,19,.78);backdrop-filter:blur(12px)}
+.letter-modal{position:fixed;inset:0;z-index:100;display:none;align-items:center;justify-content:center;padding:max(12px,env(safe-area-inset-top)) 14px max(12px,env(safe-area-inset-bottom));overflow-x:hidden;overflow-y:auto;overscroll-behavior:contain;background:rgba(13,11,19,.82);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px)}
 .letter-modal.show{display:flex}
-.letter-paper{box-sizing:border-box;width:min(620px,100%);max-width:620px;min-width:0;max-height:calc(100dvh - max(24px,env(safe-area-inset-top)) - max(24px,env(safe-area-inset-bottom)));margin:auto;padding:clamp(42px,6vh,58px) clamp(20px,5vw,48px) 32px;overflow-x:hidden;overflow-y:auto;overscroll-behavior:contain;border:2px solid #514B61;border-radius:20px;background:linear-gradient(145deg,#332F40,#292635);color:#F7F3FA;box-shadow:6px 7px 0 #0D0B13,0 30px 90px rgba(0,0,0,.5);transform:translateY(18px)!important;opacity:0;transition:transform .42s cubic-bezier(.22,1,.36,1),opacity .28s ease;scrollbar-width:thin;scrollbar-color:#8066D0 transparent}
-.letter-paper.appear{transform:translateY(0)!important;opacity:1}
-.letter-content{position:relative;z-index:2;font-family:"Manrope",sans-serif;font-size:16px;line-height:1.8;overflow-wrap:anywhere}
-.letter-date{color:var(--reader-gold);font-family:"Manrope",sans-serif;font-size:12px;font-weight:800;letter-spacing:.12em;text-transform:uppercase}
-.letter-greeting{color:var(--reader-coral);font-family:"DM Serif Display",serif;font-size:clamp(30px,7vw,44px);line-height:1.15;overflow-wrap:anywhere}
-.letter-body{color:#E7E0EC;font-family:"Caveat",cursive;font-size:clamp(23px,5vw,29px);line-height:1.55;overflow-wrap:anywhere}
-.sign-name{color:var(--reader-coral);font-family:"Caveat",cursive;font-size:30px;overflow-wrap:anywhere}
-.sign-extra,.letter-deco{color:var(--reader-violet)}
-.close-btn{position:sticky;top:-32px;float:right;z-index:8;min-height:42px;padding:9px 14px;border:2px solid #0D0B13;border-radius:11px;background:var(--reader-gold);color:#292333;font-family:"Manrope",sans-serif;font-weight:900;box-shadow:3px 3px 0 #0D0B13}
-.nav-back-btn{top:max(16px,env(safe-area-inset-top));left:16px;width:44px;height:44px;border:2px solid #0D0B13;border-radius:13px;background:#F0D17D;color:#292333;box-shadow:3px 3px 0 #0D0B13}
-@media(max-width:650px){body{display:block;padding:max(82px,calc(env(safe-area-inset-top) + 68px)) 16px 24px}.container{width:100%;max-width:480px}.title{font-size:clamp(40px,11vw,54px);margin-bottom:24px}.envelope{width:min(300px,82vw);height:190px}.letter-modal{align-items:flex-start;padding:max(12px,env(safe-area-inset-top)) 12px max(12px,env(safe-area-inset-bottom))}.letter-paper{width:100%;max-width:480px;max-height:calc(100dvh - max(24px,env(safe-area-inset-top)) - max(24px,env(safe-area-inset-bottom)));padding:50px 20px 26px;border-radius:16px;transform:translateY(12px)!important}.letter-paper.appear{transform:translateY(0)!important}.letter-content{font-size:15px;line-height:1.7}.letter-body{font-size:23px;line-height:1.55}.letter-greeting{font-size:clamp(28px,8vw,36px)}}
-@media(prefers-reduced-motion:reduce){.letter-paper,.letter-paper.appear{transition:none!important;transform:none!important}}
-</style>
-</head>
+.letter-paper{box-sizing:border-box;position:relative;width:min(620px,100%);max-width:620px;min-width:0;max-height:calc(100dvh - max(24px,env(safe-area-inset-top)) - max(24px,env(safe-area-inset-bottom)));margin:auto;padding:clamp(42px,6vh,56px) clamp(20px,5vw,48px) 30px;overflow-x:hidden;overflow-y:auto;overscroll-behavior:contain;border:2px solid #514B61;border-radius:20px;background:linear-gradient(145deg,#332F40,#292635);color:var(--reader-ink);box-shadow:6px 7px 0 #0D0B13,0 30px 90px rgba(0,0,0,.5);transform:translateY(14px);opacity:0;transition:transform .4s cubic-bezier(.22,1,.36,1),opacity .28s;scrollbar-width:thin;scrollbar-color:#8066D0 transparent}
+.letter-paper.appear{transform:translateY(0);opacity:1}
+.letter-content{position:relative;z-index:2;min-width:0;font-family:"Manrope",sans-serif;font-size:16px;line-height:1.8;overflow-wrap:anywhere}
+.letter-date{color:var(--reader-gold);font-family:"Manrope",sans-serif;font-size:12px;font-weight:800;letter-spacing:.12em;text-transform:uppercase;text-align:right;margin-bottom:22px}
+.letter-greeting{color:var(--reader-coral);font-family:"DM Serif Display",serif;font-size:clamp(30px,7vw,44px);line-height:1.15;margin-bottom:18px;overflow-wrap:anywhere}
+.letter-body{color:#E7E0EC;font-family:"Caveat",cursive;font-size:clamp(23px,5vw,29px);line-height:1.55;overflow-wrap:anywhere}.letter-body p{margin:0 0 16px}
+.letter-deco{margin:24px 0;color:var(--reader-violet);letter-spacing:.3em;text-align:center}.letter-sign{text-align:right;margin-top:26px}
+.sign-name{color:var(--reader-coral);font-family:"Caveat",cursive;font-size:30px;overflow-wrap:anywhere}.sign-extra{color:var(--reader-soft);font-family:"Caveat",cursive;font-size:21px}
+.close-btn{position:sticky;top:-30px;float:right;z-index:8;min-height:42px;margin:-28px -12px 12px 12px;padding:9px 14px;border:2px solid #0D0B13;border-radius:11px;background:var(--reader-gold);color:#292333;font-family:"Manrope",sans-serif;font-weight:900;box-shadow:3px 3px 0 #0D0B13;cursor:pointer}
+.nav-back-btn{top:max(16px,env(safe-area-inset-top));left:16px;width:44px;height:44px;border:2px solid #0D0B13;border-radius:13px;background:var(--reader-gold);color:#292333;box-shadow:3px 3px 0 #0D0B13}
+@media(max-width:650px){body{display:block;padding:max(82px,calc(env(safe-area-inset-top) + 68px)) 16px 24px}.container{width:100%;max-width:480px}.title{font-size:clamp(40px,11vw,54px);margin-bottom:24px}.letter-modal{align-items:flex-start;padding:max(12px,env(safe-area-inset-top)) 12px max(12px,env(safe-area-inset-bottom))}.letter-paper{width:100%;max-width:480px;max-height:calc(100dvh - max(24px,env(safe-area-inset-top)) - max(24px,env(safe-area-inset-bottom)));padding:48px 20px 26px;border-radius:16px;transform:translateY(12px)}.letter-paper.appear{transform:translateY(0)}.letter-content{font-size:15px;line-height:1.7}.letter-body{font-size:23px;line-height:1.55}.letter-greeting{font-size:clamp(28px,8vw,36px)}}
+@media(max-height:600px) and (orientation:landscape){body{padding:64px 16px 16px}.letter-modal{align-items:flex-start}.letter-paper{max-height:calc(100dvh - 24px);padding-top:44px}}
+@media(prefers-reduced-motion:reduce){.letter-paper,.letter-paper.appear{transition:none;transform:none;opacity:1}.letter-greeting,.letter-body p,.letter-sign{animation:none;opacity:1;transform:none}}
+</style></head>
 
 <body>
     <!-- Back Navigation -->
@@ -846,7 +730,7 @@ body{min-width:320px;min-height:100svh;min-height:100dvh;overflow-x:hidden;overf
     <div class="container">
         <h1 class="title" id="pageTitle">For You</h1>
 
-        <div class="envelope-container" id="envelopeContainer">
+        <div class="envelope-container" id="envelopeContainer" role="button" tabindex="0" aria-label="Open your letter" aria-controls="letterModal" aria-expanded="false">
             <div class="envelope" id="envelope">
                 <div class="envelope-body">
                     <div class="ink-seal" id="inkSeal">
@@ -871,9 +755,9 @@ body{min-width:320px;min-height:100svh;min-height:100dvh;overflow-x:hidden;overf
     </div>
 
     <!-- Letter Modal -->
-    <div class="letter-modal" id="letterModal">
+    <div class="letter-modal" id="letterModal" role="dialog" aria-modal="true" aria-labelledby="letterGreeting" aria-hidden="true">
         <div class="letter-paper" id="letterPaper">
-            <button class="close-btn" onclick="closeLetter()">close</button>
+            <button type="button" class="close-btn" id="closeLetterButton" onclick="closeLetter()" aria-label="Close letter">Close ✕</button>
             <div class="letter-content">
                 <div class="letter-date" id="letterDate">February 14th, 2025</div>
                 <div class="letter-greeting" id="letterGreeting">My Love,</div>
@@ -896,29 +780,50 @@ body{min-width:320px;min-height:100svh;min-height:100dvh;overflow-x:hidden;overf
         const letterModal = document.getElementById('letterModal');
         const letterPaper = document.getElementById('letterPaper');
 
+        const closeLetterButton = document.getElementById('closeLetterButton');
+        let previousFocus = null;
         envelopeContainer.addEventListener('click', openEnvelope);
+        envelopeContainer.addEventListener('keydown', event => {
+            if (event.key === 'Enter' || event.key === ' ') { event.preventDefault(); openEnvelope(); }
+        });
+        letterModal.addEventListener('keydown', event => {
+            if (event.key === 'Escape') { event.preventDefault(); closeLetter(); }
+        });
 
         function openEnvelope() {
             if (isOpen) return;
             isOpen = true;
-
+            previousFocus = document.activeElement;
+            envelopeContainer.setAttribute('aria-expanded', 'true');
             envelopeContainer.classList.add('open');
-
-            setTimeout(() => {
+            const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+            const reveal = () => {
                 letterModal.classList.add('show');
-                setTimeout(() => {
+                letterModal.setAttribute('aria-hidden', 'false');
+                document.body.classList.add('modal-open');
+                requestAnimationFrame(() => {
                     letterPaper.classList.add('appear');
-                }, 50);
-            }, 900);
+                    closeLetterButton.focus({ preventScroll: true });
+                });
+            };
+            if (reducedMotion) reveal();
+            else setTimeout(reveal, 900);
         }
 
         function closeLetter() {
+            if (!isOpen) return;
             letterPaper.classList.remove('appear');
-            setTimeout(() => {
+            const finishClose = () => {
                 letterModal.classList.remove('show');
+                letterModal.setAttribute('aria-hidden', 'true');
+                document.body.classList.remove('modal-open');
                 envelopeContainer.classList.remove('open');
+                envelopeContainer.setAttribute('aria-expanded', 'false');
                 isOpen = false;
-            }, 500);
+                (previousFocus && previousFocus.focus ? previousFocus : envelopeContainer).focus({ preventScroll: true });
+            };
+            if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) finishClose();
+            else setTimeout(finishClose, 400);
         }
 
         letterModal.addEventListener('click', (e) => {
