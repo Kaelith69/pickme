@@ -226,6 +226,7 @@ body{margin:0;width:100%;height:100%;overflow:hidden;background:
   var ty=h0/2+.45*EH+6;
   px('--W',W);px('--H',H);px('--P',P);px('--E',E);px('--EH',EH);px('--dy',dy);
   px('--y0',y0);px('--y1',y0-ty);px('--drop',vh*.7);
+  Array.prototype.forEach.call(lt.querySelectorAll('.pn'),function(panel,index){var copy=panel.querySelector('.body');if(copy)copy.style.top=(-index*P)+'px'});
   scene.style.setProperty('--s0',s0);
   scene.style.setProperty('--s1',Math.min(1,s0*1.3));
   var fs=Math.min(26,W/14);
@@ -272,6 +273,7 @@ body{margin:0;width:100%;height:100%;overflow:hidden;background:
  function play(){
   if(busy)return;
   busy=true;
+  seal.disabled=true;
   scene.classList.remove('intro');
   if(reduced){finishImmediately();return}
   scene.classList.add('s-seal');
@@ -295,6 +297,7 @@ body{margin:0;width:100%;height:100%;overflow:hidden;background:
   scene.classList.remove('reset');
   scene.classList.add('intro');
   busy=false;
+  seal.disabled=false;
  }
  decodeLetter();
  buildLetter();
