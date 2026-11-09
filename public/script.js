@@ -509,11 +509,16 @@ if (openLetterBtn) {
 }
 
 if (copyCodeBtn) {
-    copyCodeBtn.addEventListener('click', () => {
-        const code = generatedCodeEl.textContent;
-        navigator.clipboard.writeText(code).then(() => {
+    copyCodeBtn.addEventListener('click', async () => {
+        const code = generatedCodeEl?.textContent?.trim();
+        if (!code) return;
+        try {
+            await navigator.clipboard.writeText(code);
             showToast("Code copied! Share it 💕");
-        });
+        } catch (error) {
+            console.error('Clipboard copy failed:', error);
+            showToast('Copy is unavailable. Please select the code manually.');
+        }
     });
 }
 
@@ -1076,6 +1081,12 @@ function renderPublicCards(letters) {
     }
 
     if (themeToggle) {
+        const syncThemeControl = () => {
+            const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
+            themeToggle.setAttribute('aria-pressed', String(isDark));
+            themeToggle.setAttribute('aria-label', isDark ? 'Switch to light theme' : 'Switch to dark theme');
+        };
+        syncThemeControl();
         themeToggle.addEventListener('click', () => {
             const current = document.documentElement.getAttribute('data-theme');
             const next = current === 'dark' ? 'light' : 'dark';
@@ -1087,6 +1098,7 @@ function renderPublicCards(letters) {
             }
 
             localStorage.setItem('pickme-theme', next);
+            syncThemeControl();
         });
     }
 })();
