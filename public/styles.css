@@ -1624,3 +1624,225 @@ textarea:focus {
         transform: scale(0.9);
     }
 }
+
+/* =========================================================
+   PICKME / WRDLINK DESIGN PASS
+   Keeps PickMe's original rose palette and romantic identity.
+   Refines geometry, hierarchy, interaction and motion only.
+   ========================================================= */
+:root {
+    --radius-sm: 14px;
+    --radius-md: 22px;
+    --radius-lg: 28px;
+    --radius-full: 999px;
+    --motion-standard: cubic-bezier(.2,.75,.25,1);
+    --motion-emphasis: cubic-bezier(.22,1,.36,1);
+    --outline-soft: color-mix(in srgb, var(--text-dark) 11%, transparent);
+    --surface-raised: color-mix(in srgb, var(--card-bg) 92%, var(--white));
+}
+html { scroll-behavior: smooth; }
+body {
+    isolation: isolate;
+    padding: clamp(16px, 3vw, 40px);
+    background:
+      radial-gradient(circle at 1px 1px, color-mix(in srgb, var(--primary) 12%, transparent) 1px, transparent 0) 0 0 / 22px 22px,
+      linear-gradient(145deg, var(--bg-1), var(--bg-2) 58%, var(--bg-3));
+    transition: background-color .35s var(--motion-standard), color .35s var(--motion-standard);
+}
+[data-theme="dark"] body {
+    background:
+      radial-gradient(circle at 1px 1px, rgba(255,117,143,.09) 1px, transparent 0) 0 0 / 22px 22px,
+      linear-gradient(145deg, var(--bg-1), var(--bg-2) 58%, var(--bg-3));
+}
+.background-mesh { opacity: .28; filter: blur(105px); }
+.card-container {
+    width: min(1180px, 100%);
+    min-height: min(760px, calc(100dvh - 80px));
+    height: auto;
+    max-width: 1180px;
+    padding: clamp(28px, 5vw, 64px);
+    border: 1.5px solid var(--outline-soft);
+    border-radius: var(--radius-lg);
+    background: var(--card-bg);
+    box-shadow: 0 3px 0 color-mix(in srgb, var(--primary) 12%, transparent), 0 24px 70px rgba(55, 12, 28, .12);
+    backdrop-filter: blur(18px);
+    -webkit-backdrop-filter: blur(18px);
+    transition: background .35s var(--motion-standard), border-color .35s var(--motion-standard), box-shadow .35s var(--motion-standard);
+}
+[data-theme="dark"] .card-container {
+    box-shadow: 0 3px 0 rgba(255,117,143,.10), 0 24px 70px rgba(0,0,0,.28);
+}
+.card-container:hover { box-shadow: 0 3px 0 color-mix(in srgb, var(--primary) 12%, transparent), 0 28px 80px rgba(55,12,28,.15); }
+.card-header { margin-bottom: clamp(24px, 4vw, 48px); }
+.subtitle { letter-spacing: .22em; font-size: .72rem; font-weight: 700; }
+.title {
+    font-size: clamp(2.7rem, 5.4vw, 4.8rem);
+    letter-spacing: -.055em;
+    line-height: 1.02;
+}
+.content-area {
+    min-height: clamp(170px, 27vh, 280px);
+    margin-bottom: clamp(24px, 4vw, 44px);
+    padding: 24px;
+    border: 1.5px solid var(--outline-soft);
+    border-radius: 24px;
+    background: var(--surface-raised);
+    box-shadow: inset 0 1px 0 rgba(255,255,255,.45), 0 5px 0 color-mix(in srgb, var(--primary) 8%, transparent);
+}
+[data-theme="dark"] .content-area { box-shadow: inset 0 1px 0 rgba(255,255,255,.04), 0 5px 0 rgba(0,0,0,.12); }
+.pickup-line {
+    max-width: 760px;
+    font-size: clamp(1.3rem, 2.4vw, 2rem);
+    line-height: 1.55;
+    letter-spacing: -.018em;
+    padding: 0;
+}
+.placeholder { font-size: 1rem; line-height: 1.6; }
+.action-area { gap: 14px; }
+.love-btn, .secondary-btn, .text-btn, .theme-toggle, .tab-btn, .like-btn {
+    -webkit-tap-highlight-color: transparent;
+    touch-action: manipulation;
+}
+.love-btn {
+    min-height: 54px;
+    padding: 1rem 1.8rem;
+    border: 1.5px solid color-mix(in srgb, var(--primary-dark) 40%, transparent);
+    border-radius: 16px;
+    box-shadow: 0 4px 0 var(--primary-dark), 0 8px 18px rgba(225,29,72,.16);
+    transition: transform .2s var(--motion-emphasis), box-shadow .2s var(--motion-standard), filter .2s, background .25s;
+}
+.love-btn:hover { transform: translateY(-2px); box-shadow: 0 6px 0 var(--primary-dark), 0 12px 24px rgba(225,29,72,.2); }
+.love-btn:active { transform: translateY(2px); box-shadow: 0 1px 0 var(--primary-dark); }
+.secondary-btn {
+    min-height: 48px;
+    border: 1.5px solid color-mix(in srgb, var(--primary) 28%, var(--outline-soft));
+    border-radius: 14px;
+    background: var(--input-bg);
+    font-weight: 650;
+    transition: transform .2s var(--motion-emphasis), background .2s, border-color .2s, box-shadow .2s;
+}
+.secondary-btn:hover { transform: translateY(-2px); box-shadow: 0 4px 0 color-mix(in srgb, var(--primary) 16%, transparent); }
+.secondary-btn:active { transform: translateY(1px); }
+.theme-toggle {
+    border-radius: 13px;
+    border: 1.5px solid var(--outline-soft);
+    box-shadow: 0 3px 0 color-mix(in srgb, var(--primary) 14%, transparent);
+    transition: transform .2s var(--motion-emphasis), background .2s, color .2s;
+}
+.theme-toggle:active { transform: translateY(2px); }
+input, textarea, select {
+    border-radius: 14px;
+    transition: border-color .2s, box-shadow .2s, background .25s;
+}
+input:focus, textarea:focus, select:focus {
+    outline: none;
+    border-color: var(--primary) !important;
+    box-shadow: 0 0 0 3px var(--primary-glow);
+}
+.letter-form, .read-letter-form, .success-view, .letter-view {
+    animation: panelEnter .42s var(--motion-emphasis) both;
+}
+@keyframes panelEnter {
+    from { opacity: 0; transform: translateY(12px) scale(.99); }
+    to { opacity: 1; transform: translateY(0) scale(1); }
+}
+.public-card {
+    border: 1.5px solid var(--outline-soft);
+    border-radius: 16px;
+    box-shadow: 0 3px 0 color-mix(in srgb, var(--primary) 9%, transparent);
+    transition: transform .22s var(--motion-emphasis), box-shadow .22s, border-color .22s, background .22s;
+}
+.public-card:hover { transform: translateY(-3px); box-shadow: 0 6px 0 color-mix(in srgb, var(--primary) 12%, transparent), 0 12px 22px rgba(0,0,0,.06); }
+.paper {
+    border: 1.5px solid rgba(139,58,98,.18);
+    border-radius: 8px 18px 18px 8px;
+    box-shadow: 8px 8px 0 rgba(225,29,72,.08), 0 18px 42px rgba(0,0,0,.12);
+}
+.toast { border: 1.5px solid var(--outline-soft); border-radius: 14px; box-shadow: 0 8px 28px rgba(0,0,0,.14); }
+button:focus-visible, a:focus-visible, [tabindex]:focus-visible {
+    outline: 3px solid var(--primary-light);
+    outline-offset: 3px;
+}
+button:disabled { cursor: not-allowed; opacity: .62; transform: none !important; }
+.hidden { pointer-events: none; }
+::selection { background: var(--primary-glow); color: var(--text-dark); }
+
+/* Native shared-element page transitions, with a graceful CSS fallback. */
+@view-transition { navigation: auto; }
+::view-transition-old(root), ::view-transition-new(root) {
+    animation-duration: .34s;
+    animation-timing-function: var(--motion-emphasis);
+}
+::view-transition-old(root) { animation-name: pickme-out; }
+::view-transition-new(root) { animation-name: pickme-in; }
+@keyframes pickme-out { to { opacity: 0; transform: translateY(-5px) scale(.995); } }
+@keyframes pickme-in { from { opacity: 0; transform: translateY(8px) scale(.995); } }
+#title-text { view-transition-name: pickme-title; }
+#pickup-line { view-transition-name: pickme-pickup; }
+#action-area, #letter-form, #read-letter-form, #success-view, #letter-view {
+    contain: layout paint;
+}
+@media (min-width: 1024px) {
+    body { padding: clamp(20px, 3vw, 48px); min-height: 100dvh; height: auto; overflow: auto; }
+    .card-container {
+        min-height: min(760px, calc(100dvh - 96px));
+        height: auto;
+        grid-template-columns: minmax(0, 1.05fr) minmax(340px, .95fr);
+        grid-template-rows: auto 1fr;
+        gap: 20px clamp(32px, 5vw, 76px);
+        padding: clamp(38px, 5vw, 72px);
+        border-radius: 30px;
+        background: var(--card-bg);
+        box-shadow: 0 3px 0 color-mix(in srgb, var(--primary) 12%, transparent), 0 24px 70px rgba(55,12,28,.12);
+    }
+    [data-theme="dark"] .card-container { background: var(--card-bg); }
+    .card-header { grid-column: 1; grid-row: 1; align-self: end; }
+    .content-area, .content-area.hidden {
+        grid-column: 1; grid-row: 2; display: flex !important;
+        min-height: 240px; padding: clamp(22px, 3vw, 40px);
+        align-items: center; justify-content: flex-start;
+        opacity: 1 !important; pointer-events: auto;
+    }
+    .pickup-line { text-align: left; max-width: 580px; font-size: clamp(1.65rem, 2.6vw, 2.5rem); }
+    .action-area, .letter-form, .read-letter-form, .letter-view, .success-view {
+        grid-column: 2; grid-row: 1 / span 2;
+        align-self: stretch; justify-content: center;
+        height: auto; max-height: calc(100dvh - 190px);
+        overflow-y: auto; padding: 20px 0 20px clamp(24px, 3vw, 48px);
+        border-left: 1.5px solid var(--outline-soft);
+    }
+    .action-area { align-items: stretch; max-width: none; margin: 0; }
+    .action-area .love-btn, .action-area .secondary-btn { width: 100%; }
+    .secondary-actions { width: 100%; display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+    .secondary-actions .secondary-btn { white-space: normal; padding-inline: 12px; }
+    .letter-form, .read-letter-form, .success-view { max-width: none; width: 100%; margin: 0; }
+    .letter-view { justify-content: flex-start; }
+    .form-title { display: block; }
+}
+@media (max-width: 1023px) {
+    .card-container { border-radius: 26px; }
+}
+@media (max-width: 768px) {
+    body { padding: 0; }
+    .card-container {
+        min-height: 100svh;
+        min-height: 100dvh;
+        padding: max(24px, env(safe-area-inset-top)) clamp(18px, 5vw, 28px) max(24px, env(safe-area-inset-bottom));
+        border-radius: 0;
+    }
+    .content-area { min-height: clamp(180px, 30dvh, 320px); border-radius: 20px; padding: 20px 16px; }
+    .action-area { gap: 12px; }
+    .secondary-actions { width: 100%; display: grid; grid-template-columns: 1fr; gap: 10px; }
+    .love-btn, .secondary-btn { min-height: 52px; }
+    .letter-form, .read-letter-form, .success-view { justify-content: flex-start; padding-top: 12px; }
+    .theme-toggle { top: max(16px, env(safe-area-inset-top)); right: 16px; }
+}
+@media (max-width: 375px) {
+    .title { font-size: clamp(2rem, 10vw, 2.5rem); }
+    .card-container { padding-left: 16px; padding-right: 16px; }
+    .content-area { padding: 16px 12px; }
+}
+@media (prefers-reduced-motion: reduce) {
+    html { scroll-behavior: auto; }
+    ::view-transition-old(root), ::view-transition-new(root) { animation: none !important; }
+}
