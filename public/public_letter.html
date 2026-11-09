@@ -48,17 +48,21 @@ body{margin:0;width:100%;height:100%;overflow:hidden;background:
 .eb,.ef,.fl,.seal,.lt,.sheet{position:absolute;left:50%;top:50%}
 /* Envelope body and folded front */
 .eb,.ef{width:var(--E);height:var(--EH);margin:0}
-.eb,.ef,.fl{
+.eb,.ef{
  transform:translate(-50%,-50%) translateY(var(--dy));
  transition:transform .9s cubic-bezier(.55,0,.8,.45),opacity .9s ease-in
 }
+.fl{
+ transform:translate(-50%,-50%) translateY(var(--flapY));
+ transition:transform .9s cubic-bezier(.55,0,.8,.45),opacity .9s ease-in
+}
 .eb{z-index:1;background:linear-gradient(145deg,#8E3153,#64233F);border:1px solid rgba(255,210,220,.25);border-radius:8px;box-shadow:0 22px 44px rgba(10,8,20,.48)}
-.ef{z-index:3;background:linear-gradient(145deg,#D77F99,#A83D5C);clip-path:polygon(0 0,50% 55%,100% 0,100% 100%,0 100%)}
+.ef{z-index:3;background:linear-gradient(145deg,#C96B89 0%,#A83D5C 58%,#923451 100%);clip-path:polygon(0 0,50% 55%,100% 0,100% 100%,0 100%);overflow:hidden}
 .ef i{position:absolute;inset:0}
-.ef .l{clip-path:polygon(0 0,50% 55%,0 100%);background:rgba(70,15,39,.17)}
-.ef .r{clip-path:polygon(100% 0,50% 55%,100% 100%);background:rgba(70,15,39,.1)}
-.ef .b{clip-path:polygon(0 100%,50% 55%,100% 100%);background:rgba(255,239,243,.2)}
-.fl{z-index:5;filter:drop-shadow(0 3px 3px rgba(10,8,20,.34));width:var(--E);height:var(--FH);margin:0;perspective:900px}
+.ef .l{clip-path:polygon(0 0,50% 55%,0 100%);background:linear-gradient(145deg,rgba(255,196,211,.28),rgba(70,15,39,.18))}
+.ef .r{clip-path:polygon(100% 0,50% 55%,100% 100%);background:linear-gradient(215deg,rgba(255,196,211,.18),rgba(70,15,39,.16))}
+.ef .b{clip-path:polygon(0 100%,50% 55%,100% 100%);background:linear-gradient(180deg,rgba(255,220,230,.2),rgba(255,239,243,.1))}
+.fl{z-index:5;filter:drop-shadow(0 5px 5px rgba(10,8,20,.32));width:var(--E);height:var(--FH);margin:0;perspective:900px}
 .fi{position:absolute;inset:0;transform-origin:50% 0;transform-style:preserve-3d}
 .ff,.fk{position:absolute;inset:0;clip-path:polygon(0 0,100% 0,50% 100%);backface-visibility:hidden;-webkit-backface-visibility:hidden}
 .ff{background:linear-gradient(145deg,#F0B3C2,#D77F99)}
@@ -86,7 +90,8 @@ body{margin:0;width:100%;height:100%;overflow:hidden;background:
 .s-rise .lt{transform:translate(-50%,-50%) translateY(var(--y1)) scale(var(--s0));transition:transform 1.3s cubic-bezier(.3,.1,.2,1)}
 .s-out .lt{z-index:8;transform:translate(-50%,-50%) translateY(0) scale(var(--s1));transition:transform .9s cubic-bezier(.5,0,.2,1)}
 .s-unfold .lt{transform:translate(-50%,-50%) translateY(0) scale(1);transition:transform 1.8s cubic-bezier(.4,0,.2,1)}
-.s-out .eb,.s-out .ef,.s-out .fl{transform:translate(-50%,-50%) translateY(calc(var(--dy) + var(--drop)));opacity:0}
+.s-out .eb,.s-out .ef{transform:translate(-50%,-50%) translateY(calc(var(--dy) + var(--drop)));opacity:0}
+.s-out .fl{transform:translate(-50%,-50%) translateY(calc(var(--flapY) + var(--drop)));opacity:0}
  .pn{position:absolute;left:0;top:0;width:100%;height:var(--P);transform-style:preserve-3d}
 .p0{top:0;transform-origin:50% 100%;transform:translateZ(2px) rotateX(-180deg);transition:transform 1.1s cubic-bezier(.45,0,.2,1)}
 .p1{top:var(--P)}
@@ -127,8 +132,6 @@ body{margin:0;width:100%;height:100%;overflow:hidden;background:
 .replay:hover{background:#A83D5C}
 .s-done .replay{opacity:1;visibility:visible;transform:translate(-50%,0)}
 .reset *{transition:none!important;animation:none!important}
-.intro .eb,.intro .ef,.intro .fl,.intro .seal,.intro .hint{animation:fadein .8s both}
-@keyframes fadein{from{opacity:0}}
 @media(max-width:560px){
  .page-title{top:clamp(14px,3vh,24px);font-size:clamp(22px,6vw,29px)}
  .nav-back{width:38px;height:38px}
@@ -149,7 +152,7 @@ body{margin:0;width:100%;height:100%;overflow:hidden;background:
 <a class="nav-back" href="index.html" aria-label="Back to PickMe">
  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 12H5"></path><path d="M12 19l-7-7 7-7"></path></svg>
 </a>
-<main class="scene intro" id="scene">
+<main class="scene" id="scene">
  <h1 class="page-title">A Letter for You</h1>
  <div class="eb" aria-hidden="true"></div>
  <div class="lt" id="lt" aria-hidden="true"></div>
@@ -225,7 +228,7 @@ body{margin:0;width:100%;height:100%;overflow:hidden;background:
   var y0=dy-.05*EH;
   var ty=h0/2+.45*EH+6;
   px('--W',W);px('--H',H);px('--P',P);px('--E',E);px('--EH',EH);px('--dy',dy);
-  px('--y0',y0);px('--y1',y0-ty);px('--drop',vh*.7);px('--FH',EH*.55);px('--seal-size',E*.18);px('--seal-font',E*.078);px('--sealY',dy+EH*.05);px('--hint-offset',dy+EH/2+28);
+  px('--y0',y0);px('--y1',y0-ty);px('--drop',vh*.7);px('--FH',EH*.86);px('--flapY',dy-EH/2+(EH*.86)/2);px('--seal-size',E*.18);px('--seal-font',E*.078);px('--sealY',dy+EH*.34);px('--hint-offset',dy+EH/2+28);
   Array.prototype.forEach.call(lt.querySelectorAll('.pn'),function(panel,index){panel.style.top=(index*P)+'px';var copy=panel.querySelector('.body');if(copy)copy.style.top=(-index*P)+'px'});
   scene.style.setProperty('--s0',s0);
   scene.style.setProperty('--s1',Math.min(1,s0*1.3));
@@ -275,7 +278,6 @@ body{margin:0;width:100%;height:100%;overflow:hidden;background:
   if(busy)return;
   busy=true;
   seal.disabled=true;
-  scene.classList.remove('intro');
   if(reduced){finishImmediately();return}
   scene.classList.add('s-seal');
   at(350,function(){scene.classList.add('s-open')});
@@ -296,7 +298,6 @@ body{margin:0;width:100%;height:100%;overflow:hidden;background:
   sheet.scrollTop=0;
   void scene.offsetWidth;
   scene.classList.remove('reset');
-  scene.classList.add('intro');
   busy=false;
   seal.disabled=false;
  }
@@ -310,7 +311,6 @@ body{margin:0;width:100%;height:100%;overflow:hidden;background:
  seal.addEventListener('click',play);
  replay.addEventListener('click',function(event){event.stopPropagation();reset();seal.focus({preventScroll:true})});
  document.addEventListener('keydown',function(event){if(event.key==='Escape'&&busy){event.preventDefault();reset();seal.focus({preventScroll:true})}});
- window.setTimeout(function(){scene.classList.remove('intro')},900);
 })();
 </script>
 </body>
