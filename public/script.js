@@ -1018,12 +1018,15 @@ function renderPublicCards(letters) {
         recipient.textContent = `To: ${letter.to || 'Someone'}`;
         const date = document.createElement('span');
         const parsedDate = new Date(letter.timestamp);
-        date.textContent = Number.isNaN(parsedDate.getTime()) ? '' : parsedDate.toLocaleDateString();
+        date.textContent = Number.isNaN(parsedDate.getTime()) ? '' : parsedDate.toLocaleDateString('en-IN', {
+            day: 'numeric', month: 'short', year: 'numeric'
+        });
         header.append(recipient, date);
 
         const message = document.createElement('span');
         message.className = 'card-msg';
         message.textContent = `“${letter.message || ''}”`;
+        message.setAttribute('aria-label', (letter.message || 'Open this letter').trim());
         openButton.append(header, message);
         openButton.addEventListener('click', () => openPublicLetter(letter));
 
