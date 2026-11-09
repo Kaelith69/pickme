@@ -1,5 +1,5 @@
 // PickMe service worker. Versioned, project scoped and network first for navigation and CSS.
-const CACHE_NAME='pickme-v7';
+const CACHE_NAME='pickme-v8';
 const BASE_URL=new URL(self.registration.scope);
 const STATIC_ASSETS=['./','index.html','styles.css?v=7','script.js','manifest.json','public_letter.html','valentine.html','godview.html'].map(path=>new URL(path,BASE_URL).href);
 self.addEventListener('install',event=>{
