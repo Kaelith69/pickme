@@ -748,7 +748,7 @@ body.modal-open{overflow:hidden}.container{position:relative;z-index:10;width:mi
     <!-- Letter Modal -->
     <div class="letter-modal" id="letterModal" role="dialog" aria-modal="true" aria-labelledby="letterGreeting" aria-hidden="true">
         <div class="letter-paper" id="letterPaper" tabindex="0" aria-label="Opened love letter">
-<div class="letter-content">
+            <div class="letter-content">
                 <div class="letter-date" id="letterDate">February 14th, 2025</div>
                 <div class="letter-greeting" id="letterGreeting">My Love,</div>
                 <div class="letter-body" id="letterBody">
@@ -770,7 +770,7 @@ body.modal-open{overflow:hidden}.container{position:relative;z-index:10;width:mi
         const letterModal = document.getElementById('letterModal');
         const letterPaper = document.getElementById('letterPaper');
 
-let previousFocus = null;
+        let previousFocus = null;
         envelopeContainer.addEventListener('click', openEnvelope);
         envelopeContainer.addEventListener('keydown', event => {
             if (event.key === 'Enter' || event.key === ' ') { event.preventDefault(); openEnvelope(); }
