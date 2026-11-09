@@ -180,3 +180,31 @@ button:active{transition-duration:.06s}
  .cursor{animation:none}
  .public-card,.love-btn,.secondary-btn,.theme-toggle{transition:none}
 }
+
+
+/* PUBLIC WALL: compact letter previews */
+.public-card{gap:10px;padding:14px 16px}
+.public-card-open{gap:8px}
+.public-card-header{align-items:center;font-size:10px;letter-spacing:.02em}
+.public-card .card-msg{
+ display:-webkit-box;
+ -webkit-box-orient:vertical;
+ -webkit-line-clamp:2;
+ line-clamp:2;
+ overflow:hidden;
+ max-height:calc(1.42em * 2);
+ color:var(--ink2);
+ font-family:"Manrope",sans-serif;
+ font-size:14px;
+ font-weight:650;
+ line-height:1.42;
+ text-overflow:ellipsis;
+}
+.public-card .card-footer{padding-top:8px;border-top:1px solid var(--line);font-size:11px}
+.public-card .card-from{font-size:18px}
+.public-card-open:hover .card-msg{color:var(--ink)}
+.public-card-open:focus-visible{outline-offset:3px}
+@media(max-width:560px){
+ .public-card{gap:9px;padding:13px 14px}
+ .public-card .card-msg{font-size:13px;line-height:1.45;max-height:calc(1.45em * 2)}
+}
