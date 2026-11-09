@@ -1,880 +1,317 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-    <title>Letter For You</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=DM+Serif+Display:ital@0;1&family=Caveat:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <style>
-        :root {
-            --ink-dark: #1a1218;
-            --ink-brown: #25191e;
-            --paper-white: #1a1218;
-            --paper-cream: #2d1f27;
-            --ink-blue: #1f1620;
-            --accent-plum: #be123c;
-            /* Aligned with Primary Dark (Rose) */
-            --accent-deep-red: #881337;
-            --accent-silver: #9ca3af;
-        }
-
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        body {
-            background-color: var(--paper-white);
-            font-family: 'Playfair Display', serif;
-            color: var(--accent-silver);
-            min-height: 100vh;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            overflow: hidden;
-            position: relative;
-            background: linear-gradient(135deg, #1a1218 0%, #0f0a0d 50%, #1a0f1a 100%);
-        }
-
-        /* === PAPER TEXTURE === */
-        body::before {
-            content: '';
-            position: fixed;
-            inset: 0;
-            background-image:
-                url('data:image/svg+xml,<svg width="100" height="100" xmlns="http://www.w3.org/2000/svg"><filter id="noise"><feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="4" seed="2" /></filter><rect width="100" height="100" fill="%231a1218" opacity="1"/><rect width="100" height="100" fill="%23fff" opacity="0.03" filter="url(%23noise)"/></svg>');
-            pointer-events: none;
-            z-index: 1;
-            opacity: 0.8;
-        }
-
-        body::after {
-            content: '';
-            position: fixed;
-            inset: 0;
-            background: linear-gradient(45deg, transparent 30%, rgba(139, 58, 98, 0.04) 50%, transparent 70%);
-            pointer-events: none;
-            z-index: 1;
-        }
-
-        /* === MAIN CONTAINER === */
-        .container {
-            position: relative;
-            z-index: 10;
-            width: 90%;
-            max-width: 600px;
-            perspective: 1000px;
-        }
-
-        /* === INK SPLASH BACKGROUND === */
-        .ink-bg {
-            position: absolute;
-            top: -80px;
-            right: -120px;
-            width: 400px;
-            height: 400px;
-            opacity: 0.06;
-            filter: blur(1px);
-            pointer-events: none;
-            z-index: 0;
-        }
-
-        .ink-bg-bottom {
-            position: absolute;
-            bottom: -100px;
-            left: -150px;
-            width: 450px;
-            height: 450px;
-            opacity: 0.05;
-            filter: blur(1px);
-            pointer-events: none;
-            z-index: 0;
-        }
-
-        /* === ENVELOPE === */
-        .envelope-container {
-            position: relative;
-            z-index: 20;
-            margin-bottom: 40px;
-            cursor: pointer;
-            transform-style: preserve-3d;
-            transition: transform 0.1s ease;
-        }
-
-        .envelope-container:active {
-            transform: scale(0.98);
-        }
-
-        .envelope {
-            position: relative;
-            width: 100%;
-            max-width: 340px;
-            height: 220px;
-            margin: 0 auto;
-            background: linear-gradient(135deg, #2d1f27 0%, #1f1620 100%);
-            border: 1.5px solid rgba(155, 143, 168, 0.2);
-            box-shadow:
-                0 8px 24px rgba(0, 0, 0, 0.6),
-                inset 0 1px 2px rgba(155, 143, 168, 0.1);
-            transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
-            overflow: hidden;
-        }
-
-        .envelope:hover {
-            transform: translateY(-8px);
-            box-shadow:
-                0 16px 40px rgba(139, 58, 98, 0.3),
-                inset 0 1px 2px rgba(155, 143, 168, 0.1);
-        }
-
-        /* Envelope paper lines */
-        .envelope::before {
-            content: '';
-            position: absolute;
-            inset: 0;
-            background-image:
-                linear-gradient(90deg, transparent 48%, rgba(155, 143, 168, 0.05) 48%, rgba(155, 143, 168, 0.05) 52%, transparent 52%),
-                linear-gradient(180deg, transparent 48%, rgba(155, 143, 168, 0.03) 48%, rgba(155, 143, 168, 0.03) 52%, transparent 52%);
-            background-size: 200px 200px;
-            pointer-events: none;
-            opacity: 0.4;
-            z-index: 2;
-        }
-
-        .envelope-body {
-            position: absolute;
-            inset: 0;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            z-index: 3;
-        }
-
-        /* === INK SEAL === */
-        .ink-seal {
-            position: relative;
-            width: 60px;
-            height: 60px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 28px;
-            transition: all 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55);
-            filter: drop-shadow(0 3px 8px rgba(26, 20, 16, 0.3));
-        }
-
-        .ink-seal::before {
-            content: '';
-            position: absolute;
-            inset: -8px;
-            background: radial-gradient(circle, rgba(26, 20, 16, 0.15) 0%, transparent 70%);
-            border-radius: 50%;
-            opacity: 0;
-            transition: opacity 0.5s ease;
-        }
-
-        .ink-seal svg {
-            width: 100%;
-            height: 100%;
-            filter: drop-shadow(2px 2px 4px rgba(26, 20, 16, 0.4));
-        }
-
-        /* Flap */
-        .envelope-flap {
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            height: 0;
-            border-left: 170px solid transparent;
-            border-right: 170px solid transparent;
-            border-top: 110px solid var(--paper-cream);
-            transform-origin: top center;
-            transform: rotateX(0deg);
-            transition: transform 0.9s cubic-bezier(0.16, 1, 0.3, 1);
-            z-index: 6;
-            filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.4));
-        }
-
-        .envelope-flap::after {
-            content: '';
-            position: absolute;
-            top: -108px;
-            left: -168px;
-            right: -168px;
-            border-left: 168px solid transparent;
-            border-right: 168px solid transparent;
-            border-top: 108px solid #1a1115;
-            opacity: 0.7;
-        }
-
-        .envelope-bottom {
-            position: absolute;
-            bottom: 0;
-            left: 0;
-            right: 0;
-            height: 0;
-            border-left: 170px solid transparent;
-            border-right: 170px solid transparent;
-            border-bottom: 100px solid #1a1115;
-            z-index: 2;
-        }
-
-        .envelope-left {
-            position: absolute;
-            top: 0;
-            bottom: 0;
-            left: 0;
-            height: 0;
-            border-top: 110px solid transparent;
-            border-bottom: 110px solid transparent;
-            border-left: 110px solid #25191e;
-            z-index: 2;
-        }
-
-        .envelope-right {
-            position: absolute;
-            top: 0;
-            bottom: 0;
-            right: 0;
-            height: 0;
-            border-top: 110px solid transparent;
-            border-bottom: 110px solid transparent;
-            border-right: 110px solid #1f1519;
-            z-index: 2;
-        }
-
-        .click-text {
-            font-family: 'Dancing Script', cursive;
-            font-size: 18px;
-            color: var(--accent-plum);
-            margin-top: 24px;
-            text-align: center;
-            opacity: 0.6;
-            animation: breathe 3s ease-in-out infinite;
-            font-weight: 400;
-        }
-
-        @keyframes breathe {
-
-            0%,
-            100% {
-                opacity: 0.4;
-                transform: translateY(0);
-            }
-
-            50% {
-                opacity: 0.7;
-                transform: translateY(-2px);
-            }
-        }
-
-        /* === ENVELOPE OPEN STATE === */
-        .envelope-container.open .envelope-flap {
-            transform: rotateX(180deg);
-        }
-
-        .envelope-container.open .ink-seal {
-            transform: scale(0) rotate(180deg);
-            opacity: 0;
-        }
-
-        /* === LETTER MODAL === */
-        .letter-modal {
-            position: fixed;
-            inset: 0;
-            background: rgba(15, 10, 13, 0.8);
-            backdrop-filter: blur(8px);
-            display: none;
-            align-items: center;
-            justify-content: center;
-            z-index: 100;
-            padding: 20px;
-            opacity: 0;
-            transition: opacity 0.5s ease;
-        }
-
-        .letter-modal.show {
-            display: flex;
-            opacity: 1;
-        }
-
-        .letter-paper {
-            position: relative;
-            width: 100%;
-            max-width: 520px;
-            max-height: 80vh;
-            background: linear-gradient(135deg, #2d1f27 0%, #25191e 100%);
-            padding: 60px 40px;
-            border-radius: 1px;
-            box-shadow:
-                0 25px 80px rgba(0, 0, 0, 0.8),
-                0 0 1px rgba(155, 143, 168, 0.2),
-                inset 0 1px 0 rgba(155, 143, 168, 0.1);
-            overflow-y: auto;
-            transform: perspective(1400px) translateY(22px) rotateX(-16deg) scale(0.97);
-            transform-origin: top center;
-            clip-path: inset(0 0 88% 0 round 4px);
-            opacity: 0;
-            transition:
-                transform 1s cubic-bezier(0.2, 0.78, 0.22, 1),
-                clip-path 1s cubic-bezier(0.2, 0.78, 0.22, 1),
-                opacity 0.42s ease,
-                box-shadow 1s ease;
-            z-index: 1;
-            will-change: transform, clip-path, opacity;
-        }
-
-        .letter-paper.appear {
-            transform: perspective(1400px) translateY(0) rotateX(0deg) scale(1);
-            clip-path: inset(0 0 0 0 round 4px);
-            opacity: 1;
-            box-shadow:
-                0 30px 90px rgba(0, 0, 0, 0.72),
-                0 0 1px rgba(155, 143, 168, 0.24),
-                inset 0 1px 0 rgba(155, 143, 168, 0.12);
-        }
-
-        /* Paper texture on letter */
-        .letter-paper::before {
-            content: '';
-            position: absolute;
-            inset: 0;
-            background-image:
-                url('data:image/svg+xml,<svg width="200" height="200" xmlns="http://www.w3.org/2000/svg"><filter id="noise2"><feTurbulence type="fractalNoise" baseFrequency="0.8" numOctaves="5" seed="3" /></filter><rect width="200" height="200" fill="%232d1f27" opacity="1"/><rect width="200" height="200" fill="%23fff" opacity="0.02" filter="url(%23noise2)"/></svg>');
-            pointer-events: none;
-            z-index: 0;
-            opacity: 0.8;
-        }
-
-        .letter-paper::after {
-            content: '';
-            position: absolute;
-            inset: 0;
-            background: radial-gradient(ellipse at 50% 0%, transparent 0%, rgba(139, 58, 98, 0.08) 100%);
-            pointer-events: none;
-            z-index: 0;
-        }
-
-        .letter-content {
-            position: relative;
-            z-index: 2;
-            font-size: 17px;
-            line-height: 1.85;
-        }
-
-        .letter-date {
-            font-family: 'Dancing Script', cursive;
-            font-size: 20px;
-            font-weight: 400;
-            color: var(--accent-plum);
-            margin-bottom: 35px;
-            opacity: 0.8;
-            text-align: right;
-        }
-
-        .letter-greeting {
-            font-family: 'Dancing Script', cursive;
-            font-size: 42px;
-            font-weight: 700;
-            color: var(--accent-plum);
-            margin-bottom: 30px;
-            line-height: 1.2;
-            opacity: 0;
-            transform: translateY(10px);
-            animation: slideInUp 0.8s ease 0.3s forwards;
-        }
-
-        .letter-body {
-            color: var(--accent-silver);
-            font-size: 18px;
-            line-height: 1.9;
-            margin-bottom: 20px;
-            font-family: 'Dancing Script', cursive;
-        }
-
-        .letter-body p {
-            margin-bottom: 18px;
-            opacity: 0;
-            transform: translateY(8px);
-            animation: slideInUp 0.7s ease forwards;
-        }
-
-        .letter-body p:nth-child(1) {
-            animation-delay: 0.5s;
-        }
-
-        .letter-body p:nth-child(2) {
-            animation-delay: 0.6s;
-        }
-
-        .letter-body p:nth-child(3) {
-            animation-delay: 0.7s;
-        }
-
-        .letter-body p:nth-child(4) {
-            animation-delay: 0.8s;
-        }
-
-        .letter-body p:nth-child(5) {
-            animation-delay: 0.8s;
-        }
-
-        .letter-sign {
-            margin-top: 35px;
-            text-align: right;
-            opacity: 0;
-            animation: slideInUp 0.7s ease 0.9s forwards;
-        }
-
-        .sign-name {
-            font-family: 'Dancing Script', cursive;
-            font-size: 38px;
-            font-weight: 700;
-            color: var(--accent-plum);
-            line-height: 1;
-            margin-bottom: 8px;
-        }
-
-        .sign-extra {
-            font-family: 'Dancing Script', cursive;
-            font-size: 16px;
-            color: var(--accent-silver);
-            opacity: 0.7;
-        }
-
-        .letter-deco {
-            text-align: center;
-            font-size: 24px;
-            margin: 28px 0;
-            letter-spacing: 12px;
-            color: var(--accent-plum);
-            opacity: 0;
-            animation: slideInUp 0.7s ease 0.8s forwards;
-        }
-
-        @keyframes slideInUp {
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-/* === TITLE === */
-        .title {
-            font-family: 'Dancing Script', cursive;
-            font-size: 56px;
-            font-weight: 700;
-            color: var(--accent-plum);
-            text-align: center;
-            margin-bottom: 50px;
-            letter-spacing: -1px;
-            opacity: 0;
-            animation: slideInDown 0.9s ease 0.2s forwards;
-            position: relative;
-            z-index: 15;
-        }
-
-        .title::after {
-            content: '';
-            display: block;
-            width: 80px;
-            height: 2px;
-            background: var(--accent-plum);
-            margin: 12px auto 0;
-            opacity: 0.5;
-        }
-
-        @keyframes slideInDown {
-            from {
-                opacity: 0;
-                transform: translateY(-20px);
-            }
-
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        /* === BUTTON === */
-        .create-btn {
-            display: inline-block;
-            margin-top: 35px;
-            padding: 14px 32px;
-            background: none;
-            border: 1.5px solid var(--accent-plum);
-            color: var(--accent-plum);
-            font-family: 'Fraunces', serif;
-            font-size: 12px;
-            letter-spacing: 2px;
-            cursor: pointer;
-            text-decoration: none;
-            transition: all 0.3s ease;
-            text-transform: uppercase;
-            position: relative;
-            z-index: 15;
-            overflow: hidden;
-        }
-
-        .create-btn::before {
-            content: '';
-            position: absolute;
-            inset: 0;
-            background: var(--accent-plum);
-            transform: scaleX(0);
-            transform-origin: right;
-            transition: transform 0.4s ease;
-            z-index: -1;
-        }
-
-        .create-btn:hover::before {
-            transform: scaleX(1);
-            transform-origin: left;
-        }
-
-        .create-btn:hover {
-            color: var(--paper-white);
-        }
-
-        /* === SCROLLBAR === */
-        .letter-paper::-webkit-scrollbar {
-            width: 6px;
-        }
-
-        .letter-paper::-webkit-scrollbar-track {
-            background: transparent;
-        }
-
-        .letter-paper::-webkit-scrollbar-thumb {
-            background: rgba(155, 143, 168, 0.15);
-            border-radius: 3px;
-        }
-
-        .letter-paper::-webkit-scrollbar-thumb:hover {
-            background: rgba(155, 143, 168, 0.3);
-        }
-
-        /* === RESPONSIVE === */
-        @media (max-width: 650px) {
-            .container {
-                width: 92%;
-            }
-
-            .title {
-                font-size: 44px;
-                margin-bottom: 40px;
-            }
-
-            .envelope {
-                height: 190px;
-                max-width: 300px;
-            }
-
-            .envelope-flap {
-                border-left: 150px solid transparent;
-                border-right: 150px solid transparent;
-                border-top: 95px solid var(--paper-cream);
-            }
-
-            .envelope-flap::after {
-                top: -93px;
-                left: -148px;
-                right: -148px;
-                border-left: 148px solid transparent;
-                border-right: 148px solid transparent;
-                border-top: 93px solid #ddd8d1;
-            }
-
-            .envelope-bottom {
-                border-left: 150px solid transparent;
-                border-right: 150px solid transparent;
-                border-bottom: 85px solid #ddd8d1;
-            }
-
-            .envelope-left {
-                border-top: 95px solid transparent;
-                border-bottom: 95px solid transparent;
-                border-left: 95px solid #d5cfca;
-            }
-
-            .envelope-right {
-                border-top: 95px solid transparent;
-                border-bottom: 95px solid transparent;
-                border-right: 95px solid #cec7bf;
-            }
-
-            .letter-paper {
-                padding: 45px 35px;
-            }
-
-            .letter-greeting {
-                font-size: 36px;
-            }
-
-            .letter-content {
-                font-size: 15px;
-            }
-
-            .sign-name {
-                font-size: 32px;
-            }
-        }
-
-        /* === NAVIGATION === */
-        .nav-back-btn {
-            position: fixed;
-            top: 24px;
-            left: 24px;
-            width: 44px;
-            height: 44px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            border-radius: 50%;
-            background: rgba(255, 255, 255, 0.05);
-            backdrop-filter: blur(10px);
-            -webkit-backdrop-filter: blur(10px);
-            border: 1px solid rgba(255, 255, 255, 0.08);
-            color: var(--accent-silver);
-            transition: all 0.3s ease;
-            z-index: 1000;
-            cursor: pointer;
-            text-decoration: none;
-        }
-
-        .nav-back-btn:hover {
-            background: rgba(255, 255, 255, 0.1);
-            transform: translateX(-2px);
-            color: var(--accent-plum);
-        }
-
-        @media (max-width: 768px) {
-            .nav-back-btn {
-                top: 16px;
-                left: 16px;
-                width: 40px;
-                height: 40px;
-            }
-        }
-    </style>
-
-
-
-
-
-
-
-<style id="pickme-reader-final">
-:root{--reader-ink:#F7F3FA;--reader-soft:#DDD5E4;--reader-violet:#B09BF2;--reader-coral:#F095AA;--reader-gold:#F0D17D}
-html{min-width:320px;min-height:100%;overflow-x:clip}
-body{min-width:320px;min-height:100svh;min-height:100dvh;overflow-x:hidden;overflow-y:auto;display:grid;place-items:center;padding:max(76px,calc(env(safe-area-inset-top) + 60px)) 16px max(24px,env(safe-area-inset-bottom));background:radial-gradient(ellipse 62% 46% at 9% 8%,rgba(126,99,213,.25),transparent 72%),radial-gradient(ellipse 56% 46% at 94% 92%,rgba(225,125,153,.2),transparent 72%),radial-gradient(circle,rgba(210,199,241,.1) 1px,transparent 1.5px) 0 0/24px 24px,linear-gradient(145deg,#171621,#211E2D 55%,#302332);color:var(--reader-ink);font-family:"Manrope",sans-serif}
-body.modal-open{overflow:hidden}.container{position:relative;z-index:10;width:min(620px,100%);margin:auto}
-.title{font-family:"DM Serif Display",serif;font-size:clamp(42px,9vw,66px);line-height:1.02;letter-spacing:-.04em;color:var(--reader-ink);text-wrap:balance}
-.click-text{font-family:"Caveat",cursive;font-size:23px;color:var(--reader-coral)}
-.envelope-container{cursor:pointer}.envelope-container:focus-visible{outline:3px solid var(--reader-gold);outline-offset:8px;border-radius:16px}
-.envelope{max-width:min(340px,82vw);border:2px solid #514B61;border-radius:14px;background:linear-gradient(145deg,#3B354A,#292635);box-shadow:5px 6px 0 #0D0B13,0 22px 60px rgba(0,0,0,.32)}
-.letter-modal{position:fixed;inset:0;z-index:100;display:none;align-items:center;justify-content:center;padding:max(12px,env(safe-area-inset-top)) 14px max(12px,env(safe-area-inset-bottom));overflow-x:hidden;overflow-y:auto;overscroll-behavior:contain;background:rgba(13,11,19,.82);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px)}
-.letter-modal.show{display:flex}
-.letter-paper{box-sizing:border-box;position:relative;width:min(620px,100%);max-width:620px;min-width:0;max-height:calc(100dvh - max(24px,env(safe-area-inset-top)) - max(24px,env(safe-area-inset-bottom)));margin:auto;padding:clamp(42px,6vh,56px) clamp(20px,5vw,48px) 30px;overflow-x:hidden;overflow-y:auto;overscroll-behavior:contain;border:2px solid #514B61;border-radius:20px;background:linear-gradient(145deg,#332F40,#292635);color:var(--reader-ink);box-shadow:6px 7px 0 #0D0B13,0 30px 90px rgba(0,0,0,.5);transform:translateY(14px);opacity:0;transition:transform .4s cubic-bezier(.22,1,.36,1),opacity .28s;scrollbar-width:thin;scrollbar-color:#8066D0 transparent}
-.letter-paper.appear{transform:translateY(0);opacity:1}
-.letter-content{position:relative;z-index:2;min-width:0;font-family:"Manrope",sans-serif;font-size:16px;line-height:1.8;overflow-wrap:anywhere}
-.letter-date{color:var(--reader-gold);font-family:"Manrope",sans-serif;font-size:12px;font-weight:800;letter-spacing:.12em;text-transform:uppercase;text-align:right;margin-bottom:22px}
-.letter-greeting{color:var(--reader-coral);font-family:"DM Serif Display",serif;font-size:clamp(30px,7vw,44px);line-height:1.15;margin-bottom:18px;overflow-wrap:anywhere}
-.letter-body{color:#E7E0EC;font-family:"Caveat",cursive;font-size:clamp(23px,5vw,29px);line-height:1.55;overflow-wrap:anywhere}.letter-body p{margin:0 0 16px}
-.letter-deco{margin:24px 0;color:var(--reader-violet);letter-spacing:.3em;text-align:center}.letter-sign{text-align:right;margin-top:26px}
-.sign-name{color:var(--reader-coral);font-family:"Caveat",cursive;font-size:30px;overflow-wrap:anywhere}.sign-extra{color:var(--reader-soft);font-family:"Caveat",cursive;font-size:21px}
-.nav-back-btn{top:max(16px,env(safe-area-inset-top));left:16px;width:44px;height:44px;border:2px solid #0D0B13;border-radius:13px;background:var(--reader-gold);color:#292333;box-shadow:3px 3px 0 #0D0B13}
-@media(max-width:650px){body{display:block;padding:max(82px,calc(env(safe-area-inset-top) + 68px)) 16px 24px}.container{width:100%;max-width:480px}.title{font-size:clamp(40px,11vw,54px);margin-bottom:24px}.letter-modal{align-items:flex-start;padding:max(12px,env(safe-area-inset-top)) 12px max(12px,env(safe-area-inset-bottom))}.letter-paper{width:100%;max-width:480px;max-height:calc(100dvh - max(24px,env(safe-area-inset-top)) - max(24px,env(safe-area-inset-bottom)));padding:48px 20px 26px;border-radius:16px;transform:perspective(1100px) translateY(18px) rotateX(-14deg) scale(.985);transform-origin:top center}.letter-paper.appear{transform:perspective(1100px) translateY(0) rotateX(0deg) scale(1)}.letter-content{font-size:15px;line-height:1.7}.letter-body{font-size:23px;line-height:1.55}.letter-greeting{font-size:clamp(28px,8vw,36px)}}
-@media(max-height:600px) and (orientation:landscape){body{padding:64px 16px 16px}.letter-modal{align-items:flex-start}.letter-paper{max-height:calc(100dvh - 24px);padding-top:44px}}
-@media(prefers-reduced-motion:reduce){.letter-paper,.letter-paper.appear{transition:none;transform:none;clip-path:none;opacity:1;will-change:auto}.letter-greeting,.letter-body p,.letter-sign{animation:none;opacity:1;transform:none}}
-</style></head>
-
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#171621">
+<meta name="description" content="A little letter, sealed with love.">
+<title>A Letter for You | PickMe</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=DM+Serif+Display:ital@0;1&family=Caveat:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+ --k:1;
+ --bg1:#302332;--bg2:#171621;--hint:#F095AA;
+ --ink:#392431;--paper:#FFF5F5;--paper2:#F3DDE4;
+ --eb:#7D2948;--ef:#BE5678;--ff:#E7A0B2;--fk:#A83D5C;
+ --rose:#BE123C;--plum:#7D2948;--blush:#F095AA;--cream:#FFF5F5;
+ box-sizing:border-box;
+ padding-top:env(safe-area-inset-top,0px);
+ padding-bottom:env(safe-area-inset-bottom,0px);
+}
+*{box-sizing:border-box}
+html{width:100%;height:100%;min-width:320px;overflow:hidden;background:var(--bg2)}
+body{margin:0;width:100%;height:100%;overflow:hidden;background:
+ radial-gradient(ellipse 68% 55% at 50% 38%,rgba(190,18,60,.22),transparent 72%),
+ radial-gradient(ellipse 50% 40% at 8% 90%,rgba(125,41,72,.22),transparent 72%),
+ linear-gradient(145deg,var(--bg1),var(--bg2) 62%,#241724);
+ color:#F7F3FA;font-family:"Manrope",sans-serif}
+.scene{
+ position:fixed;left:0;right:0;top:env(safe-area-inset-top,0px);bottom:env(safe-area-inset-bottom,0px);
+ perspective:1400px;overflow:hidden;-webkit-tap-highlight-color:transparent;--lh:39px
+}
+.page-title{
+ position:absolute;z-index:25;top:clamp(16px,4vh,34px);left:58px;right:58px;margin:0;
+ color:#F7F3FA;text-align:center;font:400 clamp(24px,5vw,34px)/1.1 "DM Serif Display",serif;
+ letter-spacing:-.025em;text-wrap:balance;pointer-events:none
+}
+.nav-back{
+ position:fixed;z-index:30;top:max(14px,env(safe-area-inset-top));left:max(14px,env(safe-area-inset-left));
+ width:42px;height:42px;display:grid;place-items:center;border:1.5px solid rgba(240,149,170,.55);
+ border-radius:13px;background:rgba(41,31,47,.78);color:#F7F3FA;text-decoration:none;
+ box-shadow:3px 3px 0 rgba(13,11,19,.8);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);
+ transition:background .2s ease,transform .2s ease
+}
+.nav-back:hover{background:#7D2948;transform:translateX(-2px)}
+.nav-back:focus-visible,.seal:focus-visible,.replay:focus-visible,.sheet:focus-visible{outline:3px solid #F0D17D;outline-offset:4px}
+.eb,.ef,.fl,.seal,.lt,.sheet{position:absolute;left:50%;top:50%}
+/* Envelope body and folded front */
+.eb,.ef{width:var(--E);height:var(--EH);margin:0}
+.eb,.ef,.fl{
+ transform:translate(-50%,-50%) translateY(var(--dy));
+ transition:transform .9s cubic-bezier(.55,0,.8,.45),opacity .9s ease-in
+}
+.eb{z-index:1;background:linear-gradient(145deg,#8E3153,#64233F);border:1px solid rgba(255,210,220,.25);border-radius:8px;box-shadow:0 22px 44px rgba(10,8,20,.48)}
+.ef{z-index:3;background:linear-gradient(145deg,#D77F99,#A83D5C);clip-path:polygon(0 0,50% 55%,100% 0,100% 100%,0 100%)}
+.ef i{position:absolute;inset:0}
+.ef .l{clip-path:polygon(0 0,50% 55%,0 100%);background:rgba(70,15,39,.17)}
+.ef .r{clip-path:polygon(100% 0,50% 55%,100% 100%);background:rgba(70,15,39,.1)}
+.ef .b{clip-path:polygon(0 100%,50% 55%,100% 100%);background:rgba(255,239,243,.2)}
+.fl{z-index:5;filter:drop-shadow(0 3px 3px rgba(10,8,20,.34));width:var(--E);height:var(--FH);margin:0;perspective:900px}
+.fi{position:absolute;inset:0;transform-origin:50% 0;transform-style:preserve-3d}
+.ff,.fk{position:absolute;inset:0;clip-path:polygon(0 0,100% 0,50% 100%);backface-visibility:hidden;-webkit-backface-visibility:hidden}
+.ff{background:linear-gradient(145deg,#F0B3C2,#D77F99)}
+.fk{background:linear-gradient(to top,rgba(60,12,32,.22),transparent 60%),#A83D5C;transform:rotateX(180deg);clip-path:polygon(0 100%,100% 100%,50% 0)}
+.s-open .fi{animation:flap .9s linear forwards}
+.s-open .fl{animation:flz .9s linear forwards}
+@keyframes flap{0%{transform:rotateX(0deg);animation-timing-function:cubic-bezier(.4,0,.8,.6)}50%{transform:rotateX(90deg);animation-timing-function:cubic-bezier(.2,.4,.4,1)}100%{transform:rotateX(180deg)}}
+@keyframes flz{0%,49.9%{z-index:5}50%,100%{z-index:0}}
+/* Wax seal */
+.seal{
+ z-index:7;width:var(--seal-size);height:var(--seal-size);padding:0;border:2px solid rgba(255,221,228,.65);border-radius:50%;cursor:pointer;
+ background:radial-gradient(circle at 35% 30%,#F095AA,#BE123C 58%,#7D173D);color:#FFEAF0;
+ font-size:var(--seal-font);line-height:1;box-shadow:0 3px 8px rgba(0,0,0,.4),inset 0 0 0 3px rgba(255,255,255,.1);
+ transform:translate(-50%,-50%) translateY(var(--sealY));
+ transition:transform .45s ease-in,opacity .45s ease-in
+}
+.seal::after{content:"";position:absolute;inset:-6px;border-radius:50%;border:2px solid rgba(240,149,170,.72);animation:ping 1.8s ease-out infinite}
+@keyframes ping{from{transform:scale(.8);opacity:.9}to{transform:scale(1.6);opacity:0}}
+.s-seal .seal{transform:translate(-50%,-50%) translateY(var(--sealY)) scale(1.5) rotate(14deg);opacity:0;pointer-events:none}
+.s-seal .seal::after{animation:none}
+.hint{position:absolute;left:0;right:0;margin:0;text-align:center;top:calc(50% + var(--hint-offset));color:var(--hint);font:600 1.55rem/1.2 "Caveat",cursive;transition:opacity .4s}
+.s-seal .hint{opacity:0}
+/* Three-panel folded letter */
+.lt{z-index:2;width:var(--W);height:var(--H);margin:0;transform-style:preserve-3d;transform:translate(-50%,-50%) translateY(var(--y0)) scale(var(--s0))}
+.s-rise .lt{transform:translate(-50%,-50%) translateY(var(--y1)) scale(var(--s0));transition:transform 1.3s cubic-bezier(.3,.1,.2,1)}
+.s-out .lt{z-index:8;transform:translate(-50%,-50%) translateY(0) scale(var(--s1));transition:transform .9s cubic-bezier(.5,0,.2,1)}
+.s-unfold .lt{transform:translate(-50%,-50%) translateY(0) scale(1);transition:transform 1.8s cubic-bezier(.4,0,.2,1)}
+.s-out .eb,.s-out .ef,.s-out .fl{transform:translate(-50%,-50%) translateY(calc(var(--dy) + var(--drop)));opacity:0}
+ .pn{position:absolute;left:0;top:0;width:100%;height:var(--P);transform-style:preserve-3d}
+.p0{top:0;transform-origin:50% 100%;transform:translateZ(2px) rotateX(-180deg);transition:transform 1.1s cubic-bezier(.45,0,.2,1)}
+.p1{top:var(--P)}
+ .p2{transform-origin:50% 0;transform:translateZ(4px) rotateX(180deg);transition:transform 1.1s cubic-bezier(.45,0,.2,1) .5s}
+.s-unfold .p0,.s-unfold .p2{transform:translateZ(0) rotateX(0deg)}
+.f,.b{position:absolute;inset:0;overflow:hidden;backface-visibility:hidden;-webkit-backface-visibility:hidden}
+.f{background:var(--paper)}
+.b{transform:rotateX(180deg);background:var(--paper2);display:flex;align-items:center;justify-content:center}
+.p1 .f{box-shadow:0 8px 22px rgba(0,0,0,.3);transition:box-shadow .6s}
+.s-unfold .p1 .f{box-shadow:0 0 0 rgba(0,0,0,0)}
+.to{font:700 clamp(24px,5vw,40px)/1 "DM Serif Display",serif;color:var(--rose)}
+.body{
+ box-sizing:border-box;width:var(--W);height:var(--H);padding:68px clamp(18px,4vw,30px);
+ font:500 var(--fs)/var(--lh) "Caveat",cursive;color:var(--ink);background-color:var(--paper);overflow-wrap:anywhere;word-break:normal;
+ background-image:linear-gradient(transparent calc(var(--lh) - 1px),rgba(168,61,92,.16) 0),
+ linear-gradient(transparent 33.2%,rgba(60,25,40,.07) 33.33%,transparent 33.7%,transparent 66.3%,rgba(60,25,40,.07) 66.67%,transparent 67%);
+ background-size:100% var(--lh),100% 100%;background-position:0 68px,0 0;
+ background-repeat:repeat-y,no-repeat;background-attachment:local,scroll
+}
+.f .body{position:absolute;left:0}
+.body p{margin:0 0 var(--lh)}
+.body .dt{text-align:right;color:#8B5368;font-size:.72em;font-family:"Manrope",sans-serif;font-weight:800;letter-spacing:.09em;text-transform:uppercase}
+.body .greeting{font-size:1.18em;font-weight:700;color:var(--plum);margin-bottom:var(--lh)}
+.body .so,.body .ps{margin:0}
+.body .nm{font-size:1.35em;font-weight:700;color:var(--rose);margin:0 0 var(--lh)}
+.body .ps{font-size:.8em;color:#805366}
+ .sheet{z-index:10;margin:0;transform:translate(-50%,-50%);overflow-y:auto;overflow-x:hidden;overscroll-behavior:contain;-webkit-overflow-scrolling:touch;opacity:0;visibility:hidden;outline:none;box-shadow:0 10px 36px rgba(0,0,0,.3);transition:opacity .4s;scrollbar-width:thin;scrollbar-color:#BE5678 transparent}
+.sheet::after{content:"";display:block;height:96px}
+.s-done .sheet{opacity:1;visibility:visible}
+.s-done .page-title{opacity:0;visibility:hidden;transition:opacity .25s ease,visibility 0s .25s}
+.s-done .lt{visibility:hidden;transition:visibility 0s .45s}
+.replay{
+ position:absolute;z-index:28;left:50%;bottom:max(14px,env(safe-area-inset-bottom));transform:translate(-50%,10px);opacity:0;visibility:hidden;
+ border:1.5px solid rgba(255,220,229,.7);border-radius:99px;padding:.72em 1.4em;background:#7D2948;color:#FFF5F5;
+ font:700 .88rem "Manrope",sans-serif;letter-spacing:.02em;box-shadow:0 6px 18px rgba(0,0,0,.35);
+ cursor:pointer;transition:opacity .4s .3s,transform .4s .3s,background .2s
+}
+.replay:hover{background:#A83D5C}
+.s-done .replay{opacity:1;visibility:visible;transform:translate(-50%,0)}
+.reset *{transition:none!important;animation:none!important}
+.intro .eb,.intro .ef,.intro .fl,.intro .seal,.intro .hint{animation:fadein .8s both}
+@keyframes fadein{from{opacity:0}}
+@media(max-width:560px){
+ .page-title{top:clamp(14px,3vh,24px);font-size:clamp(22px,6vw,29px)}
+ .nav-back{width:38px;height:38px}
+ .replay{bottom:max(10px,env(safe-area-inset-bottom));font-size:.82rem}
+}
+@media(max-height:520px) and (orientation:landscape){
+ .page-title{top:8px;font-size:22px}
+ .nav-back{top:8px}
+ .replay{bottom:8px}
+}
+@media(prefers-reduced-motion:reduce){
+ *,*::before,*::after{scroll-behavior:auto!important;animation-duration:.001ms!important;animation-iteration-count:1!important;transition-duration:.001ms!important}
+ .seal::after{display:none}
+}
+</style>
+</head>
 <body>
-    <!-- Back Navigation -->
-    <a href="index.html" class="nav-back-btn" aria-label="Back to Home">
-        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-            stroke-linecap="round" stroke-linejoin="round">
-            <path d="M19 12H5"></path>
-            <path d="M12 19l-7-7 7-7"></path>
-        </svg>
-    </a>
-    <svg class="ink-bg" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
-        <g fill="currentColor" opacity="0.4">
-            <path d="M80 30 Q70 50 85 70 Q100 60 95 40 Z" fill="#8b3a62" />
-            <circle cx="120" cy="60" r="25" opacity="0.3" fill="#4a1a2f" />
-            <path d="M50 90 Q60 110 75 100 Q65 85 50 90 Z" fill="#8b3a62" />
-            <circle cx="140" cy="110" r="18" opacity="0.25" fill="#4a1a2f" />
-        </g>
-    </svg>
-
-    <svg class="ink-bg-bottom" viewBox="0 0 250 250" xmlns="http://www.w3.org/2000/svg">
-        <g fill="currentColor" opacity="0.35">
-            <path d="M180 150 Q170 180 195 200 Q210 180 195 160 Z" fill="#8b3a62" />
-            <circle cx="80" cy="180" r="30" opacity="0.3" fill="#4a1a2f" />
-            <path d="M120 80 Q130 100 145 95 Q135 75 120 80 Z" fill="#8b3a62" />
-        </g>
-    </svg>
-
-    <div class="container">
-        <h1 class="title" id="pageTitle">For You</h1>
-
-        <div class="envelope-container" id="envelopeContainer" role="button" tabindex="0" aria-label="Open your letter" aria-controls="letterModal" aria-expanded="false">
-            <div class="envelope" id="envelope">
-                <div class="envelope-body">
-                    <div class="ink-seal" id="inkSeal">
-                        <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
-                            <circle cx="50" cy="50" r="45" fill="none" stroke="currentColor" stroke-width="2"
-                                opacity="0.4" />
-                            <path d="M50 25 Q65 40 50 55 Q35 40 50 25" fill="currentColor" />
-                            <circle cx="50" cy="50" r="8" fill="currentColor" opacity="0.6" />
-                        </svg>
-                    </div>
-                </div>
-                <div class="envelope-flap"></div>
-                <div class="envelope-bottom"></div>
-                <div class="envelope-left"></div>
-                <div class="envelope-right"></div>
-            </div>
-            <p class="click-text">tap to open</p>
-        </div>
-
-        <!-- Redirect to home instead of an alert -->
-        <a href="index.html" class="create-btn">Make Your Own</a>
-    </div>
-
-    <!-- Letter Modal -->
-    <div class="letter-modal" id="letterModal" role="dialog" aria-modal="true" aria-labelledby="letterGreeting" aria-hidden="true">
-        <div class="letter-paper" id="letterPaper" tabindex="0" aria-label="Opened love letter">
-            <div class="letter-content">
-                <div class="letter-date" id="letterDate">February 14th, 2025</div>
-                <div class="letter-greeting" id="letterGreeting">My Love,</div>
-                <div class="letter-body" id="letterBody">
-                    <p>Loading your letter...</p>
-                </div>
-                <div class="letter-deco">✦ ✦ ✦</div>
-                <div class="letter-sign">
-                    <div class="sign-name" id="signName">Your Name,</div>
-                    <div class="sign-extra" id="signExtra">with love ~</div>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <script>
-        let isOpen = false;
-
-        const envelopeContainer = document.getElementById('envelopeContainer');
-        const letterModal = document.getElementById('letterModal');
-        const letterPaper = document.getElementById('letterPaper');
-
-        let previousFocus = null;
-        envelopeContainer.addEventListener('click', openEnvelope);
-        envelopeContainer.addEventListener('keydown', event => {
-            if (event.key === 'Enter' || event.key === ' ') { event.preventDefault(); openEnvelope(); }
-        });
-        letterModal.addEventListener('keydown', event => {
-            if (event.key === 'Escape') { event.preventDefault(); closeLetter(); return; }
-            if (event.key === 'Tab') {
-                const focusable = [...letterModal.querySelectorAll('button:not([disabled]),a[href],[tabindex]:not([tabindex="-1"])')];
-                if (!focusable.length) { event.preventDefault(); letterPaper.focus(); return; }
-                const first = focusable[0], last = focusable[focusable.length - 1];
-                if (event.shiftKey && (document.activeElement === first || !letterModal.contains(document.activeElement))) { event.preventDefault(); last.focus(); }
-                else if (!event.shiftKey && (document.activeElement === last || !letterModal.contains(document.activeElement))) { event.preventDefault(); first.focus(); }
-            }
-        });
-
-        function openEnvelope() {
-            if (isOpen) return;
-            isOpen = true;
-            previousFocus = document.activeElement;
-            envelopeContainer.setAttribute('aria-expanded', 'true');
-            envelopeContainer.classList.add('open');
-            const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-            const reveal = () => {
-                letterModal.classList.add('show');
-                letterModal.setAttribute('aria-hidden', 'false');
-                document.body.classList.add('modal-open');
-                requestAnimationFrame(() => {
-                    letterPaper.classList.add('appear');
-                    letterPaper.focus({ preventScroll: true });
-                });
-            };
-            if (reducedMotion) reveal();
-            else setTimeout(reveal, 900);
-        }
-
-        function closeLetter() {
-            if (!isOpen) return;
-            letterPaper.classList.remove('appear');
-            const finishClose = () => {
-                letterModal.classList.remove('show');
-                letterModal.setAttribute('aria-hidden', 'true');
-                document.body.classList.remove('modal-open');
-                envelopeContainer.classList.remove('open');
-                envelopeContainer.setAttribute('aria-expanded', 'false');
-                isOpen = false;
-                (previousFocus && previousFocus.focus ? previousFocus : envelopeContainer).focus({ preventScroll: true });
-            };
-            if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) finishClose();
-            else setTimeout(finishClose, 400);
-        }
-
-        letterModal.addEventListener('click', (e) => {
-            if (e.target === letterModal) closeLetter();
-        });
-
-        // Support URL parameters for dynamic content
-        window.addEventListener('DOMContentLoaded', () => {
-            const params = new URLSearchParams(window.location.search);
-            const d = params.get('d'); // Support obfuscated data
-
-            let to = '';
-            let from = '';
-            let msg = '';
-
-            if (d) {
-                try {
-                    const decoded = JSON.parse(decodeURIComponent(atob(d)));
-                    if (decoded.t) to = decoded.t;
-                    if (decoded.f) from = decoded.f;
-                    if (decoded.m) msg = decoded.m;
-                } catch (e) {
-                    console.error('Failed to decode letter data', e);
-                }
-            } else {
-                if (params.has('to')) to = params.get('to');
-                if (params.has('from')) from = params.get('from');
-                if (params.has('msg')) msg = params.get('msg');
-            }
-
-            if (to) {
-                document.getElementById('letterGreeting').textContent = to + ',';
-            }
-
-            if (from) {
-                document.getElementById('signName').textContent = from;
-            }
-
-            // Date handling (optional)
-            const date = new Date().toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' });
-            document.getElementById('letterDate').textContent = date;
-
-            if (msg) {
-                const bodyEl = document.getElementById('letterBody');
-                bodyEl.innerHTML = '';
-                const messages = msg.split('\n').filter(m => m.trim() !== '');
-                messages.forEach((m, index) => {
-                    const p = document.createElement('p');
-                    p.textContent = m;
-                    p.style.animationDelay = `${0.5 + (index * 0.2)}s`;
-                    bodyEl.appendChild(p);
-                });
-            }
-        });
-    </script>
+<a class="nav-back" href="index.html" aria-label="Back to PickMe">
+ <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 12H5"></path><path d="M12 19l-7-7 7-7"></path></svg>
+</a>
+<main class="scene intro" id="scene">
+ <h1 class="page-title">A Letter for You</h1>
+ <div class="eb" aria-hidden="true"></div>
+ <div class="lt" id="lt" aria-hidden="true"></div>
+ <div class="ef" aria-hidden="true"><i class="l"></i><i class="r"></i><i class="b"></i></div>
+ <div class="fl" aria-hidden="true"><div class="fi"><div class="ff"></div><div class="fk"></div></div></div>
+ <button class="seal" id="seal" type="button" aria-label="Break the seal and open your letter">&#9829;&#xFE0E;</button>
+ <p class="hint" id="hint">A little note, sealed with love. Tap to open.</p>
+ <article class="body sheet" id="sheet" tabindex="-1" aria-label="Your letter" aria-hidden="true"></article>
+ <button class="replay" id="replay" type="button">Read again</button>
+</main>
+<script>
+(function(){
+ 'use strict';
+ var scene=document.getElementById('scene');
+ var lt=document.getElementById('lt');
+ var sheet=document.getElementById('sheet');
+ var seal=document.getElementById('seal');
+ var replay=document.getElementById('replay');
+ var reduced=window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+ var K=reduced?0.001:1;
+ var busy=false;
+ var panelHeight=0;
+ var timers=[];
+ var params=new URLSearchParams(window.location.search);
+ var to='',from='',message='';
+ function decodeLetter(){
+  var encoded=params.get('d');
+  if(encoded){
+   try{
+    var decoded=JSON.parse(decodeURIComponent(atob(encoded)));
+    to=typeof decoded.t==='string'?decoded.t:'';
+    from=typeof decoded.f==='string'?decoded.f:'';
+    message=typeof decoded.m==='string'?decoded.m:'';
+   }catch(error){console.warn('Could not decode letter data:',error)}
+  }else{
+   to=params.get('to')||'';
+   from=params.get('from')||'';
+   message=params.get('msg')||'';
+  }
+ }
+ function paragraph(text,className){
+  var p=document.createElement('p');
+  if(className)p.className=className;
+  p.textContent=text;
+  return p;
+ }
+ function buildLetter(){
+  var date=document.createElement('p');
+  date.className='dt';
+  date.textContent=new Date().toLocaleDateString(undefined,{day:'numeric',month:'long',year:'numeric'});
+  var greeting=paragraph('Dear '+(to.trim()||'you')+',','greeting');
+  sheet.append(date,greeting);
+  var lines=message.split(/\r?\n/).map(function(line){return line.trim()}).filter(Boolean);
+  if(!lines.length)lines=['A little note, sent with love.'];
+  lines.forEach(function(line){sheet.appendChild(paragraph(line))});
+  sheet.append(paragraph('With love,','so'),paragraph(from.trim()||'Someone who cares','nm'),paragraph('Made with a little love on PickMe.','ps'));
+ }
+ function px(name,value){scene.style.setProperty(name,value+'px')}
+ function layout(){
+  var vw=scene.clientWidth;
+  var vh=scene.clientHeight;
+  if(!vw||!vh)return;
+  var W=Math.max(240,Math.min(vw-24,560));
+  var H=Math.max(220,vh-20);
+  var P=H/3;
+  panelHeight=P;
+  var E=Math.min(vw*.82,360);
+  var EH=E*.68;
+  var s0=Math.min(.84*E/W,.78*EH/P);
+  var h0=P*s0;
+  var need=.5*EH+h0+6;
+  var dy=Math.max(vh*.08,need-vh/2+14);
+  var y0=dy-.05*EH;
+  var ty=h0/2+.45*EH+6;
+  px('--W',W);px('--H',H);px('--P',P);px('--E',E);px('--EH',EH);px('--dy',dy);
+  px('--y0',y0);px('--y1',y0-ty);px('--drop',vh*.7);px('--FH',EH*.55);px('--seal-size',E*.18);px('--seal-font',E*.078);px('--sealY',dy+EH*.05);px('--hint-offset',dy+EH/2+28);
+  Array.prototype.forEach.call(lt.querySelectorAll('.pn'),function(panel,index){panel.style.top=(index*P)+'px';var copy=panel.querySelector('.body');if(copy)copy.style.top=(-index*P)+'px'});
+  scene.style.setProperty('--s0',s0);
+  scene.style.setProperty('--s1',Math.min(1,s0*1.3));
+  var fs=Math.min(26,W/14);
+  px('--fs',fs);px('--lh',fs*1.5);
+  while(fs>17&&sheet.scrollHeight-96>H+1){fs-=.5;px('--fs',fs);px('--lh',fs*1.5)}
+ }
+ function buildFoldedLetter(){
+  lt.replaceChildren();
+  for(var i=0;i<3;i++){
+   var panel=document.createElement('div');
+   panel.className='pn p'+i;
+   panel.style.top=(i*panelHeight)+'px';
+   var front=document.createElement('div');
+   front.className='f';
+   var copy=document.createElement('div');
+   copy.className='body';
+   copy.style.top=(-i*panelHeight)+'px';
+   Array.prototype.forEach.call(sheet.childNodes,function(node){copy.appendChild(node.cloneNode(true))});
+   front.appendChild(copy);
+   panel.appendChild(front);
+   if(i!==1){
+    var back=document.createElement('div');
+    back.className='b';
+    if(i===2){
+     var label=document.createElement('span');
+     label.className='to';
+     label.textContent='For you';
+     back.appendChild(label);
+    }
+    panel.appendChild(back);
+   }
+   lt.appendChild(panel);
+  }
+ }
+ function at(ms,fn){
+  var timer=window.setTimeout(fn,ms*K);
+  timers.push(timer);
+ }
+ function clearTimers(){timers.forEach(window.clearTimeout);timers=[]}
+ function finishImmediately(){
+  ['s-seal','s-open','s-rise','s-out','s-unfold','s-done'].forEach(function(name){scene.classList.add(name)});
+  sheet.setAttribute('aria-hidden','false');
+  sheet.focus({preventScroll:true});
+ }
+ function play(){
+  if(busy)return;
+  busy=true;
+  seal.disabled=true;
+  scene.classList.remove('intro');
+  if(reduced){finishImmediately();return}
+  scene.classList.add('s-seal');
+  at(350,function(){scene.classList.add('s-open')});
+  at(1150,function(){scene.classList.add('s-rise')});
+  at(2450,function(){scene.classList.add('s-out')});
+  at(3250,function(){scene.classList.add('s-unfold')});
+  at(5150,function(){
+   scene.classList.add('s-done');
+   sheet.setAttribute('aria-hidden','false');
+   sheet.focus({preventScroll:true});
+  });
+ }
+ function reset(){
+  clearTimers();
+  scene.classList.add('reset');
+  scene.classList.remove('s-seal','s-open','s-rise','s-out','s-unfold','s-done');
+  sheet.setAttribute('aria-hidden','true');
+  sheet.scrollTop=0;
+  void scene.offsetWidth;
+  scene.classList.remove('reset');
+  scene.classList.add('intro');
+  busy=false;
+  seal.disabled=false;
+ }
+ decodeLetter();
+ buildLetter();
+ layout();
+ buildFoldedLetter();
+ if(document.fonts&&document.fonts.ready)document.fonts.ready.then(layout);
+ window.addEventListener('resize',layout,{passive:true});
+ window.addEventListener('orientationchange',function(){window.setTimeout(layout,80)},{passive:true});
+ seal.addEventListener('click',play);
+ replay.addEventListener('click',function(event){event.stopPropagation();reset();seal.focus({preventScroll:true})});
+ document.addEventListener('keydown',function(event){if(event.key==='Escape'&&busy){event.preventDefault();reset();seal.focus({preventScroll:true})}});
+ window.setTimeout(function(){scene.classList.remove('intro')},900);
+})();
+</script>
 </body>
-
 </html>
