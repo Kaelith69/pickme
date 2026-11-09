@@ -1419,9 +1419,9 @@ body{min-width:320px;min-height:100svh;min-height:100dvh;overflow-x:hidden;overf
           if (decoded.s === 1) skipAnimation = true;
         } catch (e) { console.log('Error decoding params', e); }
       } else {
-        if (urlParams.get('to')) to = decodeURIComponent(urlParams.get('to'));
-        if (urlParams.get('from')) from = decodeURIComponent(urlParams.get('from'));
-        if (urlParams.get('msg')) msg = decodeURIComponent(urlParams.get('msg'));
+        if (urlParams.get('to')) to = urlParams.get('to');
+        if (urlParams.get('from')) from = urlParams.get('from');
+        if (urlParams.get('msg')) msg = urlParams.get('msg');
       }
 
       // Update DOM
