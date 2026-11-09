@@ -314,15 +314,27 @@
                 0 0 1px rgba(155, 143, 168, 0.2),
                 inset 0 1px 0 rgba(155, 143, 168, 0.1);
             overflow-y: auto;
-            transform: scale(0.88) rotateX(-5deg);
+            transform: perspective(1400px) translateY(22px) rotateX(-16deg) scale(0.97);
+            transform-origin: top center;
+            clip-path: inset(0 0 88% 0 round 4px);
             opacity: 0;
-            transition: transform 0.7s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.5s ease;
+            transition:
+                transform 1s cubic-bezier(0.2, 0.78, 0.22, 1),
+                clip-path 1s cubic-bezier(0.2, 0.78, 0.22, 1),
+                opacity 0.42s ease,
+                box-shadow 1s ease;
             z-index: 1;
+            will-change: transform, clip-path, opacity;
         }
 
         .letter-paper.appear {
-            transform: scale(1) rotateX(0deg);
+            transform: perspective(1400px) translateY(0) rotateX(0deg) scale(1);
+            clip-path: inset(0 0 0 0 round 4px);
             opacity: 1;
+            box-shadow:
+                0 30px 90px rgba(0, 0, 0, 0.72),
+                0 0 1px rgba(155, 143, 168, 0.24),
+                inset 0 1px 0 rgba(155, 143, 168, 0.12);
         }
 
         /* Paper texture on letter */
@@ -450,27 +462,7 @@
             }
         }
 
-        .close-btn {
-            position: absolute;
-            top: 20px;
-            right: 22px;
-            background: none;
-            border: none;
-            font-family: 'Fraunces', serif;
-            font-size: 14px;
-            color: var(--accent-plum);
-            cursor: pointer;
-            opacity: 0.6;
-            transition: opacity 0.2s ease;
-            z-index: 10;
-            padding: 4px 8px;
-        }
-
-        .close-btn:hover {
-            opacity: 1;
-        }
-
-        /* === TITLE === */
+/* === TITLE === */
         .title {
             font-family: 'Dancing Script', cursive;
             font-size: 56px;
@@ -694,7 +686,6 @@ body.modal-open{overflow:hidden}.container{position:relative;z-index:10;width:mi
 .letter-body{color:#E7E0EC;font-family:"Caveat",cursive;font-size:clamp(23px,5vw,29px);line-height:1.55;overflow-wrap:anywhere}.letter-body p{margin:0 0 16px}
 .letter-deco{margin:24px 0;color:var(--reader-violet);letter-spacing:.3em;text-align:center}.letter-sign{text-align:right;margin-top:26px}
 .sign-name{color:var(--reader-coral);font-family:"Caveat",cursive;font-size:30px;overflow-wrap:anywhere}.sign-extra{color:var(--reader-soft);font-family:"Caveat",cursive;font-size:21px}
-.close-btn{position:sticky;top:8px;float:right;z-index:8;min-height:42px;margin:-28px -12px 12px 12px;padding:9px 14px;border:2px solid #0D0B13;border-radius:11px;background:var(--reader-gold);color:#292333;font-family:"Manrope",sans-serif;font-weight:900;box-shadow:3px 3px 0 #0D0B13;cursor:pointer}
 .nav-back-btn{top:max(16px,env(safe-area-inset-top));left:16px;width:44px;height:44px;border:2px solid #0D0B13;border-radius:13px;background:var(--reader-gold);color:#292333;box-shadow:3px 3px 0 #0D0B13}
 @media(max-width:650px){body{display:block;padding:max(82px,calc(env(safe-area-inset-top) + 68px)) 16px 24px}.container{width:100%;max-width:480px}.title{font-size:clamp(40px,11vw,54px);margin-bottom:24px}.letter-modal{align-items:flex-start;padding:max(12px,env(safe-area-inset-top)) 12px max(12px,env(safe-area-inset-bottom))}.letter-paper{width:100%;max-width:480px;max-height:calc(100dvh - max(24px,env(safe-area-inset-top)) - max(24px,env(safe-area-inset-bottom)));padding:48px 20px 26px;border-radius:16px;transform:translateY(12px)}.letter-paper.appear{transform:translateY(0)}.letter-content{font-size:15px;line-height:1.7}.letter-body{font-size:23px;line-height:1.55}.letter-greeting{font-size:clamp(28px,8vw,36px)}}
 @media(max-height:600px) and (orientation:landscape){body{padding:64px 16px 16px}.letter-modal{align-items:flex-start}.letter-paper{max-height:calc(100dvh - 24px);padding-top:44px}}
@@ -756,9 +747,8 @@ body.modal-open{overflow:hidden}.container{position:relative;z-index:10;width:mi
 
     <!-- Letter Modal -->
     <div class="letter-modal" id="letterModal" role="dialog" aria-modal="true" aria-labelledby="letterGreeting" aria-hidden="true">
-        <div class="letter-paper" id="letterPaper">
-            <button type="button" class="close-btn" id="closeLetterButton" onclick="closeLetter()" aria-label="Close letter">Close ✕</button>
-            <div class="letter-content">
+        <div class="letter-paper" id="letterPaper" tabindex="0" aria-label="Opened love letter">
+<div class="letter-content">
                 <div class="letter-date" id="letterDate">February 14th, 2025</div>
                 <div class="letter-greeting" id="letterGreeting">My Love,</div>
                 <div class="letter-body" id="letterBody">
@@ -780,8 +770,7 @@ body.modal-open{overflow:hidden}.container{position:relative;z-index:10;width:mi
         const letterModal = document.getElementById('letterModal');
         const letterPaper = document.getElementById('letterPaper');
 
-        const closeLetterButton = document.getElementById('closeLetterButton');
-        let previousFocus = null;
+let previousFocus = null;
         envelopeContainer.addEventListener('click', openEnvelope);
         envelopeContainer.addEventListener('keydown', event => {
             if (event.key === 'Enter' || event.key === ' ') { event.preventDefault(); openEnvelope(); }
@@ -790,10 +779,10 @@ body.modal-open{overflow:hidden}.container{position:relative;z-index:10;width:mi
             if (event.key === 'Escape') { event.preventDefault(); closeLetter(); return; }
             if (event.key === 'Tab') {
                 const focusable = [...letterModal.querySelectorAll('button:not([disabled]),a[href],[tabindex]:not([tabindex="-1"])')];
-                if (!focusable.length) return;
+                if (!focusable.length) { event.preventDefault(); letterPaper.focus(); return; }
                 const first = focusable[0], last = focusable[focusable.length - 1];
-                if (event.shiftKey && document.activeElement === first) { event.preventDefault(); last.focus(); }
-                else if (!event.shiftKey && document.activeElement === last) { event.preventDefault(); first.focus(); }
+                if (event.shiftKey && (document.activeElement === first || !letterModal.contains(document.activeElement))) { event.preventDefault(); last.focus(); }
+                else if (!event.shiftKey && (document.activeElement === last || !letterModal.contains(document.activeElement))) { event.preventDefault(); first.focus(); }
             }
         });
 
@@ -810,7 +799,7 @@ body.modal-open{overflow:hidden}.container{position:relative;z-index:10;width:mi
                 document.body.classList.add('modal-open');
                 requestAnimationFrame(() => {
                     letterPaper.classList.add('appear');
-                    closeLetterButton.focus({ preventScroll: true });
+                    letterPaper.focus({ preventScroll: true });
                 });
             };
             if (reducedMotion) reveal();
