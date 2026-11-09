@@ -944,9 +944,9 @@ body{min-width:320px;min-height:100svh;min-height:100dvh;overflow-x:hidden;overf
                     console.error('Failed to decode letter data', e);
                 }
             } else {
-                if (params.has('to')) to = decodeURIComponent(params.get('to'));
-                if (params.has('from')) from = decodeURIComponent(params.get('from'));
-                if (params.has('msg')) msg = decodeURIComponent(params.get('msg'));
+                if (params.has('to')) to = params.get('to');
+                if (params.has('from')) from = params.get('from');
+                if (params.has('msg')) msg = params.get('msg');
             }
 
             if (to) {
