@@ -5,6 +5,7 @@ on:
     branches: [main]
     paths:
       - "public/**"
+      - "index.html"
       - ".github/workflows/deploy-pages.yml"
   workflow_dispatch:
 
