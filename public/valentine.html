@@ -3,7 +3,7 @@
 
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
   <title>💌 A Valentine's Surprise</title>
   <link
     href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@400;600;700&family=Playfair+Display:ital,wght@0,400;1,400&family=Parisienne&family=Alex+Brush&display=swap"
@@ -930,6 +930,26 @@
       }
     }
   </style>
+
+<style>
+:root { --rose:#A78BFA; --deep-rose:#7554C7; --blush:#F3C9D4; --cream:#FFF8F1; --gold:#F2CE78; --soft-green:#78B9A5; --petal-pink:#F28AA0; --leaf:#688A76; --bg:#17151F; }
+body { min-width:320px; min-height:100svh; min-height:100dvh; overflow-x:hidden; overflow-y:auto; background:radial-gradient(ellipse 60% 45% at 12% 10%,rgba(135,88,217,.23),transparent 72%),radial-gradient(ellipse 55% 42% at 88% 90%,rgba(233,110,136,.16),transparent 72%),radial-gradient(circle,rgba(196,181,253,.1) 1px,transparent 1.5px) 0 0/24px 24px,linear-gradient(145deg,#17151F,#211C2B 55%,#2B1E2A); }
+.letter-container { padding:max(12px,env(safe-area-inset-top)) 12px max(12px,env(safe-area-inset-bottom)); overflow-y:auto; overscroll-behavior:contain; }
+.letter-paper { width:min(540px,100%); max-height:calc(100dvh - 28px); border:2px solid #D8C9B5; border-radius:14px; background:linear-gradient(145deg,#FFFDF8,#F6EBDD); color:#302536; box-shadow:5px 6px 0 #0E0C14,0 24px 70px rgba(0,0,0,.55); transform:translateY(18px); transition:transform .45s cubic-bezier(.22,1,.36,1),opacity .3s ease; }
+.letter-paper.appear { transform:translateY(0); }
+.letter-heading,.letter-sign-name { color:#8758D9; }
+.letter-body { color:#473849; overflow-wrap:anywhere; }
+@media(max-width:600px) {
+ .stage { width:100%; min-height:100svh; padding:72px 16px 28px; }
+ .letter-container { align-items:flex-start; }
+ .letter-paper { width:100%; max-width:480px; max-height:calc(100dvh - 24px); padding:52px 20px 28px; transform:translateY(14px); }
+ .letter-paper.appear { transform:translateY(0); }
+ .letter-heading { font-size:clamp(28px,8vw,34px); }
+ .letter-body { font-size:17px; line-height:1.75; }
+ .letter-date { margin-bottom:18px; }
+}
+@media(prefers-reduced-motion:reduce) { *,*::before,*::after { animation-duration:.01ms !important; transition-duration:.01ms !important; } }
+</style>
 </head>
 
 <body>
