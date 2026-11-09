@@ -957,7 +957,7 @@ body.letter-open{overflow:hidden}
 .nav-back-btn{top:max(16px,env(safe-area-inset-top));left:16px;width:44px;height:44px;border:2px solid #0D0B13;border-radius:13px;background:var(--surprise-gold);color:#292333;box-shadow:3px 3px 0 #0D0B13}
 @media(max-width:600px){.stage{width:100%;min-height:100svh;min-height:100dvh;padding:max(82px,calc(env(safe-area-inset-top) + 66px)) 16px max(26px,env(safe-area-inset-bottom))}.letter-container{align-items:flex-start;padding:max(12px,env(safe-area-inset-top)) 12px max(12px,env(safe-area-inset-bottom))}.letter-paper{width:100%;max-width:480px;max-height:calc(100dvh - max(24px,env(safe-area-inset-top)) - max(24px,env(safe-area-inset-bottom)));padding:48px 20px 26px;transform:translateY(12px)}.letter-paper.appear{transform:translateY(0)}.letter-body{font-size:23px;line-height:1.55}.letter-heading{font-size:clamp(28px,8vw,36px)}}
 @media(max-height:600px) and (orientation:landscape){.letter-container{align-items:flex-start}.letter-paper{max-height:calc(100dvh - 24px);padding-top:44px}}
-@media(prefers-reduced-motion:reduce){.letter-container,.letter-paper,.letter-paper.appear,.letter-heading,.letter-body p{transition:none;animation:none;transform:none;opacity:1}}
+@media(prefers-reduced-motion:reduce){.letter-container,.letter-paper,.letter-paper.appear,.letter-heading,.letter-body p{transition:none;animation:none;transform:none;opacity:1}.particle,.petal,.burst-heart{display:none!important}}
 </style></head>
 
 <body>
@@ -1245,7 +1245,14 @@ body.letter-open{overflow:hidden}
       if (event.key === 'Enter' || event.key === ' ') { event.preventDefault(); openEnvelope(); }
     });
     letterContainer.addEventListener('keydown', event => {
-      if (event.key === 'Escape') { event.preventDefault(); closeLetter(); }
+      if (event.key === 'Escape') { event.preventDefault(); closeLetter(); return; }
+      if (event.key === 'Tab') {
+        const focusable = [...letterContainer.querySelectorAll('button:not([disabled]),a[href],[tabindex]:not([tabindex="-1"])')];
+        if (!focusable.length) return;
+        const first = focusable[0], last = focusable[focusable.length - 1];
+        if (event.shiftKey && document.activeElement === first) { event.preventDefault(); last.focus(); }
+        else if (!event.shiftKey && document.activeElement === last) { event.preventDefault(); first.focus(); }
+      }
     });
 
     // === PARTICLES ===
@@ -1421,7 +1428,10 @@ body.letter-open{overflow:hidden}
         const container = document.getElementById('letterContainer');
         const paper = document.getElementById('letterPaper');
         container.classList.add('show');
+        container.setAttribute('aria-hidden', 'false');
+        document.body.classList.add('letter-open');
         paper.classList.add('appear');
+        closeSurpriseLetter.focus({ preventScroll: true });
 
         // Trigger bouquet immediately
         const bouquet = document.getElementById('bouquet');
