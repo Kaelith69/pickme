@@ -173,6 +173,17 @@ function showToast(message, duration = 3000) {
     }, duration);
 }
 
+// Wrap UI state changes in the browser's native View Transition API when available.
+function runSharedTransition(update) {
+    const reduceMotion = window.matchMedia?.('(prefers-reduced-motion: reduce)').matches;
+    if (!document.startViewTransition || reduceMotion) {
+        update();
+        return;
+    }
+    try { document.startViewTransition({ update }); }
+    catch (error) { update(); }
+}
+
 // ==========================================
 // TYPEWRITER EFFECT
 // ==========================================
@@ -276,68 +287,55 @@ if (messageInput && charCount) {
 // VIEW SWITCHING
 // ==========================================
 function showLetterMode(to, from, msg, isPublic = false) {
-    if (actionArea) actionArea.classList.add('hidden');
-    if (contentArea) contentArea.classList.add('hidden');
-    if (letterForm) letterForm.classList.add('hidden');
-    if (readLetterForm) readLetterForm.classList.add('hidden');
-    if (successView) successView.classList.add('hidden');
-
-    if (subtitleEl) subtitleEl.textContent = `A Letter For You`;
-    if (titleEl) titleEl.textContent = "Happy Valentine's";
-
-    const letterTo = $('#letter-to');
-    const letterFrom = $('#letter-from');
-    const letterBody = $('#letter-body');
-    if (letterTo) letterTo.textContent = to;
-    if (letterFrom) letterFrom.textContent = from;
-    if (letterBody) letterBody.textContent = msg;
-
-    // Handle Surprise Button Visibility
-    if (viewSurpriseReaderBtn) {
-        if (isPublic) {
-            viewSurpriseReaderBtn.classList.add('hidden');
-        } else {
-            viewSurpriseReaderBtn.classList.remove('hidden');
-        }
-    }
-
-    if (letterView) letterView.classList.remove('hidden');
+    runSharedTransition(() => {
+        if (actionArea) actionArea.classList.add('hidden');
+        if (contentArea) contentArea.classList.add('hidden');
+        if (letterForm) letterForm.classList.add('hidden');
+        if (readLetterForm) readLetterForm.classList.add('hidden');
+        if (successView) successView.classList.add('hidden');
+        if (subtitleEl) subtitleEl.textContent = 'A Letter For You';
+        if (titleEl) titleEl.textContent = "Happy Valentine's";
+        const letterTo = $('#letter-to');
+        const letterFrom = $('#letter-from');
+        const letterBody = $('#letter-body');
+        if (letterTo) letterTo.textContent = to;
+        if (letterFrom) letterFrom.textContent = from;
+        if (letterBody) letterBody.textContent = msg;
+        if (viewSurpriseReaderBtn) viewSurpriseReaderBtn.classList.toggle('hidden', isPublic);
+        if (letterView) letterView.classList.remove('hidden');
+    });
 }
 
 function showCreateMode() {
-    if (actionArea) actionArea.classList.add('hidden');
-    if (contentArea) contentArea.classList.add('hidden');
-    if (letterView) letterView.classList.add('hidden');
-    if (readLetterForm) readLetterForm.classList.add('hidden');
-    if (successView) successView.classList.add('hidden');
-
-    if (subtitleEl) subtitleEl.textContent = "Create Your Own";
-    if (titleEl) titleEl.textContent = "Write a Letter";
-
-    if (letterForm) letterForm.classList.remove('hidden');
-
-    // Focus on first input for UX
+    runSharedTransition(() => {
+        if (actionArea) actionArea.classList.add('hidden');
+        if (contentArea) contentArea.classList.add('hidden');
+        if (letterView) letterView.classList.add('hidden');
+        if (readLetterForm) readLetterForm.classList.add('hidden');
+        if (successView) successView.classList.add('hidden');
+        if (subtitleEl) subtitleEl.textContent = 'Create Your Own';
+        if (titleEl) titleEl.textContent = 'Write a Letter';
+        if (letterForm) letterForm.classList.remove('hidden');
+    });
     if (senderInput) setTimeout(() => senderInput.focus(), 300);
 }
 
 function resetToDefault() {
-    window.history.pushState({}, document.title, window.location.pathname);
-
-    if (letterForm) letterForm.classList.add('hidden');
-    if (readLetterForm) readLetterForm.classList.add('hidden');
-    if (successView) successView.classList.add('hidden');
-    if (letterView) letterView.classList.add('hidden');
-    if (actionArea) actionArea.classList.remove('hidden');
-    if (contentArea) contentArea.classList.remove('hidden');
-
-    if (subtitleEl) subtitleEl.textContent = "For You";
-    if (titleEl) titleEl.textContent = "Hey Darling";
-
-    // Reset form fields
-    if (senderInput) senderInput.value = '';
-    if (receiverInput) receiverInput.value = '';
-    if (messageInput) messageInput.value = '';
-    if (charCount) charCount.textContent = '0';
+    runSharedTransition(() => {
+        window.history.pushState({}, document.title, window.location.pathname);
+        if (letterForm) letterForm.classList.add('hidden');
+        if (readLetterForm) readLetterForm.classList.add('hidden');
+        if (successView) successView.classList.add('hidden');
+        if (letterView) letterView.classList.add('hidden');
+        if (actionArea) actionArea.classList.remove('hidden');
+        if (contentArea) contentArea.classList.remove('hidden');
+        if (subtitleEl) subtitleEl.textContent = 'For You';
+        if (titleEl) titleEl.textContent = 'Hey Darling';
+        if (senderInput) senderInput.value = '';
+        if (receiverInput) receiverInput.value = '';
+        if (messageInput) messageInput.value = '';
+        if (charCount) charCount.textContent = '0';
+    });
 }
 
 // ==========================================
@@ -419,22 +417,23 @@ if (generateLinkBtn) {
 }
 
 function showSuccessView(letter) {
-    if (letterForm) letterForm.classList.add('hidden');
-    if (successView) successView.classList.remove('hidden');
-
-    if (generatedCodeEl) generatedCodeEl.textContent = letter.code;
-
-    // Store current letter data for "View My Letter" button
-    window.currentLetter = letter;
+    runSharedTransition(() => {
+        if (letterForm) letterForm.classList.add('hidden');
+        if (successView) successView.classList.remove('hidden');
+        if (generatedCodeEl) generatedCodeEl.textContent = letter.code;
+        window.currentLetter = letter;
+    });
 }
 
 // ==========================================
 // UNIQUE CODE HANDLERS
 // ==========================================
 function showReadMode() {
-    if (actionArea) actionArea.classList.add('hidden');
-    if (contentArea) contentArea.classList.add('hidden');
-    if (readLetterForm) readLetterForm.classList.remove('hidden');
+    runSharedTransition(() => {
+        if (actionArea) actionArea.classList.add('hidden');
+        if (contentArea) contentArea.classList.add('hidden');
+        if (readLetterForm) readLetterForm.classList.remove('hidden');
+    });
     if (letterCodeInput) {
         letterCodeInput.value = '';
         setTimeout(() => letterCodeInput.focus(), 300);
@@ -930,60 +929,77 @@ async function loadPublicLetters() {
 
 function renderPublicCards(letters) {
     const liked = getLikedLetters();
-    publicListEl.innerHTML = '';
+    publicListEl.replaceChildren();
     letters.forEach(letter => {
         const isLiked = liked.includes(letter.id);
-        const likeCount = letter.likes || 0;
-        const card = document.createElement('div');
+        const card = document.createElement('article');
         card.className = 'public-card';
-        card.innerHTML = `
-            <div class="public-card-header">
-                <span class="card-to">To: ${letter.to}</span>
-                <span>${new Date(letter.timestamp).toLocaleDateString()}</span>
-            </div>
-            <div class="card-msg">"${letter.message}"</div>
-            <div class="card-footer">
-                <button class="like-btn ${isLiked ? 'liked' : ''}" data-id="${letter.id}" aria-label="Like this letter">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" 
-                        fill="${isLiked ? 'currentColor' : 'none'}" stroke="currentColor" stroke-width="2">
-                        <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path>
-                    </svg>
-                    <span class="like-count">${likeCount}</span>
-                </button>
-                <span class="card-from">— ${letter.from}</span>
-            </div>
-        `;
-
-        // Card click opens surprise (Instant Mode for Public)
-        card.addEventListener('click', (e) => {
-            if (e.target.closest('.like-btn')) return; // Don't open on like click
-
-            // Open in Public Letter Template (Ink Love)
-            openPublicLetter(letter);
+        card.tabIndex = 0;
+        card.setAttribute('role', 'button');
+        card.setAttribute('aria-label', `Open letter to ${letter.to || 'someone'}`);
+        const header = document.createElement('div');
+        header.className = 'public-card-header';
+        const recipient = document.createElement('span');
+        recipient.className = 'card-to';
+        recipient.textContent = `To: ${letter.to || 'Someone'}`;
+        const date = document.createElement('span');
+        const parsedDate = new Date(letter.timestamp);
+        date.textContent = Number.isNaN(parsedDate.getTime()) ? '' : parsedDate.toLocaleDateString();
+        header.append(recipient, date);
+        const message = document.createElement('div');
+        message.className = 'card-msg';
+        message.textContent = `"${letter.message || ''}"`;
+        const footer = document.createElement('div');
+        footer.className = 'card-footer';
+        const likeBtn = document.createElement('button');
+        likeBtn.className = `like-btn ${isLiked ? 'liked' : ''}`;
+        likeBtn.type = 'button';
+        likeBtn.setAttribute('aria-label', isLiked ? 'Already liked' : 'Like this letter');
+        likeBtn.setAttribute('aria-pressed', String(isLiked));
+        likeBtn.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path></svg>';
+        likeBtn.querySelector('svg').setAttribute('fill', isLiked ? 'currentColor' : 'none');
+        const count = document.createElement('span');
+        count.className = 'like-count';
+        count.textContent = String(Number(letter.likes) || 0);
+        likeBtn.append(count);
+        const sender = document.createElement('span');
+        sender.className = 'card-from';
+        sender.textContent = `— ${letter.from || 'Anonymous'}`;
+        footer.append(likeBtn, sender);
+        card.append(header, message, footer);
+        const openCard = () => openPublicLetter(letter);
+        card.addEventListener('click', event => {
+            if (!event.target.closest('.like-btn')) openCard();
         });
-
-        // Like button handler
-        const likeBtn = card.querySelector('.like-btn');
-        likeBtn.addEventListener('click', async (e) => {
-            e.stopPropagation();
+        card.addEventListener('keydown', event => {
+            if ((event.key === 'Enter' || event.key === ' ') && event.target === card) {
+                event.preventDefault();
+                openCard();
+            }
+        });
+        likeBtn.addEventListener('click', async event => {
+            event.stopPropagation();
             if (likeBtn.classList.contains('liked')) {
-                showToast("Already liked 💕");
+                showToast('Already liked 💕');
                 return;
             }
+            likeBtn.disabled = true;
             const success = await likeLetter(letter.id);
+            likeBtn.disabled = false;
             if (success) {
                 likeBtn.classList.add('liked');
+                likeBtn.setAttribute('aria-pressed', 'true');
+                likeBtn.setAttribute('aria-label', 'Already liked');
                 likeBtn.querySelector('svg').setAttribute('fill', 'currentColor');
-                const countEl = likeBtn.querySelector('.like-count');
-                countEl.textContent = parseInt(countEl.textContent) + 1;
-                showToast("Liked! 💗");
+                count.textContent = String((Number(count.textContent) || 0) + 1);
+                showToast('Liked! 💗');
+            } else {
+                showToast('Could not save your like. Please try again.');
             }
         });
-
         publicListEl.appendChild(card);
     });
 }
-
 // ==========================================
 // THEME TOGGLE
 // ==========================================

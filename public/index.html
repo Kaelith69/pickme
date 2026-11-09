@@ -4,19 +4,20 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-    <meta name="description" content="Send a personalized Valentine's message to your special someone">
+    <meta name="description" content="Make your move. Create a love letter, share a secret code, and send a little surprise with PickMe.">
     <!-- SEO & Social Cards -->
     <meta property="og:title" content="Be My Valentine? 💌">
     <meta property="og:description" content="Send a love letter to your special someone. Create, share, and surprise!">
     <meta property="og:type" content="website">
-    <meta property="og:url" content="https://pickme-love-2026.web.app">
+    <meta property="og:url" content="https://kaelith69.github.io/pickme/">
     <meta name="twitter:card" content="summary">
     <meta name="twitter:title" content="Be My Valentine? 💌">
     <meta name="twitter:description" content="Send a love letter to your special someone">
     <meta name="theme-color" content="#e11d48">
+    <meta name="color-scheme" content="light dark">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <title>Be My Valentine? 💌</title>
+    <title>PickMe | Make Your Move 💌</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link
@@ -380,7 +381,7 @@
     <script>
         // Service Worker Registration
         if ('serviceWorker' in navigator) {
-            navigator.serviceWorker.register('/sw.js').catch(() => { });
+            navigator.serviceWorker.register('./sw.js', { scope: './' }).catch((error) => { console.warn('Offline support unavailable:', error); });
         }
     </script>
 </body>
