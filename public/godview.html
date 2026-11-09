@@ -7,9 +7,7 @@
     <title>God View — Valentine Letters</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link
-        href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=Playfair+Display:wght@600;700&display=swap"
-        rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=DM+Serif+Display:wght@400;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
 
     <style>
@@ -892,7 +890,29 @@
             }
         }
     </style>
-</head>
+<style id="pickme-admin-redesign">
+:root{--bg-1:#171621;--bg-2:#211E2D;--bg-card:#292635;--bg-card-hover:#353044;--bg-detail:#201D2B;--border:#514B61;--border-light:#655D76;--primary:#F095AA;--primary-light:#F5B5C4;--primary-glow:rgba(240,149,170,.15);--accent:#B09BF2;--accent-glow:rgba(176,155,242,.16);--blue:#8BB6EA;--blue-glow:rgba(139,182,234,.14);--text-white:#F7F3FA;--text-muted:#B7ADBF;--text-dim:#8D8498;--green:#77D0B6;--green-glow:rgba(119,208,182,.15);--amber:#F0D17D;--amber-glow:rgba(240,209,125,.14);--red:#F095AA;--shadow:5px 6px 0 #0D0B13,0 20px 55px rgba(0,0,0,.25)}
+body{font-family:"Manrope",sans-serif;background:radial-gradient(ellipse at 8% 4%,rgba(126,99,213,.22),transparent 38%),radial-gradient(ellipse at 94% 96%,rgba(225,125,153,.16),transparent 38%),radial-gradient(circle,rgba(210,199,241,.08) 1px,transparent 1.5px) 0 0/24px 24px,linear-gradient(145deg,#171621,#211E2D 55%,#302332);color:var(--text-white)}
+.login-screen{padding:20px;background:rgba(13,11,19,.72);backdrop-filter:blur(14px)}
+.login-box{box-sizing:border-box;width:min(440px,100%);min-width:0;padding:clamp(24px,5vw,44px);border:2px solid #0D0B13;border-radius:24px;background:var(--bg-card);box-shadow:6px 7px 0 #0D0B13,0 28px 80px rgba(0,0,0,.35)}
+.login-box h1,.header-left h1{font-family:"DM Serif Display",serif;font-weight:400;letter-spacing:-.035em}
+.login-box h1{color:#F5B5C4;font-size:clamp(28px,7vw,38px)}
+.login-input,.search-box{box-sizing:border-box;min-width:0;border:2px solid var(--border-light);border-radius:13px;background:#302C3B;color:var(--text-white);font-family:"Manrope",sans-serif;font-size:16px}
+.login-btn,.btn{min-height:42px;border:2px solid #0D0B13;border-radius:12px;font-family:"Manrope",sans-serif;font-weight:850;box-shadow:3px 4px 0 #0D0B13}
+.login-btn,.btn-primary{background:#8066D0;color:#fff}.login-btn:hover,.btn-primary:hover{background:#927BE0}
+.btn-ghost{background:#353044;color:var(--text-white);border-color:var(--border-light);box-shadow:none}
+.btn-danger{background:rgba(240,149,170,.12);color:#F5B5C4;border-color:rgba(240,149,170,.35);box-shadow:none}
+.header{background:rgba(33,30,45,.94);border-bottom:2px solid #0D0B13;padding:16px clamp(16px,3vw,32px)}
+.header-left h1 span{color:#F095AA}
+.badge{border:1px solid #655D76;border-radius:999px;background:rgba(176,155,242,.14);color:#C8B9FF}
+.map-wrapper,.stat-card,.letter-card{border:2px solid #0D0B13;border-radius:16px;background:var(--bg-card);box-shadow:3px 4px 0 #0D0B13}
+.stat-card{padding:16px}.stat-label{color:#B7ADBF}.stat-value{font-variant-numeric:tabular-nums}
+.stat-card.pink:before{background:#F095AA}.stat-card.purple:before{background:#B09BF2}.stat-card.green:before{background:#77D0B6}.stat-card.blue:before{background:#8BB6EA}.stat-card.amber:before{background:#F0D17D}
+.table-container{padding-bottom:48px}.letter-card:hover{border-color:#B09BF2;transform:translateY(-1px)}
+.search-box{width:min(100%,340px)}.leaflet-popup-content{font-family:"Manrope",sans-serif}
+@media(max-width:700px){.login-box{width:100%}.header{padding:14px 16px}.header-left{flex-wrap:wrap}.map-container{padding:16px}.map-wrapper{height:300px}.stats-row{grid-template-columns:repeat(2,minmax(0,1fr));padding:0 16px 16px;gap:10px}.stat-card{min-width:0;padding:13px}.stat-value{font-size:1.35rem}.table-container{padding:0 16px 28px}.table-header{align-items:stretch}.search-box{width:100%}.letter-row{overflow-x:auto}.header-actions{width:100%}}
+@media(max-width:380px){.stats-row{grid-template-columns:1fr 1fr}.header-left h1{font-size:1.25rem}.badge{font-size:.65rem}}
+</style></head>
 
 <body>
     <!-- Login Screen -->
