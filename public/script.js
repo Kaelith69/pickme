@@ -190,6 +190,12 @@ function runSharedTransition(update) {
 async function typeText(text) {
     if (isTyping) return;
     isTyping = true;
+    const reduceMotion = window.matchMedia?.('(prefers-reduced-motion: reduce)').matches;
+    if (reduceMotion || document.hidden) {
+        pickupLineDisplay.textContent = text;
+        isTyping = false;
+        return;
+    }
 
     // Fade out
     pickupLineDisplay.style.opacity = '0';
@@ -264,8 +270,10 @@ if (generateBtn) {
 
 // Keyboard shortcuts (only when not in form)
 document.addEventListener('keydown', (e) => {
-    const activeTag = document.activeElement.tagName;
-    if (activeTag === 'INPUT' || activeTag === 'TEXTAREA') return;
+    const activeElement = document.activeElement;
+    const isTypingTarget = activeElement && (activeElement.matches('input, textarea, select, [contenteditable="true"]') || activeElement.closest('[contenteditable="true"]'));
+    const isInteractiveTarget = activeElement && activeElement !== document.body && activeElement !== document.documentElement;
+    if (isTypingTarget || isInteractiveTarget) return;
 
     if (letterForm && generateBtn) {
         const formIsHidden = letterForm.classList.contains('hidden');
@@ -420,6 +428,8 @@ function showSuccessView(letter) {
     runSharedTransition(() => {
         if (letterForm) letterForm.classList.add('hidden');
         if (successView) successView.classList.remove('hidden');
+        if (subtitleEl) subtitleEl.textContent = 'Ready To Share';
+        if (titleEl) titleEl.textContent = 'Your Letter Is Ready';
         if (generatedCodeEl) generatedCodeEl.textContent = letter.code;
         window.currentLetter = letter;
     });
@@ -499,11 +509,16 @@ if (openLetterBtn) {
 }
 
 if (copyCodeBtn) {
-    copyCodeBtn.addEventListener('click', () => {
-        const code = generatedCodeEl.textContent;
-        navigator.clipboard.writeText(code).then(() => {
+    copyCodeBtn.addEventListener('click', async () => {
+        const code = generatedCodeEl?.textContent?.trim();
+        if (!code) return;
+        try {
+            await navigator.clipboard.writeText(code);
             showToast("Code copied! Share it 💕");
-        });
+        } catch (error) {
+            console.error('Clipboard copy failed:', error);
+            showToast('Copy is unavailable. Please select the code manually.');
+        }
     });
 }
 
@@ -798,7 +813,7 @@ async function saveLetter(from, to, message) {
 
 // 2. Fetch Public Letters
 async function fetchPublicLetters() {
-    if (!db) return [];
+    if (!db) return null;
     try {
         const q = query(
             collection(db, "letters"),
@@ -814,7 +829,7 @@ async function fetchPublicLetters() {
         return publicLetters;
     } catch (e) {
         console.error("Error fetching public letters: ", e);
-        return [];
+        return null;
     }
 }
 
@@ -832,6 +847,8 @@ let cachedPublicLetters = [];
 if (tabPrivate && tabPublic) {
     tabPrivate.addEventListener('click', () => {
         tabPrivate.classList.add('active');
+        tabPrivate.setAttribute('aria-selected', 'true');
+        tabPublic.setAttribute('aria-selected', 'false');
         tabPublic.classList.remove('active');
         sectionPrivate.classList.remove('hidden');
         sectionPublic.classList.add('hidden');
@@ -839,6 +856,8 @@ if (tabPrivate && tabPublic) {
 
     tabPublic.addEventListener('click', () => {
         tabPublic.classList.add('active');
+        tabPublic.setAttribute('aria-selected', 'true');
+        tabPrivate.setAttribute('aria-selected', 'false');
         tabPrivate.classList.remove('active');
         sectionPublic.classList.remove('hidden');
         sectionPrivate.classList.add('hidden');
@@ -911,20 +930,72 @@ function sortLetters(letters, sortBy) {
     return sorted;
 }
 
+let publicLoadSequence = 0;
+
 async function loadPublicLetters() {
-    publicListEl.innerHTML = '<div class="loading-spinner">Loading letters...</div>';
+    if (!publicListEl) return;
+    const requestId = ++publicLoadSequence;
+    publicListEl.setAttribute('aria-busy', 'true');
+    publicListEl.replaceChildren();
+    const loading = document.createElement('div');
+    loading.className = 'loading-spinner';
+    loading.setAttribute('role', 'status');
+    loading.textContent = 'Gathering the love notes…';
+    publicListEl.appendChild(loading);
+    if (refreshPublicBtn) refreshPublicBtn.disabled = true;
 
-    const letters = await fetchPublicLetters();
-    cachedPublicLetters = letters;
+    try {
+        const letters = await fetchPublicLetters();
+        if (requestId !== publicLoadSequence) return;
+        if (!letters) {
+            publicListEl.replaceChildren();
+            const state = document.createElement('div');
+            state.className = 'public-state';
+            const title = document.createElement('strong');
+            title.textContent = 'Could not load the public wall';
+            const detail = document.createElement('span');
+            detail.textContent = 'Check your connection and try again.';
+            const retry = document.createElement('button');
+            retry.type = 'button';
+            retry.className = 'secondary-btn small';
+            retry.textContent = 'Try again';
+            retry.addEventListener('click', loadPublicLetters);
+            state.append(title, detail, retry);
+            publicListEl.appendChild(state);
+            return;
+        }
 
-    if (letters.length === 0) {
-        publicListEl.innerHTML = '<div style="text-align:center; opacity:0.6; padding:20px;">No public letters yet.</div>';
-        return;
+        cachedPublicLetters = letters;
+        if (letters.length === 0) {
+            publicListEl.replaceChildren();
+            const empty = document.createElement('div');
+            empty.className = 'public-state';
+            const title = document.createElement('strong');
+            title.textContent = 'The wall is waiting';
+            const detail = document.createElement('span');
+            detail.textContent = 'No public letters yet. Be the first to leave a little love.';
+            empty.append(title, detail);
+            publicListEl.appendChild(empty);
+            return;
+        }
+
+        const currentSort = sortSelect ? sortSelect.value : 'newest';
+        renderPublicCards(sortLetters(letters, currentSort));
+    } catch (error) {
+        console.error('Could not render public letters:', error);
+        if (requestId === publicLoadSequence) {
+            publicListEl.replaceChildren();
+            const state = document.createElement('div');
+            state.className = 'public-state';
+            state.textContent = 'Something went wrong while loading the wall. Please try again.';
+            publicListEl.appendChild(state);
+        }
+    } finally {
+        if (requestId === publicLoadSequence) {
+            publicListEl.setAttribute('aria-busy', 'false');
+            if (refreshPublicBtn) refreshPublicBtn.disabled = false;
+        }
     }
-
-    const currentSort = sortSelect ? sortSelect.value : 'newest';
-    const sorted = sortLetters(letters, currentSort);
-    renderPublicCards(sorted);
 }
 
 function renderPublicCards(letters) {
@@ -934,10 +1005,13 @@ function renderPublicCards(letters) {
         const isLiked = liked.includes(letter.id);
         const card = document.createElement('article');
         card.className = 'public-card';
-        card.tabIndex = 0;
-        card.setAttribute('role', 'button');
-        card.setAttribute('aria-label', `Open letter to ${letter.to || 'someone'}`);
-        const header = document.createElement('div');
+
+        const openButton = document.createElement('button');
+        openButton.type = 'button';
+        openButton.className = 'public-card-open';
+        openButton.setAttribute('aria-label', `Read letter to ${letter.to || 'someone'}`);
+
+        const header = document.createElement('span');
         header.className = 'public-card-header';
         const recipient = document.createElement('span');
         recipient.className = 'card-to';
@@ -946,9 +1020,13 @@ function renderPublicCards(letters) {
         const parsedDate = new Date(letter.timestamp);
         date.textContent = Number.isNaN(parsedDate.getTime()) ? '' : parsedDate.toLocaleDateString();
         header.append(recipient, date);
-        const message = document.createElement('div');
+
+        const message = document.createElement('span');
         message.className = 'card-msg';
-        message.textContent = `"${letter.message || ''}"`;
+        message.textContent = `“${letter.message || ''}”`;
+        openButton.append(header, message);
+        openButton.addEventListener('click', () => openPublicLetter(letter));
+
         const footer = document.createElement('div');
         footer.className = 'card-footer';
         const likeBtn = document.createElement('button');
@@ -962,27 +1040,15 @@ function renderPublicCards(letters) {
         count.className = 'like-count';
         count.textContent = String(Number(letter.likes) || 0);
         likeBtn.append(count);
+
         const sender = document.createElement('span');
         sender.className = 'card-from';
         sender.textContent = `— ${letter.from || 'Anonymous'}`;
         footer.append(likeBtn, sender);
-        card.append(header, message, footer);
-        const openCard = () => openPublicLetter(letter);
-        card.addEventListener('click', event => {
-            if (!event.target.closest('.like-btn')) openCard();
-        });
-        card.addEventListener('keydown', event => {
-            if ((event.key === 'Enter' || event.key === ' ') && event.target === card) {
-                event.preventDefault();
-                openCard();
-            }
-        });
-        likeBtn.addEventListener('click', async event => {
-            event.stopPropagation();
-            if (likeBtn.classList.contains('liked')) {
-                showToast('Already liked 💕');
-                return;
-            }
+        card.append(openButton, footer);
+
+        likeBtn.addEventListener('click', async () => {
+            if (likeBtn.classList.contains('liked') || likeBtn.disabled) return;
             likeBtn.disabled = true;
             const success = await likeLetter(letter.id);
             likeBtn.disabled = false;
@@ -1015,6 +1081,12 @@ function renderPublicCards(letters) {
     }
 
     if (themeToggle) {
+        const syncThemeControl = () => {
+            const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
+            themeToggle.setAttribute('aria-pressed', String(isDark));
+            themeToggle.setAttribute('aria-label', isDark ? 'Switch to light theme' : 'Switch to dark theme');
+        };
+        syncThemeControl();
         themeToggle.addEventListener('click', () => {
             const current = document.documentElement.getAttribute('data-theme');
             const next = current === 'dark' ? 'light' : 'dark';
@@ -1026,6 +1098,7 @@ function renderPublicCards(letters) {
             }
 
             localStorage.setItem('pickme-theme', next);
+            syncThemeControl();
         });
     }
 })();

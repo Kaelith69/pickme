@@ -7,6 +7,11 @@ on:
       - "public/**"
       - "index.html"
       - ".github/workflows/deploy-pages.yml"
+  pull_request:
+    branches: [main]
+    paths:
+      - "public/**"
+      - ".github/workflows/deploy-pages.yml"
   workflow_dispatch:
 
 permissions:
@@ -33,6 +38,24 @@ jobs:
           test -f public/sw.js
           node --check public/script.js
           node --check public/sw.js
+          python3 - <<'PY'
+          from pathlib import Path
+          import re
+          for page in ('public/public_letter.html', 'public/valentine.html', 'public/godview.html'):
+              source = Path(page).read_text(encoding='utf-8')
+              scripts = re.findall(r'<script(?:\s[^>]*)?>([\s\S]*?)</script>', source, re.I)
+              for index, script in enumerate(scripts):
+                  if script.strip():
+                      target = Path('/tmp') / f'{Path(page).stem}-{index}.js'
+                      target.write_text(script, encoding='utf-8')
+                      print(f'Checking {target}')
+                      import subprocess
+                      subprocess.run(['node', '--check', str(target)], check=True)
+          css = Path('public/styles.css').read_text(encoding='utf-8')
+          if css.count('{') != css.count('}'):
+              raise SystemExit('CSS braces are unbalanced')
+          print('Inline scripts and CSS structure passed')
+          PY
       - name: Configure Pages
         uses: actions/configure-pages@v5
       - name: Upload site artifact
@@ -41,6 +64,7 @@ jobs:
           path: public
 
   deploy:
+    if: github.event_name != 'pull_request'
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
