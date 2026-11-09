@@ -1371,6 +1371,8 @@ body.letter-open{overflow:hidden}
         container.classList.remove('show');
         container.setAttribute('aria-hidden', 'true');
         document.body.classList.remove('letter-open');
+        const stage = document.querySelector('.stage');
+        if (stage) stage.style.display = '';
         wrap.classList.remove('opening');
         wrap.setAttribute('aria-expanded', 'false');
         opened = false;
