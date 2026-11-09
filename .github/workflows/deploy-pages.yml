@@ -43,7 +43,7 @@ jobs:
           import re
           for page in ('public/public_letter.html', 'public/valentine.html', 'public/godview.html'):
               source = Path(page).read_text(encoding='utf-8')
-              scripts = re.findall(r'<script(?:\\s[^>]*)?>([\\s\\S]*?)</script>', source, re.I)
+              scripts = re.findall(r'<script(?:\s[^>]*)?>([\s\S]*?)</script>', source, re.I)
               for index, script in enumerate(scripts):
                   if script.strip():
                       target = Path('/tmp') / f'{Path(page).stem}-{index}.js'
