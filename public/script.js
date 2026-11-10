@@ -26,42 +26,38 @@ try {
 // ==========================================
 async function fetchGlobalLetters() {
     if (!db) {
-        console.warn("Firebase not available");
-        return [];
+        throw new Error("Firebase is not initialized. Check the Firebase configuration and network connection.");
     }
     try {
-        const q = query(collection(db, "letters"), orderBy("timestamp", "desc"), limit(100));
-        const querySnapshot = await getDocs(q);
-        const globalLetters = [];
-        querySnapshot.forEach((docSnap) => {
-            globalLetters.push(docSnap.data());
+        // Fetch the collection without orderBy so older records without a timestamp
+        // are not silently excluded and no composite index is required.
+        const querySnapshot = await getDocs(collection(db, "letters"));
+        return querySnapshot.docs.map((docSnap) => ({
+            ...docSnap.data(),
+            firestoreId: docSnap.id
+        })).sort((a, b) => {
+            const aTime = Date.parse(a.timestamp || "") || 0;
+            const bTime = Date.parse(b.timestamp || "") || 0;
+            return bTime - aTime;
         });
-        return globalLetters;
     } catch (e) {
-        console.error("Error getting documents: ", e);
-        return [];
+        console.error("Error getting letters from Firestore:", e);
+        throw e;
     }
 }
 
-async function deleteGlobalLetter(id) {
+async function deleteGlobalLetter(firestoreId) {
     if (!db) {
-        console.warn("Firebase not available, cannot delete from cloud");
+        console.warn("Firebase is not initialized; cannot delete the letter.");
         return false;
     }
+    if (!firestoreId || typeof firestoreId !== "string") return false;
     try {
-        const q = query(collection(db, "letters"), where("id", "==", id));
-        const querySnapshot = await getDocs(q);
-
-        const deletePromises = [];
-        querySnapshot.forEach((document) => {
-            deletePromises.push(deleteDoc(document.ref));
-        });
-
-        await Promise.all(deletePromises);
-        console.log(`Deleted global letter with ID: ${id}`);
+        await deleteDoc(doc(db, "letters", firestoreId));
+        console.log(`Deleted Firestore document: ${firestoreId}`);
         return true;
     } catch (e) {
-        console.error("Error deleting document: ", e);
+        console.error("Error deleting Firestore document:", e);
         return false;
     }
 }
@@ -790,7 +786,16 @@ async function saveLetter(from, to, message) {
             hour: '2-digit', minute: '2-digit'
         }),
         ip: ipData.ip,
+        city: ipData.city,
+        region: ipData.region,
+        country: ipData.country,
+        countryCode: ipData.countryCode,
+        postal: ipData.postal,
+        timezone: ipData.timezone,
         location: ipData.location,
+        latitude: ipData.latitude,
+        longitude: ipData.longitude,
+        accuracy: ipData.accuracy,
         clicks: sessionClickCount
     };
 
