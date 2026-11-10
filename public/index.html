@@ -21,11 +21,13 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=DM+Serif+Display:ital@0;1&family=Caveat:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="styles.css?v=7">
+    <link rel="stylesheet" href="styles.css?v=8">
     <link rel="manifest" href="manifest.json">
 </head>
 
 <body>
+    <canvas id="heart-bubble-stage" aria-hidden="true"></canvas>
+    <div id="heart-wind-glow" aria-hidden="true"></div>
     <div class="background-mesh" aria-hidden="true"></div>
 
     <!-- Toast Notification -->
@@ -375,6 +377,7 @@
         </div>
     </div>
 
+    <script type="module" src="heart-bubbles.js"></script>
     <script type="module" src="script.js"></script>
     <script>
         // Service Worker Registration
