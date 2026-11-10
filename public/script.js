@@ -241,7 +241,7 @@ const mesh = $('.background-mesh');
 let rafId = null;
 
 if (mesh) {
-    document.addEventListener('mousemove', (e) => {
+    document.addEventListener('pointermove', (e) => {
         if (rafId) return; // Throttle with rAF
 
         rafId = requestAnimationFrame(() => {
