@@ -1000,7 +1000,7 @@ body{background:radial-gradient(ellipse at 72% 8%,rgba(48,102,214,.12),transpare
 .sidebar-caption{padding:9px 12px;color:#637895;font-size:9px;font-weight:800;letter-spacing:.16em}
 .sidebar-nav{display:grid;gap:6px}
 .sidebar-nav a{display:flex;align-items:center;gap:13px;min-height:45px;padding:0 13px;border:1px solid transparent;border-radius:9px;color:#a9bad2;text-decoration:none;font-size:13px;font-weight:700;transition:background .18s,color .18s,border-color .18s}
-.sidebar-nav a:hover{background:#14243b;color:#eaf2ff}
+.sidebar-nav a:hover{background:#14243b;color:#eaf2ff}.sidebar-nav a:focus-visible{outline:2px solid var(--blue);outline-offset:3px}
 .sidebar-nav a.active{border-color:rgba(90,145,255,.25);background:linear-gradient(100deg,#2867e8,#397eff);color:white;box-shadow:0 7px 22px rgba(37,100,231,.22)}
 .nav-icon{display:grid;place-items:center;width:21px;font-size:19px;line-height:1}
 .sidebar-footer{display:flex;align-items:center;gap:9px;margin-top:auto;padding:14px 11px 3px;border-top:1px solid var(--border);color:#8296b2;font-size:10px;font-weight:700}
@@ -1551,6 +1551,15 @@ body{background:radial-gradient(ellipse at 72% 8%,rgba(48,102,214,.12),transpare
         // ==========================================
         // EVENT LISTENERS
         // ==========================================
+        const sidebarLinks = [...document.querySelectorAll('.sidebar-nav a')];
+        sidebarLinks.forEach(link => link.addEventListener('click', () => {
+            sidebarLinks.forEach(item => {
+                item.classList.toggle('active', item === link);
+                if (item === link) item.setAttribute('aria-current', 'location');
+                else item.removeAttribute('aria-current');
+            });
+        }));
+
         document.getElementById('download-csv-btn').addEventListener('click', downloadCSV);
         document.getElementById('clear-all-btn').addEventListener('click', clearAll);
         document.getElementById('sync-btn').addEventListener('click', handleSync);
