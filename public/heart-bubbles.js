@@ -120,15 +120,18 @@ function drawScene(dt,animate){
  ctx.globalCompositeOperation='source-over';ctx.globalAlpha=1;
 }
 function frame(now){
- raf=0;if(!visible||lowMotion)return;if(!lastTime)lastTime=now;const dt=clamp((now-lastTime)/16.667,0,2.5);lastTime=now;
- updateWind(dt);
- if(pointer.isDown&&pointer.lastX!==-1000){const drag=pointer.x-pointer.lastX;if(Math.abs(drag)>8){wind.target=clamp(drag/7,-4,4);wind.active=55;wind.cooldown=0}}
- drawScene(dt,true);raf=requestAnimationFrame(frame);
+ raf=0;if(!visible||lowMotion)return;
+ try{
+  if(!lastTime)lastTime=now;const dt=clamp((now-lastTime)/16.667,0,2.5);lastTime=now;
+  updateWind(dt);
+  if(pointer.isDown&&pointer.lastX!==-1000){const drag=pointer.x-pointer.lastX;if(Math.abs(drag)>8){wind.target=clamp(drag/7,-4,4);wind.active=55;wind.cooldown=0}}
+  drawScene(dt,true);raf=requestAnimationFrame(frame);
+ }catch(error){console.error('PickMe ambient animation paused after a rendering error:',error);stop();staticFrame()}
 }
 function start(){if(!visible||lowMotion||raf)return;lastTime=0;raf=requestAnimationFrame(frame)}
 function stop(){if(raf)cancelAnimationFrame(raf);raf=0;lastTime=0}
 function staticFrame(){if(width&&height)drawScene(0,false)}
-function interactive(target){return !!(target&&target.closest&&target.closest('button,a,input,textarea,select,[role="button"],.card-container'))}
+function interactive(target){return !!(target&&target.closest&&target.closest('button,a,input,textarea,select,[role="button"],[contenteditable="true"]'))}
 addEventListener('pointermove',e=>{pointer.lastX=pointer.x;pointer.x=e.clientX;pointer.y=e.clientY},{passive:true});
 addEventListener('pointerdown',e=>{
  if(interactive(e.target))return;pointer.isDown=true;pointer.lastX=pointer.x=e.clientX;pointer.y=e.clientY;
