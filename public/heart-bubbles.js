@@ -12,7 +12,7 @@ const COLORS=['#ff2a5f','#ff174f','#ff6688','#ff91a9','#9b5de5','#c77dff','#7b2c
 const LAYERS=['bg','mg','fg'],CACHE=88,TAU=Math.PI*2;
 const pointer={x:-1000,y:-1000,lastX:-1000,isDown:false};
 const wind={force:0,target:0,active:0,cooldown:90,glow:-1};
-let width=0,height=0,dpr=1,lastTime=0,raf=0,visible=!document.hidden,lowMotion=reduced.matches;
+let width=innerWidth,height=innerHeight,dpr=1,lastTime=0,raf=0,visible=!document.hidden,lowMotion=reduced.matches;
 let hearts=Object.create(null),starAsset=null;
 const rand=(a,b)=>a+Math.random()*(b-a);
 const clamp=(v,a,b)=>Math.max(a,Math.min(b,v));
@@ -139,6 +139,6 @@ addEventListener('pointerup',release,{passive:true});addEventListener('pointerca
 document.addEventListener('visibilitychange',()=>{visible=!document.hidden;if(visible)start();else stop()});
 const motionChange=e=>{lowMotion=e.matches;if(lowMotion){stop();staticFrame();if(windGlow)windGlow.style.opacity='0'}else start()};
 if(reduced.addEventListener)reduced.addEventListener('change',motionChange);else reduced.addListener(motionChange);
-addEventListener('resize',resize,{passive:true});if(visualViewport)visualViewport.addEventListener('resize',resize,{passive:true});
+addEventListener('resize',resize,{passive:true});if(window.visualViewport)window.visualViewport.addEventListener('resize',resize,{passive:true});
 resize();if(lowMotion)staticFrame();else start();
 })();
