@@ -208,3 +208,17 @@ button:active{transition-duration:.06s}
  .public-card{gap:9px;padding:13px 14px}
  .public-card .card-msg{font-size:13px;line-height:1.45;max-height:calc(1.45em * 2)}
 }
+
+/* Animated heart bubble atmosphere */
+html{background:#f3f0e9}
+[data-theme=dark]{background-color:#0f0208}
+body{background-color:transparent;background-image:none;background-attachment:scroll}
+#heart-bubble-stage{position:fixed;inset:0;z-index:-2;display:block;width:100%;height:100%;pointer-events:none;opacity:.94}
+#heart-wind-glow{position:fixed;inset:0;z-index:0;pointer-events:none;opacity:0;background:linear-gradient(90deg,transparent 0%,rgba(100,200,255,.09) 50%,transparent 100%);transition:opacity .16s linear}
+.background-mesh{z-index:0;opacity:1;background:radial-gradient(ellipse at center,rgba(255,255,255,.06) 15%,rgba(243,240,233,.13) 100%)}
+body:before,body:after{z-index:-1}
+.card-container{z-index:1;background:rgba(255,254,252,.86);-webkit-backdrop-filter:blur(16px);backdrop-filter:blur(16px)}
+[data-theme=dark] .background-mesh{background:radial-gradient(ellipse at center,rgba(10,1,5,.06) 12%,rgba(10,1,5,.68) 100%)}
+[data-theme=dark] .card-container{background:rgba(41,38,53,.86)}
+@media(max-width:560px){#heart-bubble-stage{opacity:.9}.card-container{-webkit-backdrop-filter:blur(12px);backdrop-filter:blur(12px)}}
+@media(prefers-reduced-motion:reduce){#heart-wind-glow{display:none}#heart-bubble-stage{opacity:.38}}
