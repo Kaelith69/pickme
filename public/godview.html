@@ -260,7 +260,8 @@
 
         #map { width:100%;height:100%; }
         #map-status{position:absolute;z-index:500;left:12px;right:12px;bottom:12px;padding:10px 13px;border:1px solid var(--border-light);border-radius:10px;background:rgba(22,18,36,.94);color:var(--text-muted);font-size:.82rem;text-align:center;pointer-events:none}
-        #map-status[hidden],#data-status[hidden]{display:none}
+        #map-data-status{margin-top:10px;color:var(--text-muted);font-size:.82rem}
+        #map-status[hidden],#map-data-status[hidden],#data-status[hidden]{display:none}
         #data-status{margin:12px 2rem 0;padding:12px 16px;border:1px solid rgba(248,113,113,.35);border-radius:12px;background:rgba(248,113,113,.09);color:#fecaca;font-size:.9rem}
 
         .map-header {
@@ -959,6 +960,7 @@ html{min-width:320px;min-height:100%;overflow-x:clip}body{min-width:320px;min-he
                 <div id="map"></div>
                 <div id="map-status" role="status" aria-live="polite">Loading map…</div>
             </div>
+            <p id="map-data-status" role="status" aria-live="polite" hidden></p>
         </div>
 
         <!-- Stats -->
@@ -1380,6 +1382,7 @@ html{min-width:320px;min-height:100%;overflow-x:clip}body{min-width:320px;min-he
             updateMapMarkers();
         };
         window.initGodViewMap = initMap;
+        window.setGodViewDataStatus = setDataStatus;
 
         let searchDebounce = null;
         document.getElementById('search-input').addEventListener('input', function () {
@@ -1407,11 +1410,11 @@ html{min-width:320px;min-height:100%;overflow-x:clip}body{min-width:320px;min-he
                 const letters = await window.fetchGlobalLetters();
                 window.setGodViewLetters(letters);
                 window.initGodViewMap();
-                setDataStatus('');
+                window.setGodViewDataStatus('');
                 if (loader) setTimeout(() => loader.classList.remove('show'), 400);
             } catch (e) {
                 console.error('God View initialization failed:', e);
-                setDataStatus('Dashboard data could not be loaded: ' + (e.message || 'Unknown error') + '. Check Firebase configuration, Firestore rules and network access, then use Sync.');
+                window.setGodViewDataStatus('Dashboard data could not be loaded: ' + (e.message || 'Unknown error') + '. Check Firebase configuration, Firestore rules and network access, then use Sync.');
                 document.getElementById('loader')?.classList.remove('show');
             }
         }
