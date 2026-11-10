@@ -19,7 +19,7 @@ PickMe is the defibrillator. ❤️‍🔥
 
 It's a **romantic web app** (PWA-enabled, zero npm dependencies, pure vanilla everything) that lets you:
 
-- 🎲 Generate 40+ certified-organic, grass-fed, artisanal pickup lines
+- 🎲 Generate 130+ pickup lines, including a 93-entry curated archive
 - ✍️ Write personalized love letters up to 1,000 characters
 - 🔐 Share letters via secret 6-character codes (2,176,782,336 combinations — you're unique, we promise)
 - 💌 Send crushes a full animated surprise page with floating hearts, rose petals, and typewriter magic
@@ -51,7 +51,7 @@ No Docker. No CI pipeline. No microservices. Just a single `public/` folder that
 ## ✨ Features
 
 ### 🎲 Pickup Line Generator
-40+ cheesy, nerdy, self-aware pickup lines. Press **Space** or **Enter** to spin the wheel. Each one appears with a typewriter animation because everything is more dramatic that way.
+130+ pickup lines, including English, Malayalam, Manglish, Hinglish, STEM, pop-culture, wholesome, cheesy, and unhinged entries. Press **Space** or **Enter** to spin the wheel. Each one appears with a typewriter animation because everything is more dramatic that way.
 
 > *"Are you a Wi-Fi signal? Because I'm really feeling a connection."* 📶
 
