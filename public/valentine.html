@@ -1420,7 +1420,7 @@ body.letter-open{overflow:hidden}
 
         const bodyEl = document.querySelector('.letter-body');
         bodyEl.replaceChildren();
-        const paragraphs = msg.split('\\n').filter(paragraph => paragraph.trim() !== '');
+        const paragraphs = msg.split('\n').filter(paragraph => paragraph.trim() !== '');
         if (paragraphs.length === 0) paragraphs.push("Happy Valentine's Day!");
 
         paragraphs.forEach((paragraph, index) => {
