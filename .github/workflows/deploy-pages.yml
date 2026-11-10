@@ -37,6 +37,7 @@ jobs:
           test -f public/manifest.json
           test -f public/sw.js
           node --check public/script.js
+          node --check public/heart-bubbles.js
           node --check public/sw.js
           python3 - <<'PY'
           from pathlib import Path
