@@ -604,7 +604,7 @@ if (openLetterBtn) {
             if (letter) {
                 window.currentReadLetter = letter; // Store for surprise view
                 // DIRECT REDIRECT: Bypass the text view and go straight to the surprise
-                openSurprisePage(letter);
+                openSurprisePage(letter, true);
             } else {
                 showToast("Letter not found 💔 Maybe write one?");
                 // Optional: Shake animation or visual feedback
@@ -1296,7 +1296,7 @@ function shareViaWhatsApp(code) {
 
                 if (letter) {
                     window.currentReadLetter = letter;
-                    openSurprisePage(letter);
+                    openSurprisePage(letter, true);
                 } else {
                     if (loader) loader.classList.remove('show');
                     showToast("Letter not found 💔");

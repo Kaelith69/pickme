@@ -1237,6 +1237,13 @@ body.letter-open{overflow:hidden}
     let previousLetterFocus = null;
     const reduceSurpriseMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
+    // Parse the incoming letter payload before DOMContentLoaded uses it.
+    const urlParams = new URLSearchParams(window.location.search);
+    const d = urlParams.get('d');
+    let to = 'Valentine';
+    let from = 'Someone special';
+    let msg = "Happy Valentine's Day!";
+
     const envelopeWrap = document.getElementById('envelopeWrap');
     const letterContainer = document.getElementById('letterContainer');
     const letterPaper = document.getElementById('letterPaper');
@@ -1384,66 +1391,69 @@ body.letter-open{overflow:hidden}
 
     // === DYNAMIC CONTENT ===
     window.addEventListener('DOMContentLoaded', () => {
+      const loader = document.getElementById('pageLoader');
       let skipAnimation = reduceSurpriseMotion;
 
-      if (d) {
-        try {
+      try {
+        if (d) {
           const decoded = JSON.parse(decodeURIComponent(atob(d)));
-          if (decoded.t) to = decoded.t;
-          if (decoded.f) from = decoded.f;
-          if (decoded.m) msg = decoded.m;
+          if (!decoded || typeof decoded !== 'object') throw new Error('Invalid letter payload');
+          if (typeof decoded.t === 'string' && decoded.t.trim()) to = decoded.t.slice(0, 50);
+          if (typeof decoded.f === 'string' && decoded.f.trim()) from = decoded.f.slice(0, 50);
+          if (typeof decoded.m === 'string' && decoded.m.trim()) msg = decoded.m.slice(0, 1000);
           if (decoded.s === 1) skipAnimation = true;
-        } catch (e) { console.log('Error decoding params', e); }
-      } else {
-        if (urlParams.get('to')) to = urlParams.get('to');
-        if (urlParams.get('from')) from = urlParams.get('from');
-        if (urlParams.get('msg')) msg = urlParams.get('msg');
+        } else {
+          const queryTo = urlParams.get('to');
+          const queryFrom = urlParams.get('from');
+          const queryMessage = urlParams.get('msg');
+          if (queryTo) to = queryTo.slice(0, 50);
+          if (queryFrom) from = queryFrom.slice(0, 50);
+          if (queryMessage) msg = queryMessage.slice(0, 1000);
+        }
+      } catch (error) {
+        console.error('Could not decode Valentine letter data:', error);
       }
 
-      // Update DOM
-      document.querySelector('.letter-heading').textContent = `Dearest ${to},`;
-      document.querySelector('.letter-sign-name').textContent = from;
+      try {
+        document.querySelector('.letter-heading').textContent = `Dearest ${to},`;
+        document.querySelector('.letter-sign-name').textContent = from;
 
-      // Process message paragraphs
-      const bodyEl = document.querySelector('.letter-body');
-      bodyEl.innerHTML = ''; // Request clear
+        const bodyEl = document.querySelector('.letter-body');
+        bodyEl.replaceChildren();
+        const paragraphs = msg.split('\\n').filter(paragraph => paragraph.trim() !== '');
+        if (paragraphs.length === 0) paragraphs.push("Happy Valentine's Day!");
 
-      // Split by newlines and create paragraphs
-      const paragraphs = msg.split('\n').filter(p => p.trim() !== '');
-      if (paragraphs.length === 0) paragraphs.push('Happy Valentine\'s Day!');
+        paragraphs.forEach((paragraph, index) => {
+          const p = document.createElement('p');
+          p.textContent = paragraph;
+          p.style.transitionDelay = `${0.6 + (index * 0.25)}s`;
+          bodyEl.appendChild(p);
+        });
 
-      paragraphs.forEach((graph, index) => {
-        const p = document.createElement('p');
-        p.textContent = graph;
-        // Stagger animation
-        p.style.transitionDelay = `${0.6 + (index * 0.25)}s`;
-        bodyEl.appendChild(p);
-      });
+        if (skipAnimation) {
+          // Private code links reveal the letter directly, without another click.
+          const stage = document.querySelector('.stage');
+          const container = document.getElementById('letterContainer');
+          const paper = document.getElementById('letterPaper');
+          const bouquet = document.getElementById('bouquet');
 
-      // Hide loader
-      if (skipAnimation) {
-        // INSTANT MODE
-        document.getElementById('pageLoader').classList.add('hidden');
-        document.querySelector('.stage').style.display = 'none'; // Hide envelope
-
-        // Show letter immediately
-        const container = document.getElementById('letterContainer');
-        const paper = document.getElementById('letterPaper');
-        container.classList.add('show');
-        container.setAttribute('aria-hidden', 'false');
-        document.body.classList.add('letter-open');
-        paper.classList.add('appear');
-        closeSurpriseLetter.focus({ preventScroll: true });
-
-        // Trigger bouquet immediately
-        const bouquet = document.getElementById('bouquet');
-        bouquet.classList.add('slide-up');
-
-      } else {
-        // NORMAL MODE
-        setTimeout(() => {
-          document.getElementById('pageLoader').classList.add('hidden');
-        }, 1500);
+          opened = true;
+          previousLetterFocus = envelopeWrap;
+          if (stage) stage.style.display = 'none';
+          container.classList.add('show');
+          container.setAttribute('aria-hidden', 'false');
+          document.body.classList.add('letter-open');
+          paper.classList.add('appear');
+          bouquet.classList.add('slide-up');
+          closeSurpriseLetter.focus({ preventScroll: true });
+        }
+      } catch (error) {
+        console.error('Could not render Valentine letter:', error);
+        const bodyEl = document.querySelector('.letter-body');
+        if (bodyEl) bodyEl.textContent = 'This letter could not be displayed completely. Please reload the page.';
+      } finally {
+        // Always release the full-screen loader, even if the payload is malformed.
+        if (loader) loader.classList.add('hidden');
       }
     });
   </script>
