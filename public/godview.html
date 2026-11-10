@@ -979,6 +979,97 @@ body{min-width:320px;min-height:100vh;min-height:100svh;overflow-x:hidden;font-f
 @media(max-width:760px){.header{align-items:flex-start;padding:12px 16px}.header-left{width:100%;justify-content:flex-start}.dashboard-nav{order:2;width:100%;overflow-x:auto}.dashboard-nav a{flex:0 0 auto}.header-actions{width:100%;justify-content:flex-start}.header-actions .btn{flex:1 1 auto}.map-container{padding:17px 16px}.map-wrapper{height:280px}.stats-row{grid-template-columns:repeat(2,minmax(0,1fr));padding:0 16px 20px;gap:9px}.stat-card{padding:13px}.stat-value{font-size:23px}.table-container{padding:0 16px 30px}.table-header{align-items:stretch}.search-box{width:100%}.letter-row{grid-template-columns:minmax(0,1fr) auto;gap:8px;padding:13px}.lr-num,.lr-location,.lr-clicks,.lr-date{display:none}.lr-name{font-size:13px}.lr-actions{justify-content:flex-end}.detail-grid{grid-template-columns:1fr}.login-box{width:100%}}
 @media(max-width:380px){.header-left h1{font-size:20px}.badge{font-size:9px}.header-actions{display:grid;grid-template-columns:repeat(2,minmax(0,1fr))}.header-actions .btn{width:100%;padding:9px 7px;font-size:11px}.map-wrapper{height:240px}.stat-card{padding:11px}.stat-label{font-size:9px}.stat-value{font-size:20px}}
 @media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}.letter-card,.btn,.dashboard-nav a{transition:none!important}}
+
+/* Geospatial command center refresh */
+:root{
+ --bg-1:#070d19;--bg-2:#0b1424;--bg-card:#101d31;--bg-card-hover:#162740;--bg-detail:#0b1729;
+ --border:rgba(104,143,190,.19);--border-light:rgba(126,164,211,.3);
+ --primary:#397bff;--primary-light:#75a7ff;--primary-glow:rgba(57,123,255,.16);
+ --accent:#8c9dff;--accent-glow:rgba(140,157,255,.14);--blue:#55d6ee;--blue-glow:rgba(85,214,238,.15);
+ --text-white:#f1f6ff;--text-muted:#a9bad2;--text-dim:#7186a5;
+ --green:#63d6b0;--green-glow:rgba(99,214,176,.14);--amber:#f1c878;--amber-glow:rgba(241,200,120,.14);
+ --red:#ff8797;--shadow:0 20px 60px rgba(0,0,0,.3)
+}
+body{background:radial-gradient(ellipse at 72% 8%,rgba(48,102,214,.12),transparent 34%),radial-gradient(ellipse at 18% 70%,rgba(44,103,170,.07),transparent 38%),var(--bg-1)}
+#main-content.show{min-height:100vh}
+.admin-sidebar{position:fixed;z-index:120;left:0;top:0;bottom:0;width:224px;display:flex;flex-direction:column;padding:23px 15px 18px;background:rgba(8,15,28,.97);border-right:1px solid var(--border);backdrop-filter:blur(20px)}
+.sidebar-brand{display:flex;align-items:center;gap:11px;padding:0 10px 27px;color:var(--text-white);text-decoration:none}
+.brand-mark{display:grid;place-items:center;width:36px;height:36px;border-radius:11px;background:linear-gradient(145deg,#4388ff,#2456c8);box-shadow:0 6px 20px rgba(49,112,244,.25);font-size:20px;font-weight:900;color:white}
+.sidebar-brand strong{display:block;font-size:16px;font-weight:800;letter-spacing:-.04em}
+.sidebar-brand small{display:block;margin-top:1px;color:#7186a5;font-size:9px;font-weight:800;letter-spacing:.17em}
+.sidebar-caption{padding:9px 12px;color:#637895;font-size:9px;font-weight:800;letter-spacing:.16em}
+.sidebar-nav{display:grid;gap:6px}
+.sidebar-nav a{display:flex;align-items:center;gap:13px;min-height:45px;padding:0 13px;border:1px solid transparent;border-radius:9px;color:#a9bad2;text-decoration:none;font-size:13px;font-weight:700;transition:background .18s,color .18s,border-color .18s}
+.sidebar-nav a:hover{background:#14243b;color:#eaf2ff}.sidebar-nav a:focus-visible{outline:2px solid var(--blue);outline-offset:3px}
+.sidebar-nav a.active{border-color:rgba(90,145,255,.25);background:linear-gradient(100deg,#2867e8,#397eff);color:white;box-shadow:0 7px 22px rgba(37,100,231,.22)}
+.nav-icon{display:grid;place-items:center;width:21px;font-size:19px;line-height:1}
+.sidebar-footer{display:flex;align-items:center;gap:9px;margin-top:auto;padding:14px 11px 3px;border-top:1px solid var(--border);color:#8296b2;font-size:10px;font-weight:700}
+.status-pulse{display:inline-block;width:7px;height:7px;flex:0 0 7px;border-radius:50%;background:#55d6a7;box-shadow:0 0 11px rgba(85,214,167,.6)}
+.header{min-height:72px;margin-left:224px;padding:12px clamp(18px,3vw,38px);background:rgba(7,13,25,.88);border-bottom-color:var(--border)}
+.header-left h1{font-size:20px}
+.header-left h1 span{color:#76a7ff}
+.header-actions .btn{min-height:37px}
+.map-container,.stats-row,.table-container{margin-left:224px}
+.map-container{padding-top:24px;padding-bottom:17px}
+.map-header{margin-bottom:12px}
+.map-header .section-title{font-size:13px;letter-spacing:.02em}
+.map-wrapper{height:clamp(340px,49vw,560px);position:relative;border:1px solid rgba(100,151,220,.24);border-radius:13px;background:#071326;box-shadow:0 18px 55px rgba(0,0,0,.25)}
+#map{background:#071326}
+#map .leaflet-tile-pane{filter:brightness(.58) saturate(.72) hue-rotate(165deg) contrast(1.08)}
+.leaflet-control-zoom a{background:#10223b!important;color:#dceaff!important;border-color:#294466!important}
+.leaflet-control-attribution{background:rgba(7,14,26,.72)!important;color:#8fa5c2!important}
+.leaflet-control-attribution a{color:#8bc7ff!important}
+.map-intel{position:absolute;z-index:500;top:16px;right:16px;display:grid;gap:7px;width:min(230px,calc(100% - 32px));padding:15px 16px;border:1px solid rgba(118,161,220,.27);border-radius:11px;background:rgba(8,18,36,.91);box-shadow:0 12px 32px rgba(0,0,0,.28);backdrop-filter:blur(14px);pointer-events:none}
+.map-intel-kicker{display:flex;align-items:center;gap:8px;color:#91a9c9;font-size:9px;font-weight:800;letter-spacing:.12em}
+.map-intel strong{color:#f2f7ff;font-size:20px;font-weight:800;letter-spacing:-.04em;font-variant-numeric:tabular-nums}
+.map-intel small{color:#8fa5c2;font-size:10px;line-height:1.5}
+.map-status-pill{position:absolute;z-index:500;left:15px;top:15px;display:flex;align-items:center;gap:8px;padding:8px 10px;border:1px solid rgba(104,143,190,.25);border-radius:7px;background:rgba(8,18,36,.82);color:#b7c9e1;font-size:9px;font-weight:800;letter-spacing:.12em;backdrop-filter:blur(10px);pointer-events:none}
+#map-status{background:rgba(8,18,36,.94);border-color:var(--border-light);color:#b6c8df}
+#map-data-status{font-size:11px}
+.stats-row{grid-template-columns:repeat(6,minmax(0,1fr));padding-top:0}
+.stat-card{border-color:rgba(104,143,190,.2);background:linear-gradient(150deg,rgba(19,36,60,.97),rgba(13,26,45,.98));border-radius:11px}
+.stat-card:before{left:15px;right:15px;height:2px;opacity:.8}
+.stat-label{color:#9eb1cb;font-size:9px;letter-spacing:.1em}
+.stat-value{font-size:clamp(21px,1.9vw,27px)}
+.stat-value.pink,.stat-value.purple{color:#8db3ff}
+.stat-card.pink:before,.stat-card.purple:before{background:#4e8cff}
+.stat-card.green:before{background:#55d6b0}.stat-card.blue:before{background:#55d6ee}
+.stat-card.amber:before{background:#a1aaff}
+.table-container{padding-top:5px}
+.table-header .section-title{font-size:14px}
+.letter-card{background:rgba(14,27,46,.94)}
+.lr-code{border-color:rgba(91,145,255,.22);background:rgba(57,123,255,.1);color:#8db5ff}
+.detail-value.mono{color:#8fbaff}
+.popup-from{color:#8db5ff}
+#data-status{margin-left:calc(224px + clamp(16px,3vw,36px));border-color:rgba(255,135,151,.28)}
+@media(max-width:1100px){
+ .stats-row{grid-template-columns:repeat(3,minmax(0,1fr))}
+}
+@media(max-width:760px){
+ .admin-sidebar{top:auto;right:0;bottom:0;width:100%;height:66px;flex-direction:row;align-items:center;justify-content:center;padding:7px 10px calc(7px + env(safe-area-inset-bottom));border-top:1px solid var(--border);border-right:0;background:rgba(7,14,27,.97)}
+ .sidebar-brand,.sidebar-caption,.sidebar-footer{display:none}
+ .sidebar-nav{display:flex;width:100%;justify-content:space-around;gap:5px}
+ .sidebar-nav a{display:flex;flex:1;min-height:46px;flex-direction:column;justify-content:center;gap:1px;padding:4px 3px;font-size:10px}
+ .nav-icon{font-size:17px}
+ .header,.map-container,.stats-row,.table-container{margin-left:0}
+ .header{padding:12px 16px}
+ .map-container{padding-top:17px}
+ .map-wrapper{height:clamp(280px,66vw,390px)}
+ .map-intel{top:12px;right:12px;width:178px;padding:11px 12px}
+ .map-intel strong{font-size:17px}
+ .map-status-pill{top:12px;left:12px;padding:7px 8px;font-size:8px}
+ .stats-row{grid-template-columns:repeat(2,minmax(0,1fr))}
+ #data-status{margin:12px 16px 0}
+ body{padding-bottom:calc(70px + env(safe-area-inset-bottom))}
+ .toast.show{bottom:calc(78px + env(safe-area-inset-bottom))}
+}
+@media(max-width:380px){
+ .map-intel{width:155px;padding:9px}
+ .map-intel-kicker{font-size:8px}
+ .map-intel strong{font-size:15px}
+}
+@media(prefers-reduced-motion:reduce){.sidebar-nav a{transition:none}}
+
 </style></head>
 
 <body>
@@ -995,16 +1086,24 @@ body{min-width:320px;min-height:100vh;min-height:100svh;overflow-x:hidden;font-f
 
     <!-- Main Content -->
     <div id="main-content">
+        <aside class="admin-sidebar" aria-label="Primary navigation">
+            <a class="sidebar-brand" href="#overview" aria-label="PickMe God View home">
+                <span class="brand-mark">P</span>
+                <span><strong>PickMe</strong><small>GOD VIEW</small></span>
+            </a>
+            <div class="sidebar-caption">WORKSPACE</div>
+            <nav class="sidebar-nav" aria-label="Dashboard navigation">
+                <a href="#overview" class="active"><span class="nav-icon">⌂</span><span>Overview</span></a>
+                <a href="#locations"><span class="nav-icon">◎</span><span>Locations</span></a>
+                <a href="#letters"><span class="nav-icon">▤</span><span>Letters</span></a>
+            </nav>
+            <div class="sidebar-footer"><span class="status-pulse"></span><span>Dashboard connected</span></div>
+        </aside>
         <header class="header">
             <div class="header-left">
                 <h1><span>PickMe</span> / God View</h1>
                 <span class="badge" id="count-badge">0 LETTERS</span>
             </div>
-            <nav class="dashboard-nav" aria-label="Dashboard navigation">
-                <a href="#overview">Overview</a>
-                <a href="#locations">Locations</a>
-                <a href="#letters">Letters</a>
-            </nav>
             <div class="header-actions">
                 <a href="index.html" class="btn btn-ghost">Back to app</a>
                 <button class="btn btn-primary" id="sync-btn">↻ Sync</button>
@@ -1023,6 +1122,12 @@ body{min-width:320px;min-height:100vh;min-height:100svh;overflow-x:hidden;font-f
             </div>
             <div class="map-wrapper">
                 <div id="map"></div>
+                <div class="map-intel" aria-live="polite">
+                    <span class="map-intel-kicker"><span class="status-pulse"></span> LOCATION INTELLIGENCE</span>
+                    <strong id="map-location-count">0 mapped records</strong>
+                    <small id="map-accuracy-summary">Waiting for location data</small>
+                </div>
+                <div class="map-status-pill"><span class="status-pulse"></span> LIVE MAP</div>
                 <div id="map-status" role="status" aria-live="polite">Loading map…</div>
             </div>
             <p id="map-data-status" role="status" aria-live="polite" hidden></p>
@@ -1163,12 +1268,17 @@ body{min-width:320px;min-height:100vh;min-height:100svh;overflow-x:hidden;font-f
                 const lat=Number(letter.latitude),lng=Number(letter.longitude);
                 return Number.isFinite(lat)&&Number.isFinite(lng)&&lat>=-90&&lat<=90&&lng>=-180&&lng<=180;
             });
+            const countNode=document.getElementById('map-location-count');
+            const accuracyNode=document.getElementById('map-accuracy-summary');
+            const gpsCount=valid.filter(letter=>letter.accuracy==='gps').length;
+            if(countNode)countNode.textContent=valid.length.toLocaleString()+' mapped record'+(valid.length===1?'':'s');
+            if(accuracyNode)accuracyNode.textContent=gpsCount.toLocaleString()+' GPS precise · '+(valid.length-gpsCount).toLocaleString()+' approximate or unclassified';
             if(!valid.length){setMapStatus('No saved coordinates yet. New letters with location data will appear here.');return;}
             setMapStatus('');
             valid.forEach(letter=>{
                 const lat=Number(letter.latitude),lng=Number(letter.longitude);
                 const marker=L.marker([lat,lng],{icon:L.icon({
-                    iconUrl:'data:image/svg+xml;base64,'+btoa(`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 36" width="32" height="48"><path fill="#e11d48" stroke="#fff" stroke-width="2" d="M12 0C7.03 0 3 4.03 3 9c0 6.75 9 18 9 18s-9-11.25-9-18c0-4.97 4.03-9 9-9zm0 12c-1.66 0-3-1.34-3-3s1.34-3 3-3 3 1.34 3 3-1.34 3-3 3z"/></svg>`),
+                    iconUrl:'data:image/svg+xml;base64,'+btoa(`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 36" width="32" height="48"><path fill="#397bff" stroke="#bfe5ff" stroke-width="2" d="M12 0C7.03 0 3 4.03 3 9c0 6.75 9 18 9 18s-9-11.25-9-18c0-4.97 4.03-9 9-9zm0 12c-1.66 0-3-1.34-3-3s1.34-3 3-3 3 1.34 3 3-1.34 3-3 3z"/></svg>`),
                     iconSize:[32,48],iconAnchor:[16,48],popupAnchor:[0,-48]
                 })});
                 marker.bindPopup(`<div class="popup-from">${esc(letter.from)} → ${esc(letter.to)}</div><div class="popup-location">📍 ${esc(letter.location||'Unknown')}</div><div class="popup-message">"${esc((letter.message||'').substring(0,100))}${(letter.message||'').length>100?'...':''}"</div>`);
@@ -1441,6 +1551,15 @@ body{min-width:320px;min-height:100vh;min-height:100svh;overflow-x:hidden;font-f
         // ==========================================
         // EVENT LISTENERS
         // ==========================================
+        const sidebarLinks = [...document.querySelectorAll('.sidebar-nav a')];
+        sidebarLinks.forEach(link => link.addEventListener('click', () => {
+            sidebarLinks.forEach(item => {
+                item.classList.toggle('active', item === link);
+                if (item === link) item.setAttribute('aria-current', 'location');
+                else item.removeAttribute('aria-current');
+            });
+        }));
+
         document.getElementById('download-csv-btn').addEventListener('click', downloadCSV);
         document.getElementById('clear-all-btn').addEventListener('click', clearAll);
         document.getElementById('sync-btn').addEventListener('click', handleSync);
