@@ -1258,10 +1258,10 @@ html{min-width:320px;min-height:100%;overflow-x:clip}body{min-width:320px;min-he
             document.getElementById('stat-total').textContent = letters.length;
             document.getElementById('count-badge').textContent = `${letters.length} LETTER${letters.length !== 1 ? 'S' : ''}`;
 
-            const senders = new Set(letters.map(l => (l.from || '').toLowerCase()));
-            const receivers = new Set(letters.map(l => (l.to || '').toLowerCase()));
-            const countries = new Set(letters.filter(l => l.country).map(l => l.country));
-            const totalClicks = letters.reduce((sum, l) => sum + (l.clicks || 0), 0);
+            const senders = new Set(letters.map(l => (l.from || '').trim().toLowerCase()).filter(Boolean));
+            const receivers = new Set(letters.map(l => (l.to || '').trim().toLowerCase()).filter(Boolean));
+            const countries = new Set(letters.map(l => (l.country || '').trim()).filter(Boolean));
+            const totalClicks = letters.reduce((sum, l) => sum + (Number(l.clicks) || 0), 0);
 
             document.getElementById('stat-senders').textContent = senders.size;
             document.getElementById('stat-receivers').textContent = receivers.size;
