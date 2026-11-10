@@ -1036,8 +1036,11 @@ html{min-width:320px;min-height:100%;overflow-x:clip}body{min-width:320px;min-he
                 sessionStorage.setItem(AUTH_KEY, '1');
                 document.getElementById('login-screen').classList.add('hidden');
                 document.getElementById('main-content').classList.add('show');
-                setTimeout(initMap, 50);
-                render();
+                if (window.loadGodViewData) {
+                    window.loadGodViewData();
+                } else {
+                    setDataStatus('Dashboard is still initializing. Please wait a moment and try Sync.');
+                }
             } else {
                 document.getElementById('login-error').classList.add('show');
                 input.value = '';
@@ -1419,9 +1422,13 @@ html{min-width:320px;min-height:100%;overflow-x:clip}body{min-width:320px;min-he
             }
         }
 
+        window.loadGodViewData = initGodView;
+        // Do not fetch dashboard records until the local login screen has been passed.
         if (document.readyState === 'loading') {
-            document.addEventListener('DOMContentLoaded', () => setTimeout(initGodView, 300));
-        } else {
+            document.addEventListener('DOMContentLoaded', () => {
+                if (sessionStorage.getItem('godview_authenticated') === '1') setTimeout(initGodView, 300);
+            });
+        } else if (sessionStorage.getItem('godview_authenticated') === '1') {
             setTimeout(initGodView, 300);
         }
     </script>
