@@ -258,10 +258,10 @@
             position: relative;
         }
 
-        #map {
-            width: 100%;
-            height: 100%;
-        }
+        #map { width:100%;height:100%; }
+        #map-status{position:absolute;z-index:500;left:12px;right:12px;bottom:12px;padding:10px 13px;border:1px solid var(--border-light);border-radius:10px;background:rgba(22,18,36,.94);color:var(--text-muted);font-size:.82rem;text-align:center;pointer-events:none}
+        #map-status[hidden],#data-status[hidden]{display:none}
+        #data-status{margin:12px 2rem 0;padding:12px 16px;border:1px solid rgba(248,113,113,.35);border-radius:12px;background:rgba(248,113,113,.09);color:#fecaca;font-size:.9rem}
 
         .map-header {
             display: flex;
@@ -943,10 +943,12 @@ html{min-width:320px;min-height:100%;overflow-x:clip}body{min-width:320px;min-he
                 <a href="index.html" class="btn btn-ghost">← Back</a>
                 <button class="btn btn-primary" id="sync-btn">🔄 Sync</button>
                 <button class="btn btn-primary" id="download-csv-btn">📄 CSV</button>
-                <button class="btn btn-danger" id="clear-all-btn">🗑️ Clear All</button>
+                <button class="btn btn-danger" id="clear-all-btn" disabled title="Bulk deletion is disabled to prevent accidental data loss">🗑️ Bulk delete disabled</button>
                 <button class="btn btn-ghost" id="logout-btn">🔒 Logout</button>
             </div>
         </header>
+
+        <div id="data-status" role="status" aria-live="polite" hidden></div>
 
         <!-- Map -->
         <div class="map-container">
@@ -955,6 +957,7 @@ html{min-width:320px;min-height:100%;overflow-x:clip}body{min-width:320px;min-he
             </div>
             <div class="map-wrapper">
                 <div id="map"></div>
+                <div id="map-status" role="status" aria-live="polite">Loading map…</div>
             </div>
         </div>
 
@@ -1058,56 +1061,51 @@ html{min-width:320px;min-height:100%;overflow-x:clip}body{min-width:320px;min-he
         // ==========================================
         // MAP
         // ==========================================
-        let map = null, markers = [];
-
-        function initMap() {
-            if (map) return;
-            map = L.map('map').setView([20, 0], 2);
-            L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
-                attribution: '&copy; OpenStreetMap &copy; CARTO', subdomains: 'abcd', maxZoom: 19
-            }).addTo(map);
-
-            // Fix for rendering issues on load/resize
-            setTimeout(() => { map.invalidateSize(); }, 200);
-            window.addEventListener('resize', () => { if (map) map.invalidateSize(); });
-
-            updateMapMarkers();
+        let map = null, markers = [], mapResizeBound = false;
+        function setMapStatus(message) {
+            const status=document.getElementById('map-status');
+            if(!status)return;
+            status.textContent=message||'';
+            status.hidden=!message;
         }
-
+        function initMap() {
+            if(map){setTimeout(()=>map.invalidateSize(),100);return;}
+            if(!window.L){setMapStatus('The map library could not load. Check your connection and refresh.');return;}
+            try{
+                map=L.map('map',{scrollWheelZoom:false}).setView([20,0],2);
+                const tiles=L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{
+                    attribution:'&copy; <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">OpenStreetMap</a> contributors',
+                    subdomains:'abc',maxZoom:19
+                }).addTo(map);
+                setMapStatus('Loading map tiles…');
+                tiles.on('tileload',()=>setMapStatus(''));
+                tiles.on('tileerror',()=>setMapStatus('Map tiles could not load. Check your internet connection and try Sync again.'));
+                setTimeout(()=>map.invalidateSize(),200);
+                if(!mapResizeBound){window.addEventListener('resize',()=>{if(map)map.invalidateSize()},{passive:true});mapResizeBound=true;}
+                updateMapMarkers();
+            }catch(error){console.error('Map initialization failed:',error);setMapStatus('Map initialization failed. Refresh the dashboard and check the browser console.');}
+        }
         function updateMapMarkers() {
-            if (!map) return;
-            markers.forEach(m => map.removeLayer(m));
-            markers = [];
-
-            const valid = getLetters().filter(l => l.latitude && l.longitude);
-            if (!valid.length) return;
-
-            valid.forEach(letter => {
-                // Add jitter to prevent exact overlap
-                const jitter = 0.005; // ~500m
-                const lat = Number(letter.latitude) + (Math.random() - 0.5) * jitter;
-                const lng = Number(letter.longitude) + (Math.random() - 0.5) * jitter;
-
-                const marker = L.marker([lat, lng], {
-                    icon: L.icon({
-                        iconUrl: 'data:image/svg+xml;base64,' + btoa(`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 36" width="32" height="48"><path fill="#e11d48" stroke="#fff" stroke-width="2" d="M12 0C7.03 0 3 4.03 3 9c0 6.75 9 18 9 18s9-11.25 9-18c0-4.97-4.03-9-9-9zm0 12c-1.66 0-3-1.34-3-3s1.34-3 3-3 3 1.34 3 3-1.34 3-3 3z"/></svg>`),
-                        iconSize: [32, 48], iconAnchor: [16, 48], popupAnchor: [0, -48]
-                    })
-                });
-                marker.bindPopup(`
-                    <div class="popup-from">${esc(letter.from)} → ${esc(letter.to)}</div>
-                    <div class="popup-location">📍 ${esc(letter.location || 'Unknown')}</div>
-                    <div class="popup-message">"${esc((letter.message || '').substring(0, 100))}${(letter.message || '').length > 100 ? '...' : ''}"</div>
-                `);
-                marker.addTo(map);
-                markers.push(marker);
+            if(!map)return;
+            markers.forEach(marker=>map.removeLayer(marker));markers=[];
+            const valid=getLetters().filter(letter=>{
+                if(letter.latitude===null||letter.latitude===undefined||letter.latitude===''||letter.longitude===null||letter.longitude===undefined||letter.longitude==='')return false;
+                const lat=Number(letter.latitude),lng=Number(letter.longitude);
+                return Number.isFinite(lat)&&Number.isFinite(lng)&&lat>=-90&&lat<=90&&lng>=-180&&lng<=180;
             });
-
-            if (markers.length > 1) {
-                map.fitBounds(L.featureGroup(markers).getBounds().pad(0.1));
-            } else {
-                map.setView([valid[0].latitude, valid[0].longitude], 6);
-            }
+            if(!valid.length){setMapStatus('No saved coordinates yet. New letters with location data will appear here.');return;}
+            setMapStatus('');
+            valid.forEach(letter=>{
+                const lat=Number(letter.latitude),lng=Number(letter.longitude);
+                const marker=L.marker([lat,lng],{icon:L.icon({
+                    iconUrl:'data:image/svg+xml;base64,'+btoa(`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 36" width="32" height="48"><path fill="#e11d48" stroke="#fff" stroke-width="2" d="M12 0C7.03 0 3 4.03 3 9c0 6.75 9 18 9 18s-9-11.25-9-18c0-4.97 4.03-9 9-9zm0 12c-1.66 0-3-1.34-3-3s1.34-3 3-3 3 1.34 3 3-1.34 3-3 3z"/></svg>`),
+                    iconSize:[32,48],iconAnchor:[16,48],popupAnchor:[0,-48]
+                })});
+                marker.bindPopup(`<div class="popup-from">${esc(letter.from)} → ${esc(letter.to)}</div><div class="popup-location">📍 ${esc(letter.location||'Unknown')}</div><div class="popup-message">"${esc((letter.message||'').substring(0,100))}${(letter.message||'').length>100?'...':''}"</div>`);
+                marker.addTo(map);markers.push(marker);
+            });
+            if(markers.length>1)map.fitBounds(L.featureGroup(markers).getBounds().pad(0.1));
+            else map.setView([Number(valid[0].latitude),Number(valid[0].longitude)],6);
         }
 
         // ==========================================
@@ -1115,7 +1113,7 @@ html{min-width:320px;min-height:100%;overflow-x:clip}body{min-width:320px;min-he
         // ==========================================
         async function deleteLetterById(id) {
             if (!confirm('Delete this letter?')) return;
-            const card = document.querySelector(`[data-letter-id="${id}"]`);
+            const card = document.querySelector(`[data-letter-id="${CSS.escape(String(id))}"]`);
             if (card) card.style.opacity = '0.3';
 
             try {
@@ -1127,7 +1125,7 @@ html{min-width:320px;min-height:100%;overflow-x:clip}body{min-width:320px;min-he
                 if (window.fetchGlobalLetters) {
                     _currentLetters = await window.fetchGlobalLetters();
                 } else {
-                    _currentLetters = _currentLetters.filter(l => l.id !== id);
+                    _currentLetters = _currentLetters.filter(l => l.firestoreId !== id && l.id !== id);
                 }
                 const si = document.getElementById('search-input');
                 render(si ? si.value : '');
@@ -1152,11 +1150,13 @@ html{min-width:320px;min-height:100%;overflow-x:clip}body{min-width:320px;min-he
                 if (window.fetchGlobalLetters) {
                     _currentLetters = await window.fetchGlobalLetters();
                     render(); updateMapMarkers();
+                    setDataStatus('');
                     showToast('Synced ☁️');
                 } else {
-                    showToast('Firebase unavailable ❌');
+                    throw new Error('Firebase data service did not initialize.');
                 }
             } catch (e) {
+                setDataStatus('Could not load letters from Firestore: ' + (e.message || 'Unknown error'));
                 showToast('Sync failed ❌'); console.error(e);
             } finally {
                 btn.textContent = origText; btn.disabled = false;
@@ -1194,6 +1194,12 @@ html{min-width:320px;min-height:100%;overflow-x:clip}body{min-width:320px;min-he
         // ==========================================
         // HELPERS
         // ==========================================
+        function setDataStatus(message) {
+            const status=document.getElementById('data-status');
+            if(!status)return;
+            status.textContent=message||'';
+            status.hidden=!message;
+        }
         let toastTimer = null;
         function showToast(msg) {
             const t = document.getElementById('toast');
@@ -1232,9 +1238,11 @@ html{min-width:320px;min-height:100%;overflow-x:clip}body{min-width:320px;min-he
             return '<span class="tag tag-unknown">❓ Unknown</span>';
         }
 
-        function formatCoord(lat, lng) {
-            if (!lat || !lng) return 'N/A';
-            return `${Number(lat).toFixed(4)}, ${Number(lng).toFixed(4)}`;
+        function formatCoord(lat,lng) {
+            if(lat===null||lat===undefined||lat===''||lng===null||lng===undefined||lng==='')return 'N/A';
+            const latitude=Number(lat),longitude=Number(lng);
+            if(!Number.isFinite(latitude)||!Number.isFinite(longitude))return 'N/A';
+            return `${latitude.toFixed(4)}, ${longitude.toFixed(4)}`;
         }
 
         // ==========================================
@@ -1260,7 +1268,8 @@ html{min-width:320px;min-height:100%;overflow-x:clip}body{min-width:320px;min-he
             document.getElementById('stat-clicks').textContent = totalClicks;
 
             if (letters.length > 0) {
-                document.getElementById('stat-latest').textContent = letters[0].date || new Date(letters[0].timestamp).toLocaleDateString();
+                const latestTimestamp = Date.parse(letters[0].timestamp || '');
+                document.getElementById('stat-latest').textContent = letters[0].date || (Number.isFinite(latestTimestamp) ? new Date(latestTimestamp).toLocaleDateString() : 'Date unavailable');
             } else {
                 document.getElementById('stat-latest').textContent = '—';
             }
@@ -1296,21 +1305,23 @@ html{min-width:320px;min-height:100%;overflow-x:clip}body{min-width:320px;min-he
                 const msgPreview = (l.message || '').length > 60 ? l.message.substring(0, 60) + '...' : l.message;
                 const countryFlag = l.countryCode ? getFlagEmoji(l.countryCode) + ' ' : '';
 
+                const rowId = esc(l.firestoreId || l.id || '');
+                const appId = esc(l.id || '');
                 html += `
-                <div class="letter-card" data-letter-id="${l.id}">
-                    <div class="letter-row" onclick="toggleDetail('${l.id}')">
+                <div class="letter-card" data-letter-id="${rowId}">
+                    <div class="letter-row" onclick="toggleDetail('${rowId}')">
                         <div class="lr-num">${letters.length - i}</div>
                         <div class="lr-code">${esc(l.code || '—')}</div>
                         <div class="lr-name">${esc(l.from)} <span class="sub">→ ${esc(l.to)}</span></div>
                         <div class="lr-location">${countryFlag}${esc(l.city || l.location || 'Unknown')}</div>
                         <div class="lr-date">${esc(l.date || '—')}</div>
-                        <div class="lr-clicks">${l.clicks || 0}</div>
+                        <div class="lr-clicks">${Number(l.clicks) || 0}</div>
                         <div class="lr-actions">
-                            <button onclick="event.stopPropagation(); viewLetter('${l.id}')" title="View">👁️</button>
-                            <button onclick="event.stopPropagation(); deleteLetterById('${l.id}')" title="Delete">🗑️</button>
+                            <button onclick="event.stopPropagation(); viewLetter('${appId}')" title="View">👁️</button>
+                            <button onclick="event.stopPropagation(); deleteLetterById('${rowId}')" title="Delete">🗑️</button>
                         </div>
                     </div>
-                    <div class="letter-detail" id="detail-${l.id}">
+                    <div class="letter-detail" id="detail-${rowId}">
                         <div class="detail-message">
                             <span class="msg-label">💬 Message</span>
                             ${esc(l.message || '')}
@@ -1363,6 +1374,12 @@ html{min-width:320px;min-height:100%;overflow-x:clip}body{min-width:320px;min-he
         document.getElementById('download-csv-btn').addEventListener('click', downloadCSV);
         document.getElementById('clear-all-btn').addEventListener('click', clearAll);
         document.getElementById('sync-btn').addEventListener('click', handleSync);
+        window.setGodViewLetters = function (letters) {
+            _currentLetters = Array.isArray(letters) ? letters : [];
+            render();
+            updateMapMarkers();
+        };
+        window.initGodViewMap = initMap;
 
         let searchDebounce = null;
         document.getElementById('search-input').addEventListener('input', function () {
@@ -1384,18 +1401,17 @@ html{min-width:320px;min-height:100%;overflow-x:clip}body{min-width:320px;min-he
                 const loader = document.getElementById('loader');
                 if (loader) loader.classList.add('show');
 
-                const letters = await window.fetchGlobalLetters();
-                if (typeof _currentLetters !== 'undefined') {
-                    _currentLetters = letters;
+                if (typeof window.fetchGlobalLetters !== 'function') {
+                    throw new Error('Firebase data service did not initialize. Check that script.js loaded successfully.');
                 }
-
-                if (typeof render === 'function') render();
-                if (typeof updateMapMarkers === 'function') updateMapMarkers();
-                if (typeof initMap === 'function') initMap();
-
+                const letters = await window.fetchGlobalLetters();
+                window.setGodViewLetters(letters);
+                window.initGodViewMap();
+                setDataStatus('');
                 if (loader) setTimeout(() => loader.classList.remove('show'), 400);
             } catch (e) {
-                console.error('Failed to load:', e);
+                console.error('God View initialization failed:', e);
+                setDataStatus('Dashboard data could not be loaded: ' + (e.message || 'Unknown error') + '. Check Firebase configuration, Firestore rules and network access, then use Sync.');
                 document.getElementById('loader')?.classList.remove('show');
             }
         }
