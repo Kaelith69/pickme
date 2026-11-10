@@ -217,9 +217,9 @@ body{background-color:transparent;background-image:none;background-attachment:sc
 #heart-wind-glow{position:fixed;inset:0;z-index:2;pointer-events:none;opacity:0;background:linear-gradient(90deg,transparent 0%,rgba(100,200,255,.09) 50%,transparent 100%);transition:opacity .16s linear}
 .background-mesh{z-index:1;opacity:1;background:radial-gradient(ellipse at center,rgba(255,255,255,.06) 15%,rgba(243,240,233,.13) 100%)}
 body:before,body:after{z-index:-1}
-.card-container{z-index:3;background:rgba(255,254,252,.86);-webkit-backdrop-filter:blur(16px);backdrop-filter:blur(16px)}
+.card-container{z-index:3;background:rgba(255,254,252,.68);-webkit-backdrop-filter:blur(14px);backdrop-filter:blur(14px)}
 [data-theme=dark] .background-mesh{background:radial-gradient(ellipse at center,rgba(10,1,5,.06) 12%,rgba(10,1,5,.68) 100%)}
-[data-theme=dark] .card-container{background:rgba(41,38,53,.86)}
-@media(max-width:560px){#heart-bubble-stage{opacity:.9}.card-container{-webkit-backdrop-filter:blur(12px);backdrop-filter:blur(12px)}}
-@media(prefers-reduced-motion:reduce){#heart-wind-glow{display:none}#heart-bubble-stage{opacity:.38}}
+[data-theme=dark] .card-container{background:rgba(41,38,53,.76)}
+@media(max-width:560px){#heart-bubble-stage{opacity:.96}.card-container{-webkit-backdrop-filter:blur(14px);backdrop-filter:blur(14px)}}
+@media(prefers-reduced-motion:reduce){#heart-wind-glow{display:none}#heart-bubble-stage{opacity:.68}}
 /* Layer order: canvas, atmospheric overlays, then interactive app UI. */

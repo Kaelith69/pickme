@@ -67,7 +67,7 @@ function explosion(x,y,color,size,layer){
 class Bubble{
  constructor(){this.reset(true)}
  reset(initial=false){
-  this.baseX=this.x=Math.random()*width;this.y=initial?height+Math.random()*height:height+rand(30,130);
+  this.baseX=this.x=Math.random()*width;this.y=initial?rand(height*.08,height*.92):height+rand(30,130);
   const depth=Math.random();this.layer=depth<.28?'bg':depth<.8?'mg':'fg';
   const base=this.layer==='bg'?.3:this.layer==='fg'?.82:.58;this.targetSize=rand(.78,1.2)*base;this.currentSize=initial?this.targetSize:0;
   const speed=this.layer==='bg'?.5:this.layer==='fg'?1.45:1;this.speed=rand(.8,2.2)*speed;this.angle=rand(0,TAU);this.spin=rand(-.025,.025);this.phase=rand(0,TAU);
