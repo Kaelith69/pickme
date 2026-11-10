@@ -2,7 +2,7 @@
 // FIREBASE CONFIG & INIT
 // ==========================================
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-import { getFirestore, collection, addDoc, getDocs, query, orderBy, limit, where, deleteDoc, doc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+import { getFirestore, collection, addDoc, getDocs, getDocsFromServer, query, orderBy, limit, where, deleteDoc, doc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
 const firebaseConfig = {
     apiKey: "AIzaSyAlLL2fcqWXASQ8kYcMHURlHG-haf3vl4s",
@@ -446,20 +446,41 @@ function showReadMode() {
     }
 }
 
+const LETTER_LOOKUP_TIMEOUT_MS = 12000;
+
 async function fetchLetterByCode(code) {
-    if (!db) return null;
+    if (!db) {
+        throw new Error("Firebase is not initialized. Check your connection and try again.");
+    }
 
+    const normalizedCode = String(code || "").trim().toUpperCase();
+    if (!normalizedCode) return null;
+
+    const q = query(
+        collection(db, "letters"),
+        where("code", "==", normalizedCode),
+        limit(1)
+    );
+
+    let timeoutId;
     try {
-        const q = query(collection(db, "letters"), where("code", "==", code.toUpperCase()), limit(1));
-        const querySnapshot = await getDocs(q);
+        // Read from the server so an offline or stale local cache cannot masquerade
+        // as a successful private-code lookup. Always bound the wait time.
+        const querySnapshot = await Promise.race([
+            getDocsFromServer(q),
+            new Promise((_, reject) => {
+                timeoutId = setTimeout(() => {
+                    reject(new Error("Letter lookup timed out after 12 seconds."));
+                }, LETTER_LOOKUP_TIMEOUT_MS);
+            })
+        ]);
 
-        if (!querySnapshot.empty) {
-            return querySnapshot.docs[0].data();
-        }
-        return null;
-    } catch (e) {
-        console.error("Error fetching letter by code:", e);
-        return null;
+        return querySnapshot.empty ? null : querySnapshot.docs[0].data();
+    } catch (error) {
+        console.error("Error fetching letter by code:", error);
+        throw error;
+    } finally {
+        clearTimeout(timeoutId);
     }
 }
 
@@ -495,8 +516,14 @@ if (openLetterBtn) {
                 // Optional: Shake animation or visual feedback
             }
         } catch (e) {
-            showToast("Error retrieving letter ❌");
+            console.error("Private letter lookup failed:", e);
+            if (e?.message?.includes("timed out")) {
+                showToast("The server is taking too long. Check your connection and try again.");
+            } else {
+                showToast("Couldn't retrieve the letter. Check your connection and try again.");
+            }
         } finally {
+            // Always release the full-screen loader, including on Firebase errors/timeouts.
             if (loader) loader.classList.remove('show');
             openLetterBtn.disabled = false;
             openLetterBtn.innerHTML = originalBtnHTML;
